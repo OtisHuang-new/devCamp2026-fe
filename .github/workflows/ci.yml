@@ -57,7 +57,7 @@ jobs:
       run: npm run tsc --noEmit
       
     - name: Run tests
-      use: npm test
+      uses: npm test
 
     - name: Build project
       run: npm run build
