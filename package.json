@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "tsc": "echo 'Tam thoi chua co file de check'",
+    "tsc": "echo '(tsc) Tam thoi chua co file de check'",
+    "lint": "echo '(lint) Tam thoi chua co file de check'",
+    "test": "echo '(test) Tam thoi chua co file de check'",
     "build": "mkdir -p dist && touch dist/index.html",
     "prepare": "husky"
   },
