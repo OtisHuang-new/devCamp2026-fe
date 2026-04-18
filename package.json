@@ -10,6 +10,17 @@
     "build": "mkdir -p dist && touch dist/index.html",
     "prepare": "husky"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OtisHuang-new/devCamp2026-fe.git"
+  },
+  "author": "OtisHuang-new",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OtisHuang-new/devCamp2026-fe/issues"
+  },
+  "homepage": "https://github.com/OtisHuang-new/devCamp2026-fe#readme",
+  "description": "",
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
