@@ -19,53 +19,52 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          cache: npm
+          cache: 'yarn'
       - name: Install commitlint
-        run: npm install -D @commitlint/cli @commitlint/config-conventional
+        run: yarn add -D @commitlint/cli @commitlint/config-conventional
       - name: Print versions
         run: |
           git --version
           node --version
-          npm --version
-          npx commitlint --version
+          yarn --version
+          yarn commitlint --version
 
       - name: Validate current commit (last commit) with commitlint
         if: github.event_name == 'push'
-        run: npx commitlint --last --verbose
+        run: yarn commitlint --last --verbose
 
       - name: Validate PR commits with commitlint
         if: github.event_name == 'pull_request'
-        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+        run: yarn commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
 
   build-and-deploy:
+    needs: commitlint
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup Node
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
-        cache: 'npm'
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'yarn'
 
-    - name: Install dependencies
-      run: npm install
-      
-    - name: Check TypeScript
-      run: npm run tsc --noEmit
-      
-    - name: Run tests
-      run: npm test
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
 
-    - name: Build project
-      run: npm run build
-    
-    # - name: Deploy to Vercel
-    #   uses: amondnet/vercel-deploy@v2
-    #   with:
-    #     vercel-token: ${{ secrets.VERCEL_TOKEN }}
-    #     vercel-org-id: ${{ secrets.ORG_ID }}
-    #     vercel-project-id: ${{ secrets.PROJECT_ID }}
-    #     vercel-args: '--prod'
+      - name: Check TypeScript
+        run: yarn tsc --noEmit
+
+      - name: Run Lint Check
+        run: yarn eslint .
+
+      - name: Check Formatting (Prettier)
+        run: yarn prettier . --check
+
+      - name: Run tests
+        run: yarn test
+
+      - name: Build project
+        run: npm run build

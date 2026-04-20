@@ -4,11 +4,24 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "tsc": "echo '(tsc) Tam thoi chua co file de check'",
-    "lint": "echo '(lint) Tam thoi chua co file de check'",
-    "test": "echo '(test) Tam thoi chua co file de check'",
-    "build": "mkdir -p dist && touch dist/index.html",
-    "prepare": "husky"
+    "tsc": "tsc",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "prepare": "husky",
+    "preview": "vite preview",
+    "format:check": "prettier . --check",
+    "format:fix": "prettier . --write"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.json": [
+      "prettier --write"
+    ]
   },
   "repository": {
     "type": "git",
@@ -21,10 +34,35 @@
   },
   "homepage": "https://github.com/OtisHuang-new/devCamp2026-fe#readme",
   "description": "",
+  "dependencies": {
+    "axios": "^1.15.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
+    "@eslint/js": "^9.39.4",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^24.12.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.4.0",
     "husky": "^9.1.7",
-    "typescript": "^5.0.0"
+    "jsdom": "^29.0.2",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.3",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.58.0",
+    "vite": "^8.0.4",
+    "vitest": "^4.1.4"
   }
 }
