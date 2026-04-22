@@ -8,6 +8,6 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom', // Bật trình duyệt ảo ở đây
-    setupFiles: './src/setupTests.ts', // Chạy file setup trước khi test
+    setupFiles: './src/test/setupTests.ts', // Chạy file setup trước khi test
   },
 });

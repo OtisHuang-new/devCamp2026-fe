@@ -31,7 +31,7 @@ function App() {
 
   return (
     <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      <h1>Hello World</h1>
+      <h1 className="text-red-900">Hello World</h1>
       <p>Frontend Repo - Milestone 1</p>
 
       <hr style={{ margin: '30px 0' }} />

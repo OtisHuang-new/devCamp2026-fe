@@ -1,58 +1,40 @@
-- cấu trúc file được cấu trúc theo Nhóm tính năng/ Modules
+# /\*
 
-└── src/
-├── assets/
-├── modules/
-│ ├── core/
-│ │ ├── components/
-│ │ ├── design-system/
-│ │ │ └── Button.tsx
-│ │ ├── hooks/
-│ │ ├── lib/
-│ │ └── utils/
-│ ├── payment/
-│ │ ├── components/
-│ │ │ └── PaymentForm.tsx
-│ │ ├── hooks/
-│ │ │ └── usePayment.ts
-│ │ ├── lib/
-│ │ ├── services/
-│ │ ├── states/
-│ │ └── utils/
-│ ├── auth/
-│ │ ├── components/
-│ │ │ └── SignUpForm.tsx
-│ │ ├── hooks/
-│ │ │ └── useAuth.ts
-│ │ ├── lib/
-│ │ ├── services/
-│ │ ├── states/
-│ │ └── utils/
-│ └── employees/
-│ ├── components/
-│ │ ├── EmployeeList.tsx
-│ │ └── EmployeeSummary.tsx
-│ ├── hooks/
-│ │ ├── useEmployees.ts
-│ │ └── useUpdateEmployee.ts
-│ ├── services/
-│ ├── states/
-│ └── utils/
-└── ...
+# README - HƯỚNG DẪN CẤU TRÚC THƯ MỤC DỰ ÁN DEVCAMP2026-FE
 
-#📋 Kế hoạch tổ chức thư mục:
-Dưới đây là ý nghĩa của từng thư mục để bạn dễ dàng training lại cho các thành viên trong team:
+Mục tiêu: Giúp 6 anh em trong team đồng bộ cách quản lý source code,
+tách biệt rõ ràng logic và UI, dễ bảo trì khi dự án phình to.
+Dự án sử dụng tư duy chia thư mục theo tính năng (Feature-based).
 
-core/: Chứa những thứ dùng chung cho TOÀN BỘ ứng dụng (Ví dụ: Nút bấm chuẩn của hệ thống Button.tsx, các hàm format ngày tháng, component Layout chính).
+1. TỔNG QUAN
 
-Các module tính năng (auth, payment, employees): Mỗi thư mục là một thế giới riêng.
+- Thư mục src/ được chia làm 2 nhánh chính: 'features' và 'shared'.
+- Quy tắc cốt lõi: 'features' có thể gọi 'shared', nhưng 'shared' KHÔNG BAO GIỜ được gọi 'features'.
 
-components/: Giao diện chỉ dành riêng cho tính năng này.
+2. THƯ MỤC src/features/
+   Chứa các module/tính năng nghiệp vụ riêng biệt của ứng dụng (vd: auth, dashboard).
+   Mỗi feature hoạt động như một ứng dụng thu nhỏ, bao gồm:
 
-hooks/: Logic React riêng biệt.
+- components/ : Chứa các UI Component phục vụ riêng cho tính năng này (VD: LoginForm.tsx).
+- hooks/ : Custom React Hooks xử lý logic riêng của tính năng (VD: useAuth.ts).
+- services/ : Chứa logic giao tiếp với Backend/API (VD: authAPI.ts gọi API đăng nhập).
+- store/ : Quản lý state cục bộ của tính năng (Redux slice, Zustand store...).
+- types/ : Định nghĩa các interface/type TypeScript cho tính năng này.
+- index.tsx : File đóng vai trò là cầu nối (Public API). Chỉ export những gì cần thiết
+  cho các phần khác của app sử dụng, che giấu các logic bên trong.
 
-services/: File chứa Axios để gọi API (ví dụ: auth.service.ts gọi API login).
+3. THƯ MỤC src/shared/
+   Chứa các tài nguyên dùng chung cho toàn bộ dự án, không gắn liền với business logic nào.
 
-states/: Quản lý state cục bộ (Zustand, Redux slice, hoặc Context API).
+- components/ : Component UI tái sử dụng ở nhiều nơi (VD: Button, Input, Modal, Table).
+- hooks/ : Hooks dùng chung (VD: useClickOutside, useDebounce).
+- store/ : Quản lý state toàn cục (VD: User Session, Theme Light/Dark).
+- types/ : Các interface/type phổ biến dùng ở nhiều nơi.
+- utils/ : Các hàm tiện ích (VD: formatDate, formatCurrency, regex validate).
 
-utils/: Các hàm tính toán lặt vặt
+4. QUY TẮC PHÁT TRIỂN DÀNH CHO TEAM
+
+- Khi code một tính năng mới, hãy tạo folder mới trong 'features'.
+- Nếu thấy một component (VD: nút bấm) được lặp lại ở 2 features khác nhau, hãy đưa nó xuống 'shared/components'.
+- Các feature giao tiếp với nhau thông qua file 'index.tsx' của feature đó, không import sâu vào các folder con của feature khác.
+  \*/
