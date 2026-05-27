@@ -1,7 +1,12 @@
 import gemini from '../../../shared/Assets/gemini-png (1).png';
 import Button from './Button';
 
-function Body() {
+// 2. THÊM MỚI Ở ĐÂY: Khai báo interface cho Props
+interface BodyProps {
+  onOpenLogin: () => void;
+}
+
+function Body({ onOpenLogin }: BodyProps) {
   return (
     <div className="w-full h-full flex justify-center items-center">
       <div className="pt-20 w-full flex flex-col gap-[50px]">
@@ -25,7 +30,7 @@ function Body() {
             <span className="text-white font-medium text-[20px]">Made for office people</span>
           </div>
           <div className="flex flex-col gap-3">
-            <Button />
+            <Button onOpenLogin={onOpenLogin} />
           </div>
         </div>
       </div>

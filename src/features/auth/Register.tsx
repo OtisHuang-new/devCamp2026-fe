@@ -1,88 +1,156 @@
 import google from './Assets/Google icon.svg';
 import background from './Assets/backGround.jpg';
 // Nếu bạn đã cài react-router-dom, import thêm hook để chuyển trang nhanh
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from './hooks/useAuth';
+// THAY ĐỔI 5: Bổ sung import useEffect và useAuthContext
+import { useState, useEffect } from 'react';
+import { useAuthContext } from '../../shared/context/AuthContext';
 
-function Register() {
-  const navigate = useNavigate();
+import CloseButton from '../../shared/Buttons/CloseButton';
+
+interface RegisterProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSwitchToLogin: () => void;
+}
+
+function Register({ isOpen, onClose, onSwitchToLogin }: RegisterProps) {
+  const { handleRegister, isLoading, error } = useAuth();
+
+  // THAY ĐỔI 6: Lấy user từ AuthContext
+  const { user } = useAuthContext();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [validationError, setValidationError] = useState('');
+
+  // THAY ĐỔI 7: Lắng nghe đăng ký thành công (user có data) thì đóng Form
+  useEffect(() => {
+    if (user && isOpen) {
+      onClose();
+    }
+  }, [user, isOpen, onClose]);
+
+  if (!isOpen) return null; // THÊM DÒNG NÀY
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setValidationError('');
+
+    if (password !== confirmPassword) {
+      setValidationError('Mật khẩu nhập lại không khớp!');
+      return;
+    }
+
+    // Lấy thông tin từ Survey đã lưu ở Local Storage (Nếu chưa làm survey thì để mặc định)
+    const surveyJob = localStorage.getItem('survey_job') || 'Student';
+    const surveyLevel = Number(localStorage.getItem('survey_level')) || 1;
+
+    handleRegister({
+      email,
+      password,
+      information: {
+        job: surveyJob,
+        level: surveyLevel,
+      },
+    });
+  };
 
   return (
-    /* Lớp nền xám nhạt bao phủ toàn màn hình, căn giữa hộp Register */
-    <div className="min-h-screen w-full bg-[#7c7b7b] flex justify-center items-center p-4 font-sans">
-      {/* Hộp Register chính - Giữ nguyên kích thước và thiết kế giống Login */}
-      <div className="bg-white w-full max-w-4xl h-[620px] rounded-[8px] shadow-2xl overflow-hidden flex flex-row">
-        {/* ================= BÊN TRÁI: FORM ĐĂNG KÝ ================= */}
+    <div
+      className="fixed inset-0 z-[100] bg-black/40 flex justify-center items-center p-4 font-sans animate-fadeIn"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-4xl h-[620px] rounded-[8px] shadow-2xl overflow-hidden flex flex-row"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Nút CloseButton */}
+        <div className="absolute top-4 right-4 z-50">
+          <CloseButton onClick={onClose} />
+        </div>
+
         <div className="w-3/5 h-full flex flex-col justify-center px-16 bg-white">
-          {/* Tiêu đề & Link chuyển đổi ngược lại sang Login */}
-          <h2 className="text-3xl font-extrabold text-primary mb-1">Tạo tài khoản</h2>
+          <h2 className="text-3xl font-extrabold text-[#1E3A8A] mb-1">Tạo tài khoản</h2>
           <p className="text-gray-600 text-sm mb-6 font-medium">
             Đã có tài khoản?{' '}
             <span
-              onClick={() => navigate('/login')}
-              className="text-primary font-bold underline cursor-pointer hover:opacity-80"
+              onClick={onSwitchToLogin} // THAY ĐỔI Ở ĐÂY
+              className="text-[#1E3A8A] font-bold underline cursor-pointer hover:opacity-80"
             >
               Đăng nhập
             </span>
           </p>
 
-          {/* Nút Đăng ký nhanh bằng Google */}
           <button className="w-full flex items-center justify-center gap-3 border border-gray-300 px-4 py-2.5 rounded-lg text-gray-700 font-medium text-sm transition-all hover:bg-gray-50 active:scale-[0.99] mb-6">
             <img src={google} className="w-5 h-5" alt="Google icon" />
             <span>Đăng ký bằng Google</span>
           </button>
 
-          {/* Đường phân cách HOẶC */}
-          <div className="flex items-center my-2 mb-6">
+          <div className="flex items-center my-2 mb-4">
             <div className="flex-1 border-t border-gray-200"></div>
-            <span className="px-3 text-xs font-bold text-primary tracking-wider">HOẶC</span>
+            <span className="px-3 text-xs font-bold text-[#1E3A8A] tracking-wider">HOẶC</span>
             <div className="flex-1 border-t border-gray-200"></div>
           </div>
 
-          {/* Khu vực điền thông tin Form Đăng Ký */}
-          <form className="flex flex-col gap-4">
-            {/* Ô nhập Username */}
+          <form onSubmit={onSubmit} className="flex flex-col gap-3">
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-extrabold text-primary">Username</label>
+              <label className="text-sm font-extrabold text-[#1E3A8A]">Email</label>
               <input
-                type="text"
-                placeholder="3-30 ký tự (chữ , số, _.-)"
-                className="w-full border border-gray-300 px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-primary placeholder:text-gray-400 placeholder:text-xs"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="name@example.com"
+                className="w-full border border-gray-300 px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1E3A8A] placeholder:text-gray-400 placeholder:text-xs"
+                required
               />
             </div>
 
-            {/* Ô nhập Mật khẩu */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-extrabold text-primary">Mật khẩu</label>
+              <label className="text-sm font-extrabold text-[#1E3A8A]">Mật khẩu</label>
               <input
                 type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Tối thiểu 8 ký tự"
-                className="w-full border border-gray-300 px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-primary placeholder:text-gray-400 placeholder:text-xs"
+                className="w-full border border-gray-300 px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1E3A8A] placeholder:text-gray-400 placeholder:text-xs"
+                required
+                minLength={8}
               />
             </div>
 
-            {/* Ô Nhập lại mật khẩu (Thay thế cho phần Quên mật khẩu bên Login) */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-extrabold text-primary">Nhập lại mật khẩu</label>
+              <label className="text-sm font-extrabold text-[#1E3A8A]">Nhập lại mật khẩu</label>
               <input
                 type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Nhập lại mật khẩu vừa tạo"
-                className="w-full border border-gray-300 px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-primary placeholder:text-gray-400 placeholder:text-xs"
+                className="w-full border border-gray-300 px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1E3A8A] placeholder:text-gray-400 placeholder:text-xs"
+                required
               />
             </div>
 
-            {/* Nút Đăng ký chính */}
+            {/* Vùng hiển thị lỗi */}
+            <div className="min-h-[20px]">
+              <span className="text-xs font-bold text-red-500">{validationError || error}</span>
+            </div>
+
             <button
               type="submit"
-              className="w-full bg-primary text-white py-3 rounded-lg font-bold text-sm mt-4 transition-all hover:opacity-95 active:scale-[0.99] shadow-md shadow-primary/20"
+              disabled={isLoading}
+              className={`w-full text-white py-3 rounded-lg font-bold text-sm transition-all shadow-md
+                 ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#1E3A8A] hover:opacity-95 active:scale-[0.99] shadow-[#1E3A8A]/20'}
+              `}
             >
-              Đăng ký
+              {isLoading ? 'Đang xử lý...' : 'Đăng ký'}
             </button>
           </form>
         </div>
 
-        {/* ================= BÊN PHẢI: ẢNH NỀN PHỦ MÀU XANH (GIỮ NGUYÊN TỪ LOGIN) ================= */}
         <div
-          className="w-2/5 bg-cover bg-center hidden md:block relative before:absolute before:inset-0 before:bg-primary/60"
+          className="w-2/5 bg-cover bg-center hidden md:block relative before:absolute before:inset-0 before:bg-[#1E3A8A]/60"
           style={{ backgroundImage: `url(${background})` }}
         ></div>
       </div>

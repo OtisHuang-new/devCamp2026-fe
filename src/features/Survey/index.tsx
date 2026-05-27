@@ -35,13 +35,39 @@ function SurveyPage() {
     if (currentStep < surveyQuestions.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Thay thế đoạn console.log và alert cũ bằng dòng dưới đây:
+      // 1. Ánh xạ (Map) dữ liệu Option ID thành Value thực tế cho Backend
+      const jobMap: Record<string, string> = {
+        job_1: 'Accountant',
+        job_2: 'Marketing',
+        job_3: 'Software Engineer',
+        job_4: 'Designer',
+        job_5: 'Teacher',
+        job_6: 'Other',
+      };
+
+      const levelMap: Record<string, number> = {
+        lvl_1: 1,
+        lvl_2: 2,
+        lvl_3: 3,
+        lvl_4: 4,
+        lvl_5: 5,
+      };
+
+      const selectedJob = jobMap[answers['q1_job']] || 'Other';
+      const selectedLevel = levelMap[answers['q2_level']] || 1;
+
+      // 2. Lưu thông tin vào LocalStorage để trang Register lát nữa lấy lên dùng
+      localStorage.setItem('survey_job', selectedJob);
+      localStorage.setItem('survey_level', selectedLevel.toString());
+
       navigate('/roadmap');
     }
   };
 
   const handleBack = () => {
-    if (currentStep > 0) {
+    if (currentStep == 0) {
+      navigate('/landing');
+    } else if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     } else {
       console.log('Exit survey');

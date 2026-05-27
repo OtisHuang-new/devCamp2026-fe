@@ -1,19 +1,15 @@
-import React from 'react';
 import bot_like from '../../../shared/Assets/Mascots/bot_like.svg';
 import icon_sent_white from '../assets/icon_sent_white.svg';
 
-const SidePanel = () => {
-  // Video ID lấy từ URL bạn cung cấp: xkZMUX_oQX4
-  const videoId = 'xkZMUX_oQX4';
-
+const SidePanel = ({ videoUrl }: { videoUrl?: string }) => {
   return (
     <div className="w-full h-full flex flex-col p-6 gap-6 bg-[#F9FAFB]">
       {/* 1. KHUNG VIDEO YOUTUBE */}
       <div className="w-full aspect-video rounded-xl overflow-hidden shadow-sm bg-black">
         <iframe
           className="w-full h-full"
-          src={`https://www.youtube.com/embed/${videoId}`}
-          title="Python Introduction"
+          src={videoUrl || ''} // BỔ SUNG: Truyền link động vào đây
+          title="Lesson Video"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen

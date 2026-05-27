@@ -1,7 +1,11 @@
 // 1. Import hook để điều hướng trang
 import { useNavigate } from 'react-router-dom';
 
-function Button() {
+// 5. THÊM MỚI Ở ĐÂY: Khai báo interface cho Props
+interface ButtonProps {
+  onOpenLogin: () => void;
+}
+function Button({ onOpenLogin }: ButtonProps) {
   // 2. Khởi tạo hàm navigate
   const navigate = useNavigate();
 
@@ -17,7 +21,7 @@ function Button() {
 
       {/* Nút 2: Login - Chuyển hướng ngay lập tức sang /login */}
       <button
-        onClick={() => navigate('/login')}
+        onClick={onOpenLogin}
         className="bg-primary border border-white/40 px-10 py-2 text-white flex justify-center items-center drop-shadow-[0_0_2px_#ffffff] rounded-[4px] font-medium transition-all hover:bg-[#081A4F] active:scale-95"
       >
         I Already have an account
