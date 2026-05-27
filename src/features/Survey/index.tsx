@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Thêm dòng này
+
 import return_arrow from '../../shared/Assets/return_arrow.svg';
-import bot_like from '../../shared/Assets/bot_like.svg';
-import money_icon from '../../shared/Assets/money_icon.svg';
+import bot_like from '../../shared/Assets/Mascots/bot_like.svg';
+import money_icon from './Assets/money_icon.svg';
 
 import ProcessBar from './Components/ProcessBar';
 import BotAsk from './Components/BotAsk';
@@ -13,6 +15,7 @@ import { surveyQuestions } from './surveyData';
 function SurveyPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const navigate = useNavigate(); // Thêm dòng này
 
   const currentQuestion = surveyQuestions[currentStep];
 
@@ -32,8 +35,8 @@ function SurveyPage() {
     if (currentStep < surveyQuestions.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      console.log('Survey completed! Final Answers:', answers);
-      alert('Survey Completed! Check console for data.');
+      // Thay thế đoạn console.log và alert cũ bằng dòng dưới đây:
+      navigate('/roadmap');
     }
   };
 
@@ -90,7 +93,7 @@ function SurveyPage() {
           <button
             onClick={handleContinue}
             disabled={!isOptionSelected} // Vô hiệu hóa click khi chưa chọn
-            className={`text-white font-semibold text-[17px] px-10 py-3 rounded-full transition-colors duration-200
+            className={`text-white font-semibold text-[17px] px-8 py-2.5 rounded-full transition-colors duration-200
                             ${
                               !isOptionSelected
                                 ? 'bg-[#9DA9C9] cursor-not-allowed' // State: Chưa chọn

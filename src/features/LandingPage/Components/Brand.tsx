@@ -1,4 +1,4 @@
-import LogoLight from '../../../shared/Assets/logo_white.svg';
+import LogoLight from '../../../shared/Brand/Assets/logo_white.svg';
 
 function Brand() {
   return (
