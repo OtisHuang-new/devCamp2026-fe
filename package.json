@@ -35,9 +35,14 @@
   "homepage": "https://github.com/OtisHuang-new/devCamp2026-fe#readme",
   "description": "",
   "dependencies": {
+    "@codemirror/lang-cpp": "^6.0.3",
+    "@codemirror/lang-java": "^6.0.2",
+    "@codemirror/lang-python": "^6.2.1",
+    "@uiw/react-codemirror": "^4.25.10",
     "axios": "^1.15.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "codemirror": "^6.0.2",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
@@ -46,9 +51,10 @@
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
-    "@types/node": "^24.12.2",
-    "@types/react": "^19.2.14",
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
+    "@types/socket.io-client": "^3.0.0",
     "@vitejs/plugin-react": "^6.0.1",
     "autoprefixer": "^10.5.0",
     "eslint": "^9.39.4",
@@ -63,7 +69,7 @@
     "postcss": "^8.5.10",
     "prettier": "^3.8.3",
     "tailwindcss": "3",
-    "typescript": "~6.0.2",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.58.0",
     "vite": "^8.0.4",
     "vitest": "^4.1.4"

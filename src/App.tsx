@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { CodeEdit } from './shared/components/CodeEdit';
 
 // Vì chúng ta dùng TypeScript, nên định nghĩa sẵn cấu trúc dữ liệu trả về cho chuẩn chỉ
 interface UserData {
@@ -59,6 +60,9 @@ function App() {
       ) : (
         <p>Không lấy được dữ liệu.</p>
       )}
+      <hr style={{ margin: '30px 0' }} />
+      <h2>Khu vực Code Editor:</h2>
+      <CodeEdit language="python" theme="dark" height={300} />
     </div>
   );
 }
