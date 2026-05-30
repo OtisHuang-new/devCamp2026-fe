@@ -64,6 +64,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   // Kiểm tra token khi khởi chạy ứng dụng (Auto-login qua endpoint /me)
+  // Kiểm tra token khi khởi chạy ứng dụng (Auto-login qua endpoint /me)
   useEffect(() => {
     const checkCurrentUser = async () => {
       const localToken = localStorage.getItem('access_token');
@@ -78,14 +79,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Gọi API /me đã định nghĩa ở Route phía Backend
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const response: any = await axiosClient.get('auth/me');
-        if (response && response.status === 'success') {
-          setUser(response.data);
+
+        // --- THAY ĐỔI 1: Logic kiểm tra dữ liệu linh hoạt hơn ---
+        // Đề phòng Backend trả về cục data trực tiếp hoặc bọc trong response.data
+        const userData = response.data ? response.data : response;
+
+        // Thay vì check 'status === success', ta check xem có '_id' của User không
+        if (userData && userData._id) {
+          setUser(userData);
         } else {
+          console.warn('API /auth/me trả về format không mong muốn:', response);
+          // Không xóa token ở đây để tránh oan uổng do lỗi format của Backend
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        console.error('Verify token failed:', error);
+
+        // --- THAY ĐỔI 2: Chỉ xóa token khi thực sự là lỗi 401 ---
+        // Nếu là lỗi 500 (Server sập) hoặc lỗi mạng, ta giữ nguyên token!
+        const isUnauthorized = error?.status === 401 || error?.response?.status === 401;
+        if (isUnauthorized) {
           logoutState();
         }
-      } catch (error) {
-        console.error('Verify token failed:', error);
-        logoutState();
       } finally {
         setIsLoading(false);
       }
@@ -93,7 +108,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     checkCurrentUser();
   }, []);
-
   return (
     <AuthContext.Provider
       value={{

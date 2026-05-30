@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SidePanel from './components/SidePanel';
 import LessonContent from './components/LessonContent';
 import ExerciseWidget from '../Exercise/components/ExerciseWidget';
@@ -6,10 +6,14 @@ import ExerciseWidget from '../Exercise/components/ExerciseWidget';
 // Import các phần mới
 import CodeToggleButton from '../../shared/Buttons/CodeToggleButton';
 import CodeEditor from '../../shared/CodeEditor';
-import SubmissionResult from './components/SubmissionResult'; // Bạn hãy tạo file này dựa trên ảnh image_b3e6be.png
 
 import { useParams } from 'react-router-dom'; // BỔ SUNG
 import { useLesson } from './hooks/useLesson'; // BỔ SUNG
+// --- 1. THÊM IMPORT HOOK SUBMIT ---
+import { useSubmitCode } from './hooks/useSubmitCode';
+// ----------------------------------
+import SubmissionResult from './components/SubmissionResult';
+
 import { useNavigate } from 'react-router-dom'; // Thêm dòng này
 
 const LessonDetail = () => {
@@ -20,8 +24,34 @@ const LessonDetail = () => {
   const { lesson, isLoading } = useLesson(id);
 
   const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const [hasSubmitted, setHasSubmitted] = useState(false);
   const navigate = useNavigate(); // Thêm dòng này
+
+  // --- 2. GỌI HOOK SUBMIT ---
+  const { submitCode, isSubmitting, submitResult, error: submitError } = useSubmitCode();
+  // --------------------------
+
+  // --- 2. THÊM USEEFFECT BẮT SỰ KIỆN PHÍM TẮT ---
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // 1. Kiểm tra tổ hợp Ctrl + ` hoặc Cmd (metaKey) + `
+      if ((e.ctrlKey || e.metaKey) && e.key === '`') {
+        e.preventDefault(); // Tránh hành vi mặc định của trình duyệt
+        setIsEditorOpen((prev) => !prev); // Toggle trạng thái
+      }
+      // 2. Kiểm tra phím Escape (Chỉ tắt, không mở)
+      if (e.key === 'Escape') {
+        setIsEditorOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Dọn dẹp sự kiện khi component unmount
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+  // ----------------------------------------------
 
   // Loading state
   if (isLoading)
@@ -37,15 +67,23 @@ const LessonDetail = () => {
       </div>
     );
 
-  const handleSubmit = () => {
-    setIsEditorOpen(false); // Đóng editor
-    setHasSubmitted(true); // Hiện kết quả chấm điểm
+  // --- 1. THAY ĐỔI HÀM SUBMIT ---
+  const handleSubmit = async (code: string) => {
+    // --- 4. BỔ SUNG ĐIỀU KIỆN KIỂM TRA BẮT BUỘC PHẢI CÓ id ---
+    if (!lesson?.exercise_id || !id) return;
+
+    // --- 5. TRUYỀN id VÀO LÀM THAM SỐ THỨ 2 CỦA HÀM ---
+    await submitCode(lesson.exercise_id, id, code);
+    // --------------------------------------------------
+
+    setIsEditorOpen(false);
   };
+  // -----------------------------
 
   return (
     <div className="flex h-screen w-full bg-white overflow-hidden relative">
       {/* CỘT TRÁI (65%) */}
-      <div className="w-[65%] h-full overflow-y-auto border-r border-gray-100 flex flex-col scroll-smooth">
+      <div className="w-[65%] h-full overflow-y-auto border-r border-gray-100 flex flex-col scroll-smooth pb-[1000px]">
         <div className="pt-6 px-10">
           <button
             onClick={() => navigate('/roadmap')}
@@ -61,8 +99,19 @@ const LessonDetail = () => {
           {/* THAY ĐỔI 2: Truyền exercise_id từ lesson sang Widget mới */}
           {lesson.exercise_id && <ExerciseWidget exerciseId={lesson.exercise_id} />}
 
-          {/* HIỂN THỊ KẾT QUẢ SAU KHI SUBMIT */}
-          {hasSubmitted && <SubmissionResult />}
+          {/* --- 4. RENDER SUBMISSION RESULT DỰA TRÊN DỮ LIỆU API --- */}
+          {isSubmitting && (
+            <div className="w-full text-center py-6 text-gray-500 font-bold animate-pulse">
+              Đang chấm điểm...
+            </div>
+          )}
+          {submitError && (
+            <div className="w-full text-center py-6 text-red-500 font-bold">
+              Lỗi khi nộp bài: {submitError}
+            </div>
+          )}
+          {!isSubmitting && submitResult && <SubmissionResult data={submitResult} />}
+          {/* -------------------------------------------------------- */}
         </div>
       </div>
 
@@ -78,9 +127,15 @@ const LessonDetail = () => {
         <CodeToggleButton isOpen={isEditorOpen} onToggle={() => setIsEditorOpen(true)} />
       )}
 
+      {/* --- 2. CẬP NHẬT TRUYỀN PROPS CHO CODE EDITOR --- */}
       {isEditorOpen && (
-        <CodeEditor onClose={() => setIsEditorOpen(false)} onSubmit={handleSubmit} />
+        <CodeEditor
+          exerciseId={lesson?.exercise_id || ''}
+          onClose={() => setIsEditorOpen(false)}
+          onSubmit={handleSubmit}
+        />
       )}
+      {/* ------------------------------------------------ */}
     </div>
   );
 };

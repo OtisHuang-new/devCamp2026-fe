@@ -1,4 +1,8 @@
 import { useExercise } from '../hooks/useExercise';
+// --- 1. THÊM 2 IMPORT NÀY ---
+import { useEffect } from 'react';
+import { useEditorStore } from '../../../shared/store/useEditorStore';
+// -----------------------------
 
 interface ExerciseWidgetProps {
   exerciseId: string;
@@ -7,6 +11,25 @@ interface ExerciseWidgetProps {
 function ExerciseWidget({ exerciseId }: ExerciseWidgetProps) {
   // 1. Gọi hook để tự động fetch data bài tập
   const { exercise, isLoading } = useExercise(exerciseId);
+
+  // --- 2. LẤY HÀM SET TỪ STORE ---
+  const setInitialCode = useEditorStore((state) => state.setInitialCode);
+  // --- 1. LẤY THÊM HÀM SET TEST CASE TỪ STORE ---
+  const setPublicTestCases = useEditorStore((state) => state.setPublicTestCases);
+
+  // --- 2. CẬP NHẬT LẠI USEEFFECT ---
+  useEffect(() => {
+    if (exercise) {
+      if (exercise.initial_code) {
+        setInitialCode(exercise.initial_code);
+      }
+
+      // Lọc test case public và bắn lên Store
+      const visibleCases = exercise.test_cases.filter((tc) => !tc.is_hidden);
+      setPublicTestCases(visibleCases);
+    }
+  }, [exercise, setInitialCode, setPublicTestCases]);
+  // ----------------------------------------------
 
   // 2. Xử lý UI trong lúc chờ API trả về
   if (isLoading) {
