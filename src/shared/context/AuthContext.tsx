@@ -46,9 +46,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const response: any = await axiosClient.get('auth/me');
-      if (response && response.status === 'success') {
+      if (response) {
         // 4. Cập nhật lại state user bằng dữ liệu ĐẦY ĐỦ từ backend
-        setUser(response.data);
+        setUser(response);
       }
     } catch (error) {
       console.error('Failed to fetch full profile after login:', error);

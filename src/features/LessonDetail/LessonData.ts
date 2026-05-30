@@ -9,7 +9,6 @@ export interface LessonData {
   id: string;
   title: string;
   sections: LessonSection[];
-  exercise: ExerciseData;
 }
 
 export const mockLessonData: LessonData = {
@@ -60,27 +59,17 @@ export const mockLessonData: LessonData = {
       ],
     },
   ],
-  exercise: {
-    title: 'Contains Duplicate',
-    difficulty: 'Easy',
-    description:
-      'Given an integer array nums, return true if any value appears more than once in the array, otherwise return false.',
-    examples: [
-      { input: 'nums = [1, 2, 3, 3]', output: 'true' },
-      { input: 'nums = [1, 2, 3, 4]', output: 'false' },
-    ],
-  } as ExerciseData,
 };
 
-// Thêm interface này vào src/features/LessonDetail/LessonData.ts
-export interface ExerciseExample {
-  input: string;
-  output: string;
-}
+// // Thêm interface này vào src/features/LessonDetail/LessonData.ts
+// export interface ExerciseExample {
+//   input: string;
+//   output: string;
+// }
 
-export interface ExerciseData {
-  title: string;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-  description: string;
-  examples: ExerciseExample[];
-}
+// export interface ExerciseData {
+//   title: string;
+//   difficulty: 'Easy' | 'Medium' | 'Hard';
+//   description: string;
+//   examples: ExerciseExample[];
+// }

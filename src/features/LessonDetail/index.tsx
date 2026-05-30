@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import SidePanel from './components/SidePanel';
 import LessonContent from './components/LessonContent';
-import ExerciseSection from './components/ExerciseSection';
-import { mockLessonData } from './LessonData';
+import ExerciseWidget from '../Exercise/components/ExerciseWidget';
 
 // Import các phần mới
 import CodeToggleButton from '../../shared/Buttons/CodeToggleButton';
@@ -59,7 +58,8 @@ const LessonDetail = () => {
         <div className="px-10 py-4 flex flex-col gap-4">
           <LessonContent data={lesson} />
           <hr className="border-gray-100 my-4" />
-          <ExerciseSection data={mockLessonData.exercise} />
+          {/* THAY ĐỔI 2: Truyền exercise_id từ lesson sang Widget mới */}
+          {lesson.exercise_id && <ExerciseWidget exerciseId={lesson.exercise_id} />}
 
           {/* HIỂN THỊ KẾT QUẢ SAU KHI SUBMIT */}
           {hasSubmitted && <SubmissionResult />}

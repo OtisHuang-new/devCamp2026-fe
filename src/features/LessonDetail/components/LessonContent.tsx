@@ -1,6 +1,5 @@
 // Vị trí: src/features/LessonDetail/components/LessonContent.tsx
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -12,7 +11,7 @@ interface LessonContentProps {
   data: LessonDataAPI;
 }
 
-const LessonContent: React.FC<LessonContentProps> = ({ data }) => {
+function LessonContent({ data }: LessonContentProps) {
   return (
     <div className="w-full animate-fadeIn">
       {/* 1. Main Title */}
@@ -82,6 +81,6 @@ const LessonContent: React.FC<LessonContentProps> = ({ data }) => {
       </div>
     </div>
   );
-};
+}
 
 export default LessonContent;
