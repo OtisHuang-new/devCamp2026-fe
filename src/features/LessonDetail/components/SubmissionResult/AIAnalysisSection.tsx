@@ -80,8 +80,8 @@ const AIAnalysisSection: React.FC<AIAnalysisSectionProps> = ({ submissionId, isA
   // Trạng thái 3: Có kết quả thành công
   if (evaluationData) {
     // Thay đổi tiêu đề linh hoạt dựa trên kết quả bài làm
-    const title1 = isAllPassed ? 'Clean Code:' : 'Chỉ ra lỗi sai:';
-    const title2 = isAllPassed ? 'Refactoring:' : 'Hướng dẫn sửa lỗi:';
+    const title1 = isAllPassed ? 'Clean Code:' : 'Error destination:';
+    const title2 = isAllPassed ? 'Refactoring:' : 'How to fix:';
 
     const { first_res, second_res } = evaluationData.AI_evaluation;
 
@@ -92,7 +92,7 @@ const AIAnalysisSection: React.FC<AIAnalysisSectionProps> = ({ submissionId, isA
           <div>
             <h4 className="text-sm font-bold text-slate-800 mb-1">{title1}</h4>
             <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap">
-              {first_res || 'Không có đánh giá chi tiết.'}
+              {first_res || 'No detail description.'}
             </p>
           </div>
           {second_res && (

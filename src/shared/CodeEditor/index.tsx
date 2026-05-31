@@ -42,7 +42,9 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }
   const publicTestCases = useEditorStore((state) => state.publicTestCases); // Dữ liệu gốc
 
   const [activeMainTab, setActiveMainTab] = useState<'testcase' | 'result'>('testcase');
-  const [localTestCases, setLocalTestCases] = useState<EditorTestCase[]>([]);
+  const [localTestCases, setLocalTestCases] = useState<EditorTestCase[]>(() => {
+    return publicTestCases.length > 0 ? JSON.parse(JSON.stringify(publicTestCases)) : [];
+  });
   const [activeCaseIndex, setActiveCaseIndex] = useState(0);
 
   const [prevPublicCases, setPrevPublicCases] = useState(publicTestCases);
@@ -103,50 +105,76 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }
     setRunResults(initialResults);
 
     try {
-      // Chạy toàn bộ các test case song song (Concurrent) bằng Promise.all
-      const promises = localTestCases.map(async (tc) => {
-        try {
-          const response = await runApi.runCode(exerciseId, {
-            src_code: code,
-            input: tc.input,
-          });
+      // 1. Gom tất cả input thành 1 mảng duy nhất
+      const inputs = localTestCases.map((tc) => tc.input);
 
-          const yourOutput = (response.output || '').trim();
-          const expected = tc.expected_output.trim();
-          const error = response.error;
+      // 2. Gọi API 1 lần duy nhất
+      const response = await runApi.runCode(exerciseId, {
+        src_code: code,
+        inputs: inputs,
+      });
 
-          let status: TestResultProps['status'] = 'Error';
-          if (error) {
-            status = 'Error';
-          } else if (yourOutput === expected) {
-            status = 'Accepted';
-          } else {
-            status = 'Wrong Answer';
-          }
+      // 3. Duyệt mảng localTestCases để map với kết quả từ API (dựa theo index)
+      const finalResults: TestResultProps[] = localTestCases.map((tc, index) => {
+        const resItem = response[index];
 
-          return {
-            input: tc.input,
-            expectedOutput: tc.expected_output,
-            yourOutput,
-            error,
-            status,
-          };
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (err: any) {
+        // Fallback: Đề phòng API trả về thiếu phần tử
+        if (!resItem) {
           return {
             input: tc.input,
             expectedOutput: tc.expected_output,
             yourOutput: null,
-            error: err?.message || 'Failed to execute code',
+            error: 'Không nhận được kết quả từ server',
             status: 'Error',
           };
         }
+
+        const yourOutput = (resItem.output || '').trim();
+        const expected = tc.expected_output.trim();
+        const error = resItem.error || null;
+
+        let status: TestResultProps['status'] = 'Error';
+
+        // 4. Logic chấm điểm dựa trên exit_code và output
+        if (resItem.exit_code !== 0 || error) {
+          status = 'Error';
+        } else if (yourOutput === expected) {
+          status = 'Accepted';
+        } else {
+          status = 'Wrong Answer';
+        }
+
+        return {
+          input: tc.input,
+          expectedOutput: tc.expected_output,
+          yourOutput,
+          // Bắt lỗi hệ thống hoặc Runtime Error rõ ràng hơn
+          error:
+            error ||
+            (resItem.exit_code !== 0 ? `Runtime Error (Exit code: ${resItem.exit_code})` : null),
+          status,
+        };
       });
 
-      const finalResults = await Promise.all(promises);
       setRunResults(finalResults);
-    } catch (error) {
+    } catch (error: unknown) {
+      // 1. Đổi 'any' thành 'unknown' (hoặc xóa luôn chữ ': unknown' cũng được)
       console.error('Run failed:', error);
+
+      // 2. Ép kiểu an toàn (Type Guard) để lấy message
+      // Kiểm tra xem error có phải là một Error object thực sự không
+      const errorMessage = error instanceof Error ? error.message : 'Lỗi hệ thống khi gọi API';
+
+      // 5. Fallback: Đánh dấu tất cả là Error nếu hệ thống sập / mất mạng
+      setRunResults(
+        localTestCases.map((tc) => ({
+          input: tc.input,
+          expectedOutput: tc.expected_output,
+          yourOutput: null,
+          error: errorMessage, // 3. Dùng biến an toàn vừa tạo ở đây
+          status: 'Error',
+        })),
+      );
     } finally {
       setIsRunning(false);
     }
