@@ -73,7 +73,7 @@ const Chapter: React.FC<ChapterProps> = ({
 
       {/* --- ROADMAP PATH CHO CHAPTER NÀY --- */}
       {/* Thêm mt-8 cho chapter đầu tiên để nó không dính chặt lên trên, các chapter sau thì dùng margin mặc định */}
-      <div className={`flex flex-col items-center gap-8 ${isFirstChapter ? 'mt-8' : 'mt-4'}`}>
+      <div className={`flex flex-col items-center gap-[40px] ${isFirstChapter ? 'mt-8' : 'mt-4'}`}>
         {nodes.map((node) => {
           return (
             <div
@@ -94,7 +94,7 @@ const Chapter: React.FC<ChapterProps> = ({
 
               {/* Nếu là rương kho báu */}
               {node.type === 'treasure' && (
-                <div className="my-2">
+                <div className="">
                   {node.status === 'current' ? (
                     // CẬP NHẬT: Chapter hiện tại -> Hiện ảnh gốc sáng màu
                     <img

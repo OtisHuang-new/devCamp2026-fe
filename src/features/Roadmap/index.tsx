@@ -13,7 +13,8 @@ import { useRoadmap } from './hooks/useRoadmap'; // BỔ SUNG IMPORT TỪ HOOK V
 
 import { useNavigate } from 'react-router-dom';
 import SideLessonSection from './Components/SideLessonSection';
-import ScrollToTopButton from './Components/ScrollToTopButton';
+import ScrollToTopButton from '../../shared/Buttons/ScrollToTopButton';
+import { prefetchLessonContext } from '../LessonDetail/hooks/useLessonContext';
 
 function Roadmap() {
   const { user } = useAuthContext();
@@ -41,6 +42,9 @@ function Roadmap() {
   const hasScrolledToCurrent = useRef(false);
 
   useEffect(() => {
+    if (user?.current_lesson_id && user?._id) {
+      prefetchLessonContext(user.current_lesson_id, user._id);
+    }
     // --- 2. THÊM ĐIỀU KIỆN: Chỉ chạy nếu CHƯA từng cuộn ---
     if (mainChapters.length > 0 && user?.current_lesson_id && !hasScrolledToCurrent.current) {
       const targetNode = document.getElementById(`roadmap-node-${user.current_lesson_id}`);
@@ -52,7 +56,7 @@ function Roadmap() {
         hasScrolledToCurrent.current = true;
       }
     }
-  }, [mainChapters, user?.current_lesson_id]);
+  }, [mainChapters, user?.current_lesson_id, user?._id]);
 
   // LOGIC TRACKING SCROLL
   const handleScroll = () => {
@@ -95,7 +99,7 @@ function Roadmap() {
       <main
         ref={mainRef}
         onScroll={handleScroll}
-        className="flex-1 flex flex-col h-screen overflow-y-auto relative scroll-smooth"
+        className="flex-1 flex flex-col h-screen overflow-y-auto overflow-x-hidden relative scroll-smooth"
       >
         {/* UserProfileCard */}
         <div className="fixed top-3 right-10 z-50">

@@ -6,6 +6,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import type { LessonDataAPI } from '../types/lessonTypes';
+import ContextualizeMessage from './ContextualizeMessage';
 
 interface LessonContentProps {
   data: LessonDataAPI;
@@ -18,6 +19,8 @@ function LessonContent({ data }: LessonContentProps) {
       <h1 className="text-4xl font-bold text-[#1E3A8A] border-t border-gray-200 py-8">
         Lesson {data.order}: {data.title}
       </h1>
+
+      <ContextualizeMessage lessonId={data._id} />
 
       {/* 2. Markdown Content */}
       <div className="text-slate-700 leading-relaxed font-medium space-y-4">

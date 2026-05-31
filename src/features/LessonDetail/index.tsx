@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import SidePanel from './components/SidePanel';
 import LessonContent from './components/LessonContent';
 import ExerciseWidget from '../Exercise/components/ExerciseWidget';
@@ -6,6 +6,7 @@ import ExerciseWidget from '../Exercise/components/ExerciseWidget';
 // Import các phần mới
 import CodeToggleButton from '../../shared/Buttons/CodeToggleButton';
 import CodeEditor from '../../shared/CodeEditor';
+import ScrollToTopButton from '../../shared/Buttons/ScrollToTopButton';
 
 import { useParams } from 'react-router-dom'; // BỔ SUNG
 import { useLesson } from './hooks/useLesson'; // BỔ SUNG
@@ -26,11 +27,21 @@ const LessonDetail = () => {
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const navigate = useNavigate(); // Thêm dòng này
 
-  // --- 2. GỌI HOOK SUBMIT ---
   const { submitCode, isSubmitting, submitResult, error: submitError } = useSubmitCode();
-  // --------------------------
 
-  // --- 2. THÊM USEEFFECT BẮT SỰ KIỆN PHÍM TẮT ---
+  const leftColumnRef = useRef<HTMLDivElement>(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  const handleScroll = () => {
+    if (leftColumnRef.current) {
+      // Hiện nút khi cuộn xuống quá 50px
+      setShowScrollTop(leftColumnRef.current.scrollTop > 50);
+    }
+  };
+  const scrollToTop = () => {
+    leftColumnRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // 1. Kiểm tra tổ hợp Ctrl + ` hoặc Cmd (metaKey) + `
@@ -83,35 +94,46 @@ const LessonDetail = () => {
   return (
     <div className="flex h-screen w-full bg-white overflow-hidden relative">
       {/* CỘT TRÁI (65%) */}
-      <div className="w-[65%] h-full overflow-y-auto border-r border-gray-100 flex flex-col scroll-smooth pb-[1000px]">
-        <div className="pt-6 px-10">
-          <button
-            onClick={() => navigate('/roadmap')}
-            className="text-gray-500 text-sm hover:text-[#1E3A8A] flex items-center gap-2 "
-          >
-            <span>←</span> Return to progress
-          </button>
+      {/* 1. BỌC BÊN NGOÀI BẰNG THẺ DIV RELATIVE ĐỂ CHỨA NÚT ABSOLUTE */}
+      <div className="w-[65%] h-full relative border-r border-gray-100">
+        {/* 2. CHUYỂN LOGIC SCROLL VÀO THẺ DIV BÊN TRONG NÀY */}
+        <div
+          ref={leftColumnRef}
+          onScroll={handleScroll}
+          className="w-full h-full overflow-y-auto flex flex-col scroll-smooth pb-[100px]"
+        >
+          <div className="pt-6 px-10">
+            <button
+              onClick={() => navigate('/roadmap')}
+              className="text-gray-500 text-sm hover:text-[#1E3A8A] flex items-center gap-2 "
+            >
+              <span>←</span> Return to progress
+            </button>
+          </div>
+
+          <div className="px-10 py-4 flex flex-col gap-4">
+            <LessonContent data={lesson} />
+            <hr className="border-gray-100 my-4" />
+
+            {lesson.exercise_id && <ExerciseWidget exerciseId={lesson.exercise_id} />}
+
+            {isSubmitting && (
+              <div className="w-full text-center py-6 text-gray-500 font-bold animate-pulse">
+                Đang chấm điểm...
+              </div>
+            )}
+            {submitError && (
+              <div className="w-full text-center py-6 text-red-500 font-bold">
+                Lỗi khi nộp bài: {submitError}
+              </div>
+            )}
+            {!isSubmitting && submitResult && <SubmissionResult data={submitResult} />}
+          </div>
         </div>
 
-        <div className="px-10 py-4 flex flex-col gap-4">
-          <LessonContent data={lesson} />
-          <hr className="border-gray-100 my-4" />
-          {/* THAY ĐỔI 2: Truyền exercise_id từ lesson sang Widget mới */}
-          {lesson.exercise_id && <ExerciseWidget exerciseId={lesson.exercise_id} />}
-
-          {/* --- 4. RENDER SUBMISSION RESULT DỰA TRÊN DỮ LIỆU API --- */}
-          {isSubmitting && (
-            <div className="w-full text-center py-6 text-gray-500 font-bold animate-pulse">
-              Đang chấm điểm...
-            </div>
-          )}
-          {submitError && (
-            <div className="w-full text-center py-6 text-red-500 font-bold">
-              Lỗi khi nộp bài: {submitError}
-            </div>
-          )}
-          {!isSubmitting && submitResult && <SubmissionResult data={submitResult} />}
-          {/* -------------------------------------------------------- */}
+        {/* 3. TÁCH NÚT RA NGOÀI KHU VỰC CUỘN VÀ ĐẶT ABSOLUTE */}
+        <div className="absolute bottom-10 right-10 z-50">
+          <ScrollToTopButton isVisible={showScrollTop} onClick={scrollToTop} />
         </div>
       </div>
 
