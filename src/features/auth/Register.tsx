@@ -126,7 +126,7 @@ function Register({ isOpen, onClose, onSwitchToLogin }: RegisterProps) {
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Nhập lại mật khẩu vừa tạo"
+                placeholder="type again your passowrd"
                 className="w-full border border-gray-300 px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1E3A8A] placeholder:text-gray-400 placeholder:text-xs"
                 required
               />
