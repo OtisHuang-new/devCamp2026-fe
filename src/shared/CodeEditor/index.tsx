@@ -32,10 +32,16 @@ interface CodeEditorProps {
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }) => {
-  // ----------------------------------------
   // --- 6. LẤY INITIAL CODE TỪ STORE VÀ GẮN VÀO STATE ---
   const initialCode = useEditorStore((state) => state.initialCode);
   const [code, setCode] = useState(initialCode);
+
+  // Thêm Derived State cho code để đồng bộ mượt mà khi API load xong
+  const [prevInitialCode, setPrevInitialCode] = useState(initialCode);
+  if (initialCode !== prevInitialCode) {
+    setPrevInitialCode(initialCode);
+    setCode(initialCode);
+  }
   // -----------------------------------------------------
 
   // --- BỔ SUNG LOGIC QUẢN LÝ TESTCASE BÊN PHẢI ---

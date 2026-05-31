@@ -128,13 +128,14 @@ const LessonDetail = () => {
       )}
 
       {/* --- 2. CẬP NHẬT TRUYỀN PROPS CHO CODE EDITOR --- */}
-      {isEditorOpen && (
+      {/* KHÔNG DÙNG && NỮA. Giữ component luôn sống, chỉ ẩn bằng CSS để bảo toàn Code và State */}
+      <div className={isEditorOpen ? 'block' : 'hidden'}>
         <CodeEditor
           exerciseId={lesson?.exercise_id || ''}
           onClose={() => setIsEditorOpen(false)}
           onSubmit={handleSubmit}
         />
-      )}
+      </div>
       {/* ------------------------------------------------ */}
     </div>
   );
