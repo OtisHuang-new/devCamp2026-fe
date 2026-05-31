@@ -15,11 +15,11 @@
     "format:fix": "prettier . --write"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,html}": [
+    "*.{js,jsx,ts,tsx}": [
       "prettier --write",
       "eslint --fix"
     ],
-    "*.json": [
+    "*.{json,md,html,css,scss,yml,yaml}": [
       "prettier --write"
     ]
   },
