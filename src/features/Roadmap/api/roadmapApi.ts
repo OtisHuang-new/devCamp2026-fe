@@ -2,7 +2,7 @@ import axios from 'axios';
 import type { ChapterDataAPI } from '../types/roadmapTypes';
 
 // Dùng chung base URL với backend của bạn
-const BASE_URL = 'http://localhost:3000/api';
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export const roadmapApi = {
   // Vẫn giữ params ở function để không lỗi file useRoadmap,
