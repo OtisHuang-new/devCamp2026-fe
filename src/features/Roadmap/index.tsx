@@ -7,62 +7,79 @@ import Register from '../auth/Register';
 
 // Import Context & Data
 import { useAuthContext } from '../../shared/context/AuthContext';
-// import { mockRoadmapData } from './roadmapData';
 
-import { useState, useRef, useEffect } from 'react'; // BỔ SUNG IMPORT
+import { useState, useRef, useEffect, useMemo } from 'react'; // BỔ SUNG IMPORT
 import { useRoadmap } from './hooks/useRoadmap'; // BỔ SUNG IMPORT TỪ HOOK VỪA TẠO
+
+import { useNavigate } from 'react-router-dom';
+import SideLessonSection from './Components/SideLessonSection';
+import ScrollToTopButton from './Components/ScrollToTopButton';
 
 function Roadmap() {
   const { user } = useAuthContext();
-  const { chapters, isLoading } = useRoadmap(user?.current_lesson_id);
+  const { chapters, rawData, isLoading } = useRoadmap(user?.current_lesson_id);
 
-  // BỔ SUNG: Khai báo State quản lý Overlay Form
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
+  const navigate = useNavigate();
+
+  // Chapter đầu tiên (index 0) làm Side Lesson
+  const sideChapter = rawData.length > 0 ? rawData[0] : null;
+  // Các Chapter còn lại (từ index 1) làm Main Roadmap
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mainChapters: any[] = useMemo(() => {
+    return chapters.length > 1 ? chapters.slice(1) : [];
+  }, [chapters]);
+
   // STATE & REF cho Scroll Logic
   const headerRef = useRef<HTMLDivElement>(null);
-  const [activeChapterTitle, setActiveChapterTitle] = useState('');
+  const mainRef = useRef<HTMLElement>(null);
+  const [activeChapterIndex, setActiveChapterIndex] = useState(0);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // Set default title khi data load xong
+  const hasScrolledToCurrent = useRef(false);
+
   useEffect(() => {
-    if (chapters.length > 0 && !activeChapterTitle) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setActiveChapterTitle(chapters[0].title);
+    // --- 2. THÊM ĐIỀU KIỆN: Chỉ chạy nếu CHƯA từng cuộn ---
+    if (mainChapters.length > 0 && user?.current_lesson_id && !hasScrolledToCurrent.current) {
+      const targetNode = document.getElementById(`roadmap-node-${user.current_lesson_id}`);
+      if (targetNode) {
+        // behavior 'auto' sẽ Teleport (chớp mắt là tới) không có hiệu ứng cuộn
+        targetNode.scrollIntoView({ behavior: 'auto', block: 'center' });
+
+        // --- 3. ĐÁNH DẤU LÀ ĐÃ CUỘN XONG ---
+        hasScrolledToCurrent.current = true;
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chapters]);
+  }, [mainChapters, user?.current_lesson_id]);
 
   // LOGIC TRACKING SCROLL
   const handleScroll = () => {
-    if (!headerRef.current || chapters.length === 0) return;
+    if (!headerRef.current || mainChapters.length === 0 || !mainRef.current) return;
 
-    // Lấy tọa độ đáy của thanh HeaderInfo
+    if (mainRef.current.scrollTop > 50) {
+      setShowScrollTop(true);
+    } else {
+      setShowScrollTop(false);
+    }
+
     const headerBottom = headerRef.current.getBoundingClientRect().bottom;
-
-    // Tìm tất cả các Node Project (cúp) trên DOM
     const projectNodes = document.querySelectorAll('[data-project-marker]');
+    let currentIndex = 0;
 
-    let currentActiveTitle = chapters[0].title;
-
-    // Duyệt qua từng Project node xem Header đã đè qua nó chưa
     for (let i = 0; i < projectNodes.length; i++) {
       const node = projectNodes[i];
       const rect = node.getBoundingClientRect();
-
-      // Nếu ĐÁY CỦA HEADER đè qua 80% CHIỀU CAO của PROJECT BUTTON
       if (headerBottom >= rect.top + rect.height * 0.8) {
-        // Nghĩa là đã qua Chapter thứ i, ta cập nhật title là Chapter i + 1 (Nếu có)
-        if (chapters[i + 1]) {
-          currentActiveTitle = chapters[i + 1].title;
-        }
+        if (mainChapters[i + 1]) currentIndex = i + 1;
       }
     }
+    if (currentIndex !== activeChapterIndex) setActiveChapterIndex(currentIndex);
+  };
 
-    // Tránh re-render liên tục nếu title không đổi
-    if (currentActiveTitle !== activeChapterTitle) {
-      setActiveChapterTitle(currentActiveTitle);
-    }
+  const scrollToTop = () => {
+    mainRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   if (isLoading)
@@ -76,6 +93,7 @@ function Roadmap() {
       {/* 2. Main Content Area */}
       {/* BỔ SUNG: Gắn sự kiện onScroll vào thẻ main */}
       <main
+        ref={mainRef}
         onScroll={handleScroll}
         className="flex-1 flex flex-col h-screen overflow-y-auto relative scroll-smooth"
       >
@@ -103,35 +121,58 @@ function Roadmap() {
           )}
         </div>
 
-        <div className="w-full max-w-2xl ml-[140px] pb-20">
-          {/* Header Info (Sticky) - Phần title này sau sẽ được cập nhật động dựa theo vị trí cuộn chuột */}
-          <HeaderInfo
-            ref={headerRef}
-            chapterTitle={activeChapterTitle}
-            lessonTitle="Continue Learning" // Chữ tĩnh tạm thời, hoặc làm động sau tùy ý bạn
-            onBackClick={() => console.log('Back clicked')}
-          />
+        {/* --- 4. BỐ CỤC LẠI LAYOUT: CHIA 2 CỘT TRÁI/PHẢI --- */}
+        <div className="w-full flex gap-12 ml-[140px] pr-10 pb-20">
+          {/* CỘT PHẢI: Khu vực chứa Roadmap chính */}
+          <div className="flex-1 max-w-2xl">
+            {/* Header Info (Sticky) */}
+            <HeaderInfo
+              ref={headerRef}
+              chapterTitle={
+                mainChapters[activeChapterIndex]
+                  ? `Chapter ${activeChapterIndex + 1}: ${mainChapters[activeChapterIndex].title}`
+                  : ''
+              }
+              lessonTitle=""
+              onBackClick={() => console.log('Back clicked')}
+            />
 
-          {/* Roadmap Path: Vùng hiển thị các Chapter */}
-          <div className="mt-8 flex flex-col gap-4 relative pb-[500px]">
-            {/* Tự động render danh sách Chapter từ data */}
-            {/* SỬ DỤNG MAP VỚI DATA TỪ API */}
-            {chapters.map((chapter, index) => (
-              <Chapter
-                key={chapter.id}
-                chapterNumber={chapter.chapterNumber}
-                chapterTitle={chapter.title}
-                isFirstChapter={index === 0}
-                nodes={chapter.nodes}
-                // --- 1. BỔ SUNG 2 DÒNG NÀY ---
-                isAuthenticated={!!user} // Truyền trạng thái đăng nhập
-                onRequireAuth={() => setIsRegisterOpen(true)} // Hàm mở form Sign Up
-              />
-            ))}
+            {/* Roadmap Path */}
+            <div className="mt-8 flex flex-col gap-4 relative pb-[500px]">
+              {/* Lặp qua mainChapters thay vì chapters */}
+              {mainChapters.map((chapter, index) => (
+                <Chapter
+                  key={chapter.id}
+                  chapterNumber={chapter.chapterNumber}
+                  chapterTitle={chapter.title}
+                  isFirstChapter={index === 0}
+                  nodes={chapter.nodes}
+                  isAuthenticated={!!user}
+                  onRequireAuth={() => setIsRegisterOpen(true)}
+                />
+              ))}
+            </div>
+
+            <div className="sticky bottom-10 w-full flex justify-end pointer-events-none z-50">
+              <div className="pointer-events-auto">
+                <ScrollToTopButton isVisible={showScrollTop} onClick={scrollToTop} />
+              </div>
+            </div>
           </div>
+
+          {sideChapter && (
+            <div className="w-[350px] pt-[80px]">
+              {/* Thêm sticky để Side Lesson luôn trôi theo màn hình khi user cuộn xuống */}
+              <div className="sticky top-[80px]">
+                <SideLessonSection
+                  chapterData={sideChapter}
+                  onLessonClick={(id) => navigate(`/lessons/${id}`)}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* --- THÊM MỚI TẠI ĐÂY: Gắn 2 Overlay vào cuối thẻ main --- */}
         <Login
           isOpen={isLoginOpen}
           onClose={() => setIsLoginOpen(false)}
@@ -148,7 +189,6 @@ function Roadmap() {
             setIsLoginOpen(true);
           }}
         />
-        {/* -------------------------------------------------------- */}
       </main>
     </div>
   );
