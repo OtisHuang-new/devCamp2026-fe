@@ -1,4 +1,3 @@
-// Vị trí: src/features/LessonDetail/components/SubmissionResult/index.tsx
 import React from 'react';
 import AIAnalysisSection from './AIAnalysisSection';
 import TestCaseResultItem from './TestCaseResultItem';
@@ -7,16 +6,12 @@ import { useEditorStore } from '../../../../shared/store/useEditorStore';
 
 interface SubmissionResultProps {
   data: SubmitResponse;
+  onActionClick?: () => void;
 }
 
-const SubmissionResult: React.FC<SubmissionResultProps> = ({ data }) => {
-  // Lấy dữ liệu Input/Expected Output gốc từ Store để ghép nối với Output của User
+const SubmissionResult: React.FC<SubmissionResultProps> = ({ data, onActionClick }) => {
   const publicTestCases = useEditorStore((state) => state.publicTestCases);
-
-  // Lấy ra danh sách kết quả chỉ tương ứng với số lượng public test cases
   const publicResults = data.results.slice(0, publicTestCases.length);
-
-  // Tính toán trạng thái tổng thể
   const isAllPassed = data.passedCount === data.total;
   const isPublicPassed = publicResults.every((r) => r.status === 'passed');
 
@@ -40,18 +35,15 @@ const SubmissionResult: React.FC<SubmissionResultProps> = ({ data }) => {
 
   return (
     <div className="w-full space-y-4 animate-fadeIn mb-10">
-      {/* 1. Status Text */}
       <p className="text-sm font-medium">
         Submission result: <span className={`${statusColor} font-bold`}>{statusText}</span>
       </p>
 
-      {/* 2. Main Result Box */}
       <div className={`border-2 ${borderColor} rounded-2xl py-6 px-4 bg-white shadow-sm space-y-6`}>
-        {/* Render danh sách Test Cases, bọc trong khung cuộn để tránh phình UI */}
         <div className="max-h-[450px] overflow-y-auto custom-scrollbar pr-2 space-y-6">
           {publicResults.map((result, index) => {
             const originalCase = publicTestCases[index];
-            if (!originalCase) return null; // Fallback an toàn
+            if (!originalCase) return null;
 
             return (
               <TestCaseResultItem
@@ -66,14 +58,15 @@ const SubmissionResult: React.FC<SubmissionResultProps> = ({ data }) => {
           })}
         </div>
 
-        {/* Phân tích sâu (Analysis Section) */}
         <AIAnalysisSection submissionId={data._id} isAllPassed={isAllPassed} />
       </div>
 
-      {/* 3. Finish Button (Mockup) */}
       <div className="flex justify-center mt-8">
-        <button className="bg-[#22C55E] hover:bg-[#16a34a] text-white font-bold py-2.5 px-8 rounded-xl transition-all shadow-md">
-          Finish lesson
+        <button
+          onClick={onActionClick}
+          className={`${isAllPassed ? 'bg-[#22C55E] hover:bg-[#16a34a]' : 'bg-yellow-500 hover:bg-yellow-600'} text-white font-bold py-2.5 px-8 rounded-xl transition-all shadow-md`}
+        >
+          {isAllPassed ? 'Finish lesson' : 'Exit lesson'}
         </button>
       </div>
     </div>

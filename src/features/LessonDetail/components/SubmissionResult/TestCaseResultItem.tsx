@@ -36,7 +36,6 @@ const TestCaseResultItem: React.FC<TestCaseResultItemProps> = ({
           <label className="text-sm font-bold text-slate-700 block mb-1">Your output</label>
           {showDiff && !isPassed ? (
             <div className="border border-slate-200 rounded-lg bg-gray-50 overflow-hidden">
-              {/* Tái sử dụng Component DiffViewer */}
               <DiffViewer expected={expectedOutput} actual={userOutput} />
             </div>
           ) : (

@@ -1,4 +1,3 @@
-// Vị trí: src/shared/CodeEditor/components/EditorTextArea.tsx
 import React from 'react';
 
 interface EditorTextAreaProps {

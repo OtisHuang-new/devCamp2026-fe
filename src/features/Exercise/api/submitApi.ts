@@ -1,4 +1,3 @@
-// Vị trí: src/features/Exercise/api/submitApi.ts
 import axiosClient from '../../../shared/api/axiosClient';
 import type { SubmitPayload, SubmitResponse } from '../types/submitTypes';
 

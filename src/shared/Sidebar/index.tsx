@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import NameBrandPrime from '../Brand/NameBrandPrime';
 import SidebarButton from './components/Button';
-
-// Import Assets
 import logo_dark from '../Brand/Assets/logo_dark.svg';
 import icon_learning from './Assets/icon_learning_primary.svg';
 import icon_exercise from './Assets/icon_exercise_primary.svg';
@@ -19,7 +17,6 @@ const Sidebar = () => {
   ];
 
   return (
-    // Thêm border-r (đường kẻ phải) và shadow nhẹ
     <aside className="w-[250px] h-screen bg-white border-r border-gray-100 flex flex-col pb-10 shadow-sm shrink-0">
       <NameBrandPrime
         logoSrc={logo_dark}

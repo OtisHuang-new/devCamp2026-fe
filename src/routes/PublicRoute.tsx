@@ -1,4 +1,3 @@
-// Vị trí: src/routes/PublicRoute.tsx
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuthContext } from '../shared/context/AuthContext';
 
@@ -14,12 +13,10 @@ const PublicRoute = () => {
     );
   }
 
-  // Nếu ĐÃ đăng nhập HOẶC ĐÃ làm survey -> Đuổi vào Roadmap, không cho xem Landing nữa
   if (isAuthenticated || hasCompletedSurvey) {
     return <Navigate to="/roadmap" replace />;
   }
 
-  // Nếu là người lạ -> Cho phép xem Landing/Survey
   return <Outlet />;
 };
 

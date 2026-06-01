@@ -1,4 +1,3 @@
-// Vị trí: src/features/LessonDetail/components/SubmissionResult/AIAnalysisSection.tsx
 import React from 'react';
 import { useEvaluateSubmission } from '../../hooks/useEvaluateSubmission';
 
@@ -8,14 +7,11 @@ interface AIAnalysisSectionProps {
 }
 
 const AIAnalysisSection: React.FC<AIAnalysisSectionProps> = ({ submissionId, isAllPassed }) => {
-  // Tự động gọi API khi component được mount
   const { isEvaluating, evaluationData, error } = useEvaluateSubmission(submissionId);
 
-  // Trạng thái 1: Đang chờ AI phân tích (Skeleton Loading)
   if (isEvaluating) {
     return (
       <div className="pt-6 border-t border-gray-100">
-        {/* --- DÒNG CHỮ THÔNG BÁO --- */}
         <div className="flex items-center gap-2.5 mb-6 animate-pulse">
           <svg
             className="animate-spin h-5 w-5 text-[#22C55E]"
@@ -39,9 +35,7 @@ const AIAnalysisSection: React.FC<AIAnalysisSectionProps> = ({ submissionId, isA
           </svg>
           <span className="font-bold text-slate-700 text-sm">AI is evaluating your code...</span>
         </div>
-        {/* ------------------------- */}
 
-        {/* Khung Skeleton mờ ở dưới */}
         <div className="grid grid-cols-2 gap-10 animate-pulse opacity-50">
           <div className="space-y-4">
             <div>
@@ -65,7 +59,6 @@ const AIAnalysisSection: React.FC<AIAnalysisSectionProps> = ({ submissionId, isA
     );
   }
 
-  // Trạng thái 2: Lỗi API
   if (error) {
     return (
       <div className="pt-4 border-t border-gray-100 animate-fadeIn">
@@ -77,9 +70,7 @@ const AIAnalysisSection: React.FC<AIAnalysisSectionProps> = ({ submissionId, isA
     );
   }
 
-  // Trạng thái 3: Có kết quả thành công
   if (evaluationData) {
-    // Thay đổi tiêu đề linh hoạt dựa trên kết quả bài làm
     const title1 = isAllPassed ? 'Clean Code:' : 'Error destination:';
     const title2 = isAllPassed ? 'Refactoring:' : 'How to fix:';
 
@@ -87,7 +78,6 @@ const AIAnalysisSection: React.FC<AIAnalysisSectionProps> = ({ submissionId, isA
 
     return (
       <div className="grid grid-cols-2 gap-10 pt-4 border-t border-gray-100 animate-fadeIn">
-        {/* Kết quả trả về từ AI */}
         <div className="space-y-4">
           <div>
             <h4 className="text-sm font-bold text-slate-800 mb-1">{title1}</h4>
@@ -105,7 +95,6 @@ const AIAnalysisSection: React.FC<AIAnalysisSectionProps> = ({ submissionId, isA
           )}
         </div>
 
-        {/* Giữ nguyên Mockup bên phải */}
         <div className="flex flex-col items-end gap-2 text-right">
           <select className="bg-gray-100 border-none text-xs font-bold rounded-lg px-3 py-1.5 outline-none cursor-pointer mb-2">
             <option>Analyze further</option>

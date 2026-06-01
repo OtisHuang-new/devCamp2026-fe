@@ -1,4 +1,3 @@
-// --- 1. THÊM READONLY VÀO PROPS ---
 interface TestCaseNavProps {
   casesCount: number;
   activeIndex: number;
@@ -16,7 +15,6 @@ const TestCaseNav: React.FC<TestCaseNavProps> = ({
 }) => {
   return (
     <div className="flex gap-2 items-center mb-4 overflow-x-auto custom-scrollbar pb-1">
-      {/* ... (Đoạn code map các nút Case 1, 2 giữ nguyên) ... */}
       {Array.from({ length: casesCount }).map((_, idx) => (
         <button
           key={idx}
@@ -31,7 +29,6 @@ const TestCaseNav: React.FC<TestCaseNavProps> = ({
         </button>
       ))}
 
-      {/* --- 2. ẨN NÚT DUPLICATE NẾU LÀ READONLY --- */}
       {!readonly && (
         <button
           onClick={onAdd}

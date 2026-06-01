@@ -1,4 +1,3 @@
-// Vị trí: src/features/LessonDetail/hooks/useLessonContext.ts
 import { useState, useEffect } from 'react';
 import { lessonApi } from '../api/lessonApi';
 
@@ -31,7 +30,6 @@ export const useLessonContext = (lessonId?: string, userId?: string) => {
       try {
         const data = await lessonApi.contextualizeLesson(lessonId, userId);
 
-        // Đề phòng trường hợp API trả về HTTP 200 nhưng body chứa chữ "RESOURCE_EXHAUSTED"
         if (
           typeof data === 'string' &&
           (data.includes('RESOURCE_EXHAUSTED') || data.includes('429'))
@@ -48,7 +46,6 @@ export const useLessonContext = (lessonId?: string, userId?: string) => {
       } catch (err: any) {
         console.error('Lỗi khi lấy AI Context:', err);
 
-        // --- 2. BẮT TỪ KHÓA LỖI TỪ CATCH ---
         const errString = JSON.stringify(err);
         if (errString.includes('429') || errString.includes('RESOURCE_EXHAUSTED')) {
           setError('Hết token AI ròi bro ơi huhu 😭');
@@ -65,6 +62,5 @@ export const useLessonContext = (lessonId?: string, userId?: string) => {
     fetchContext();
   }, [lessonId, userId]);
 
-  // --- 3. EXPORT THÊM ERROR ---
   return { context, isLoading, error };
 };

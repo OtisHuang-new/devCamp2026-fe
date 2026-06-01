@@ -25,10 +25,6 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({
         }
       `}
     >
-      {/* MẸO: Dùng filter 'brightness-0 invert' 
-          - Nếu icon màu tối -> brightness-0 làm nó thành đen -> invert làm nó thành TRẮNG.
-          - Cách này cực kì an toàn và nhẹ hơn dùng mask-image.
-      */}
       <img
         src={iconPath}
         alt=""

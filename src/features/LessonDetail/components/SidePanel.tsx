@@ -4,11 +4,10 @@ import icon_sent_white from '../assets/icon_sent_white.svg';
 const SidePanel = ({ videoUrl }: { videoUrl?: string }) => {
   return (
     <div className="w-full h-full flex flex-col p-6 gap-6 bg-[#F9FAFB]">
-      {/* 1. KHUNG VIDEO YOUTUBE */}
       <div className="w-full aspect-video rounded-xl overflow-hidden shadow-sm bg-black">
         <iframe
           className="w-full h-full"
-          src={videoUrl || ''} // BỔ SUNG: Truyền link động vào đây
+          src={videoUrl || ''}
           title="Lesson Video"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -16,14 +15,11 @@ const SidePanel = ({ videoUrl }: { videoUrl?: string }) => {
         ></iframe>
       </div>
 
-      {/* 2. KHUNG AI CHATBOT (Placeholder) */}
       <div className="flex-1 flex flex-col bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-        {/* Header của Chatbot */}
         <div className="p-4 border-b border-gray-100 bg-white">
           <h3 className="font-bold text-[#1E3A8A]">AI Assistant</h3>
         </div>
 
-        {/* Vùng hiển thị tin nhắn (Sẽ code logic sau) */}
         <div className="flex-1 p-4 flex flex-col justify-center items-center text-center">
           <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center mb-3">
             <img src={bot_like} className="w-10"></img>
@@ -33,7 +29,6 @@ const SidePanel = ({ videoUrl }: { videoUrl?: string }) => {
           </p>
         </div>
 
-        {/* Vùng nhập tin nhắn (Placeholder) */}
         <div className="p-4 border-t border-gray-100">
           <div className="flex gap-2">
             <input

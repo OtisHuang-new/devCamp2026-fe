@@ -4,12 +4,11 @@ interface OptionButtonProps {
   text: string;
   iconPath: string;
   isSelected: boolean;
-  layout: LayoutType; // Thêm prop này
+  layout: LayoutType;
   onClick: () => void;
 }
 
 function OptionButton({ text, iconPath, isSelected, layout, onClick }: OptionButtonProps) {
-  // Quyết định chiều rộng dựa vào loại layout
   const widthClass = layout === 'grid-nx1' ? 'w-[588px]' : 'w-[282px]';
 
   return (

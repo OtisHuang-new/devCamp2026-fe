@@ -1,4 +1,3 @@
-// Vị trí: src/shared/CodeEditor/components/TestResultView.tsx
 import React, { useState } from 'react';
 import DiffViewer from './DiffViewer';
 
@@ -19,7 +18,6 @@ const TestResultView: React.FC<TestResultProps> = ({
 }) => {
   const [isComparing, setIsComparing] = useState(false);
 
-  // Màn hình chờ
   if (status === 'Idle')
     return <div className="text-gray-500 font-bold text-center mt-10">Run code to see results</div>;
   if (status === 'Running')
@@ -33,12 +31,10 @@ const TestResultView: React.FC<TestResultProps> = ({
 
   return (
     <div className="flex flex-col gap-4 animate-fadeIn">
-      {/* Trạng thái tổng quan của Case */}
       <div className={`font-bold text-xl mb-2 ${isAccepted ? 'text-[#22C55E]' : 'text-red-500'}`}>
         {status}
       </div>
 
-      {/* Input */}
       <div className="flex flex-col gap-1.5">
         <label className="text-xs font-bold text-gray-400">Input</label>
         <div className="w-full bg-[#2A2A2A] text-white font-mono text-sm p-3 rounded-lg min-h-[40px] whitespace-pre-wrap">
@@ -46,7 +42,6 @@ const TestResultView: React.FC<TestResultProps> = ({
         </div>
       </div>
 
-      {/* Bắt lỗi Runtime Error (Nếu có) */}
       {error ? (
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-bold text-red-400">Runtime Error</label>
@@ -56,7 +51,6 @@ const TestResultView: React.FC<TestResultProps> = ({
         </div>
       ) : (
         <>
-          {/* Your Output (Kèm chức năng DiffViewer) */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-gray-400">Your Output</label>
             {isComparing ? (
@@ -70,7 +64,6 @@ const TestResultView: React.FC<TestResultProps> = ({
             )}
           </div>
 
-          {/* Expected Output */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-gray-400">Expected Output</label>
             <div className="w-full bg-[#2A2A2A] text-[#22C55E] font-mono text-sm p-3 rounded-lg min-h-[40px] whitespace-pre-wrap">
@@ -80,7 +73,6 @@ const TestResultView: React.FC<TestResultProps> = ({
         </>
       )}
 
-      {/* Nút Toggle Compare (Chỉ hiện khi code chạy ra kết quả chứ không bị lỗi Runtime) */}
       {!error && (
         <div className="flex justify-end mt-2">
           <button

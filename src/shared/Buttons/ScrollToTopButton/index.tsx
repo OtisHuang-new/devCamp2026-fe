@@ -1,4 +1,3 @@
-// Vị trí: src/features/Roadmap/Components/ScrollToTopButton.tsx
 import React from 'react';
 
 interface ScrollToTopButtonProps {
@@ -12,7 +11,6 @@ const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({ isVisible, onClic
   return (
     <button
       onClick={onClick}
-      // --- ĐÃ XÓA: fixed bottom-10 right-10 z-50 ---
       className="flex flex-col items-center justify-center w-12 h-12 px-10 py-1 bg-white border-2 border-gray-200 rounded-[4px] shadow-md hover:bg-gray-50 hover:border-primary text-gray-500 hover:text-primary transition-all group animate-fadeIn"
     >
       <svg

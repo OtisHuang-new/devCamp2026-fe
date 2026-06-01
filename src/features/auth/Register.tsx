@@ -1,11 +1,8 @@
 import google from './Assets/Google icon.svg';
 import background from './Assets/backGround.jpg';
-// Nếu bạn đã cài react-router-dom, import thêm hook để chuyển trang nhanh
 import { useAuth } from './hooks/useAuth';
-// THAY ĐỔI 5: Bổ sung import useEffect và useAuthContext
 import { useState, useEffect } from 'react';
 import { useAuthContext } from '../../shared/context/AuthContext';
-
 import CloseButton from '../../shared/Buttons/CloseButton';
 
 interface RegisterProps {
@@ -16,23 +13,19 @@ interface RegisterProps {
 
 function Register({ isOpen, onClose, onSwitchToLogin }: RegisterProps) {
   const { handleRegister, isLoading, error } = useAuth();
-
-  // THAY ĐỔI 6: Lấy user từ AuthContext
   const { user } = useAuthContext();
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [validationError, setValidationError] = useState('');
 
-  // THAY ĐỔI 7: Lắng nghe đăng ký thành công (user có data) thì đóng Form
   useEffect(() => {
     if (user && isOpen) {
       onClose();
     }
   }, [user, isOpen, onClose]);
 
-  if (!isOpen) return null; // THÊM DÒNG NÀY
+  if (!isOpen) return null;
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +36,6 @@ function Register({ isOpen, onClose, onSwitchToLogin }: RegisterProps) {
       return;
     }
 
-    // Lấy thông tin từ Survey đã lưu ở Local Storage (Nếu chưa làm survey thì để mặc định)
     const surveyJob = localStorage.getItem('survey_job') || 'Student';
     const surveyLevel = Number(localStorage.getItem('survey_level')) || 1;
 
@@ -66,7 +58,6 @@ function Register({ isOpen, onClose, onSwitchToLogin }: RegisterProps) {
         className="relative w-full max-w-4xl h-[620px] rounded-[8px] shadow-2xl overflow-hidden flex flex-row"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Nút CloseButton */}
         <div className="absolute top-4 right-4 z-50">
           <CloseButton onClick={onClose} />
         </div>
@@ -76,7 +67,7 @@ function Register({ isOpen, onClose, onSwitchToLogin }: RegisterProps) {
           <p className="text-gray-600 text-sm mb-6 font-medium">
             You have account before?{' '}
             <span
-              onClick={onSwitchToLogin} // THAY ĐỔI Ở ĐÂY
+              onClick={onSwitchToLogin}
               className="text-[#1E3A8A] font-bold underline cursor-pointer hover:opacity-80"
             >
               Login now
@@ -132,7 +123,6 @@ function Register({ isOpen, onClose, onSwitchToLogin }: RegisterProps) {
               />
             </div>
 
-            {/* Vùng hiển thị lỗi */}
             <div className="min-h-[20px]">
               <span className="text-xs font-bold text-red-500">{validationError || error}</span>
             </div>

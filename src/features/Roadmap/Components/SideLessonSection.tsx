@@ -9,7 +9,6 @@ interface SideLessonSectionProps {
 }
 
 const SideLessonSection: React.FC<SideLessonSectionProps> = ({ chapterData, onLessonClick }) => {
-  // Nếu không có data hoặc không có bài học nào thì không render gì cả
   if (!chapterData || !chapterData.lessons || chapterData.lessons.length === 0) return null;
 
   return (

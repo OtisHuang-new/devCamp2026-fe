@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Thêm dòng này
-
 import return_arrow from '../../shared/Assets/return_arrow.svg';
 import bot_like from '../../shared/Assets/Mascots/bot_like.svg';
 import money_icon from './Assets/money_icon.svg';
-
 import ProcessBar from './Components/ProcessBar';
 import BotAsk from './Components/BotAsk';
 import OptionButton from './Components/OptionButton';

@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axiosClient from '../api/axiosClient';
 
-// Định nghĩa cấu trúc User bám sát Schema AuthModel từ Backend
 export interface UserInfo {
   _id: string;
   name: string;
@@ -20,9 +19,10 @@ interface AuthContextType {
   user: UserInfo | null;
   token: string | null;
   isAuthenticated: boolean;
-  isLoading: boolean; // Tránh hiện tượng flash giao diện khi đang check token cũ
+  isLoading: boolean;
   loginState: (token: string, user: UserInfo) => void;
   logoutState: () => void;
+  updateUser: (data: Partial<UserInfo>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,23 +31,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<UserInfo | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  // --- THAY ĐỔI: Chuyển hàm loginState thành async ---
   const loginState = async (accessToken: string, userData: UserInfo) => {
-    // 1. Lưu token vào localStorage ngay lập tức để axiosClient có thể sử dụng
     localStorage.setItem('access_token', accessToken);
     setToken(accessToken);
 
-    // 2. Set tạm userData cơ bản (từ API Login trả về) để giao diện phản hồi nhanh
     setUser(userData);
     setIsLoading(false);
 
-    // 3. Gọi ngay API /me để kéo toàn bộ data chi tiết (bao gồm current_lesson_id)
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const response: any = await axiosClient.get('auth/me');
       if (response) {
-        // 4. Cập nhật lại state user bằng dữ liệu ĐẦY ĐỦ từ backend
         setUser(response);
       }
     } catch (error) {
@@ -55,7 +49,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Hàm xóa trạng thái khi Đăng xuất
   const logoutState = () => {
     localStorage.removeItem('access_token');
     setToken(null);
@@ -63,8 +56,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(false);
   };
 
-  // Kiểm tra token khi khởi chạy ứng dụng (Auto-login qua endpoint /me)
-  // Kiểm tra token khi khởi chạy ứng dụng (Auto-login qua endpoint /me)
+  const updateUser = (data: Partial<UserInfo>) => {
+    setUser((prev) => (prev ? { ...prev, ...data } : null));
+  };
+
   useEffect(() => {
     const checkCurrentUser = async () => {
       const localToken = localStorage.getItem('access_token');
@@ -76,27 +71,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       try {
         setToken(localToken);
-        // Gọi API /me đã định nghĩa ở Route phía Backend
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const response: any = await axiosClient.get('auth/me');
 
-        // --- THAY ĐỔI 1: Logic kiểm tra dữ liệu linh hoạt hơn ---
-        // Đề phòng Backend trả về cục data trực tiếp hoặc bọc trong response.data
         const userData = response.data ? response.data : response;
 
-        // Thay vì check 'status === success', ta check xem có '_id' của User không
         if (userData && userData._id) {
           setUser(userData);
         } else {
           console.warn('API /auth/me trả về format không mong muốn:', response);
-          // Không xóa token ở đây để tránh oan uổng do lỗi format của Backend
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         console.error('Verify token failed:', error);
 
-        // --- THAY ĐỔI 2: Chỉ xóa token khi thực sự là lỗi 401 ---
-        // Nếu là lỗi 500 (Server sập) hoặc lỗi mạng, ta giữ nguyên token!
         const isUnauthorized = error?.status === 401 || error?.response?.status === 401;
         if (isUnauthorized) {
           logoutState();
@@ -117,6 +105,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isLoading,
         loginState,
         logoutState,
+        updateUser,
       }}
     >
       {children}

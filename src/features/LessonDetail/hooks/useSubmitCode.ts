@@ -1,8 +1,6 @@
-// Vị trí: src/features/LessonDetail/hooks/useSubmitCode.ts
 import { useState } from 'react';
 import { submitApi } from '../../Exercise/api/submitApi';
 import type { SubmitResponse } from '../../Exercise/types/submitTypes';
-// Lưu ý: Cập nhật lại đường dẫn import useAuthContext cho khớp với dự án của bạn
 import { useAuthContext } from '../../../shared/context/AuthContext';
 
 export const useSubmitCode = () => {

@@ -6,8 +6,6 @@ export const exerciseApi = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response: any = await axiosClient.get(`/exercises/${id}`);
 
-    // Vì JSON API trả về có dạng { "status": "success", "data": { ... } }
-    // nên ta cần chọc vào .data để lấy đúng thông tin bài tập
     return response.data;
   },
 };

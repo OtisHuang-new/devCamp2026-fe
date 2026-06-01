@@ -1,4 +1,3 @@
-// Vị trí: src/shared/CodeEditor/components/DiffViewer.tsx
 import React from 'react';
 import { diffChars } from 'diff';
 
@@ -13,8 +12,6 @@ const DiffViewer: React.FC<DiffViewerProps> = ({ expected, actual }) => {
   return (
     <div className="w-full bg-[#2A2A2A] p-3 rounded-lg min-h-[40px] font-mono text-sm leading-relaxed whitespace-pre-wrap">
       {diff.map((part, index) => {
-        // added: Có trong actual nhưng không có trong expected -> Lỗi sai/thừa (Đỏ)
-        // removed: Có trong expected nhưng bị thiếu trong actual -> Thiếu sót (Xanh lá nhạt, gạch ngang)
         const spanClass = part.added
           ? 'bg-red-500/30 text-red-400 font-bold px-0.5 rounded'
           : part.removed

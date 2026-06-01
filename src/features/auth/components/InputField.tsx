@@ -1,10 +1,9 @@
 import React from 'react';
 
-// Định nghĩa các kiểu dữ liệu (Props) mà component sẽ nhận vào
 interface InputFieldProps {
   label: string;
   placeholder: string;
-  type?: 'text' | 'password' | 'email'; // Mặc định là text nếu không truyền
+  type?: 'text' | 'password' | 'email';
   value: string;
   onChange: (value: string) => void;
 }
@@ -18,10 +17,8 @@ const InputField: React.FC<InputFieldProps> = ({
 }) => {
   return (
     <div className="flex flex-col gap-2 w-full max-w-md mb-4">
-      {/* Label của ô input */}
       <label className="text-[#0f2d72] font-bold text-lg">{label}</label>
 
-      {/* Ô Input styled giống trong ảnh */}
       <input
         type={type}
         placeholder={placeholder}

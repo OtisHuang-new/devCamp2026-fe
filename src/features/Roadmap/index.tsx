@@ -4,13 +4,9 @@ import HeaderInfo from './Components/HeaderInfo';
 import Chapter from './Components/Chapter';
 import Login from '../auth/Login';
 import Register from '../auth/Register';
-
-// Import Context & Data
 import { useAuthContext } from '../../shared/context/AuthContext';
-
 import { useState, useRef, useEffect, useMemo } from 'react'; // BỔ SUNG IMPORT
 import { useRoadmap } from './hooks/useRoadmap'; // BỔ SUNG IMPORT TỪ HOOK VỪA TẠO
-
 import { useNavigate } from 'react-router-dom';
 import SideLessonSection from './Components/SideLessonSection';
 import ScrollToTopButton from '../../shared/Buttons/ScrollToTopButton';
@@ -19,21 +15,15 @@ import { prefetchLessonContext } from '../LessonDetail/hooks/useLessonContext';
 function Roadmap() {
   const { user } = useAuthContext();
   const { chapters, rawData, isLoading } = useRoadmap(user?.current_lesson_id);
-
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-
   const navigate = useNavigate();
-
-  // Chapter đầu tiên (index 0) làm Side Lesson
   const sideChapter = rawData.length > 0 ? rawData[0] : null;
-  // Các Chapter còn lại (từ index 1) làm Main Roadmap
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mainChapters: any[] = useMemo(() => {
     return chapters.length > 1 ? chapters.slice(1) : [];
   }, [chapters]);
 
-  // STATE & REF cho Scroll Logic
   const headerRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLElement>(null);
   const [activeChapterIndex, setActiveChapterIndex] = useState(0);
@@ -45,20 +35,16 @@ function Roadmap() {
     if (user?.current_lesson_id && user?._id) {
       prefetchLessonContext(user.current_lesson_id, user._id);
     }
-    // --- 2. THÊM ĐIỀU KIỆN: Chỉ chạy nếu CHƯA từng cuộn ---
     if (mainChapters.length > 0 && user?.current_lesson_id && !hasScrolledToCurrent.current) {
       const targetNode = document.getElementById(`roadmap-node-${user.current_lesson_id}`);
       if (targetNode) {
-        // behavior 'auto' sẽ Teleport (chớp mắt là tới) không có hiệu ứng cuộn
         targetNode.scrollIntoView({ behavior: 'auto', block: 'center' });
 
-        // --- 3. ĐÁNH DẤU LÀ ĐÃ CUỘN XONG ---
         hasScrolledToCurrent.current = true;
       }
     }
   }, [mainChapters, user?.current_lesson_id, user?._id]);
 
-  // LOGIC TRACKING SCROLL
   const handleScroll = () => {
     if (!headerRef.current || mainChapters.length === 0 || !mainRef.current) return;
 
@@ -91,23 +77,17 @@ function Roadmap() {
 
   return (
     <div className="flex w-full min-h-screen bg-white">
-      {/* 1. Sidebar cố định */}
       <Sidebar />
 
-      {/* 2. Main Content Area */}
-      {/* BỔ SUNG: Gắn sự kiện onScroll vào thẻ main */}
       <main
         ref={mainRef}
         onScroll={handleScroll}
         className="flex-1 flex flex-col h-screen overflow-y-auto overflow-x-hidden relative scroll-smooth"
       >
-        {/* UserProfileCard */}
         <div className="fixed top-3 right-10 z-50">
           {user ? (
-            // Nếu đã đăng nhập: Hiển thị Profile Card
             <UserProfileCard userName={user.name} />
           ) : (
-            // Nếu CHƯA đăng nhập: Hiển thị 2 nút Login / Sign up
             <div className="flex items-center gap-3 mt-1.5 animate-fadeIn">
               <button
                 onClick={() => setIsLoginOpen(true)}
@@ -125,11 +105,8 @@ function Roadmap() {
           )}
         </div>
 
-        {/* --- 4. BỐ CỤC LẠI LAYOUT: CHIA 2 CỘT TRÁI/PHẢI --- */}
         <div className="w-full flex gap-12 ml-[140px] pr-10 pb-20">
-          {/* CỘT PHẢI: Khu vực chứa Roadmap chính */}
           <div className="flex-1 max-w-2xl">
-            {/* Header Info (Sticky) */}
             <HeaderInfo
               ref={headerRef}
               chapterTitle={
@@ -141,9 +118,7 @@ function Roadmap() {
               onBackClick={() => console.log('Back clicked')}
             />
 
-            {/* Roadmap Path */}
             <div className="mt-8 flex flex-col gap-4 relative pb-[500px]">
-              {/* Lặp qua mainChapters thay vì chapters */}
               {mainChapters.map((chapter, index) => (
                 <Chapter
                   key={chapter.id}
@@ -166,7 +141,6 @@ function Roadmap() {
 
           {sideChapter && (
             <div className="w-[350px] pt-[80px]">
-              {/* Thêm sticky để Side Lesson luôn trôi theo màn hình khi user cuộn xuống */}
               <div className="sticky top-[80px]">
                 <SideLessonSection
                   chapterData={sideChapter}

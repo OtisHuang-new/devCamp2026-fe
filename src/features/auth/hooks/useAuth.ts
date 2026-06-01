@@ -16,7 +16,6 @@ export const useAuth = () => {
     setError(null);
     try {
       const response = await authApi.login(data);
-      // Lưu token & user vào context + local storage
       loginState(response.access_token, response.user);
       navigate('/roadmap');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,10 +31,9 @@ export const useAuth = () => {
     setError(null);
     try {
       const response = await authApi.register(data);
-      // Đăng ký xong coi như login luôn
+
       loginState(response.access_token, response.user);
 
-      // Xóa dữ liệu survey tạm thời đi cho sạch Local Storage
       localStorage.removeItem('survey_job');
       localStorage.removeItem('survey_level');
 
