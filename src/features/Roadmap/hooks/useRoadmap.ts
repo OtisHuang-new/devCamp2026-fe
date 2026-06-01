@@ -3,29 +3,22 @@ import { roadmapApi } from '../api/roadmapApi';
 import type { ChapterDataAPI } from '../types/roadmapTypes';
 import type { PathNode } from '../Components/Chapter';
 
-const ZIGZAG_TEMPLATES = [
-  [
-    'translate-x-[20px]',
-    '-translate-x-[40px]',
-    '-translate-x-[80px]',
-    '-translate-x-[40px]',
-    'translate-x-[20px]',
-  ],
-  [
-    'translate-x-[20px]',
-    'translate-x-[80px]',
-    'translate-x-[120px]',
-    'translate-x-[80px]',
-    'translate-x-[20px]',
-  ],
-  [
-    'translate-x-[20px]',
-    '-translate-x-[40px]',
-    '-translate-x-[80px]',
-    '-translate-x-[40px]',
-    'translate-x-[20px]',
-  ],
-];
+// const ZIGZAG_TEMPLATES = [
+//   [
+//     'translate-x-[20px]',
+//     '-translate-x-[80px]',
+//     'translate-x-[120px]',
+//     'translate-x-[80px]',
+//     'translate-x-[20px]',
+//   ],
+//   [
+//     'translate-x-[20px]',
+//     '-translate-x-[40px]',
+//     '-translate-x-[80px]',
+//     '-translate-x-[40px]',
+//     'translate-x-[20px]',
+//   ],
+// ];
 
 export const useRoadmap = (currentLessonId?: string | null) => {
   // Thêm state rawData để lưu data gốc từ API
@@ -84,8 +77,6 @@ export const useRoadmap = (currentLessonId?: string | null) => {
     };
 
     const transformedChapters = rawData.map((chap: ChapterDataAPI, index: number) => {
-      const layout = ZIGZAG_TEMPLATES[index % ZIGZAG_TEMPLATES.length];
-
       // --- THAY ĐỔI: Phân loại trạng thái rương theo Chapter ---
       let treasureStatus: 'completed' | 'current' | 'locked' = 'locked';
       if (index < currentChapterIndex)
@@ -95,42 +86,41 @@ export const useRoadmap = (currentLessonId?: string | null) => {
       else treasureStatus = 'locked'; // Chapter chưa học tới
       // ---------------------------------------------------------
 
-      const nodes: PathNode[] = [
-        {
-          id: chap.lessons[0]?._id,
+      // --- 1. KHỞI TẠO MẢNG NODES RỖNG THAY VÌ HARDCODE ---
+      const nodes: PathNode[] = [];
+
+      // --- 2. VÒNG LẶP SINH BÀI HỌC VÀ RƯƠNG ---
+      chap.lessons.forEach((lesson, i) => {
+        // A. Thêm Node Lesson
+        nodes.push({
+          id: lesson._id,
           type: 'lesson',
-          translateX: layout[0],
-          title: chap.lessons[0]?.title,
-          status: getNodeStatus(chap.lessons[0]?._id),
-        },
-        {
-          id: chap.lessons[1]?._id,
-          type: 'lesson',
-          translateX: layout[1],
-          title: chap.lessons[1]?.title,
-          status: getNodeStatus(chap.lessons[1]?._id),
-        },
-        {
-          id: `treasure-${chap._id}`,
-          type: 'treasure',
-          translateX: layout[2],
-          status: treasureStatus,
-        },
-        {
-          id: chap.lessons[2]?._id,
-          type: 'lesson',
-          translateX: layout[3],
-          title: chap.lessons[2]?.title,
-          status: getNodeStatus(chap.lessons[2]?._id),
-        },
-        {
-          id: chap.project_detail?._id,
+          translateX: 'translate-x-[0px]', // Thống nhất 1 tọa độ thẳng tắp
+          title: lesson.title,
+          status: getNodeStatus(lesson._id),
+        });
+
+        // B. Thêm Node Treasure: Cứ sau 2 bài (index lẻ) HOẶC nếu chapter chỉ có 1 bài
+        if ((i + 1) % 2 === 0 || chap.lessons.length === 1) {
+          nodes.push({
+            id: `treasure-${chap._id}-${i}`, // ID duy nhất cho rương
+            type: 'treasure',
+            translateX: 'translate-x-[0px]',
+            status: treasureStatus,
+          });
+        }
+      });
+
+      // --- 3. THÊM NODE PROJECT (CÚP) VÀO CUỐI CÙNG (NẾU CÓ) ---
+      if (chap.project_detail) {
+        nodes.push({
+          id: chap.project_detail._id,
           type: 'project',
-          translateX: layout[4],
-          title: chap.project_detail?.title,
-          status: getNodeStatus(chap.project_detail?._id),
-        },
-      ];
+          translateX: 'translate-x-[0px]',
+          title: chap.project_detail.title,
+          status: getNodeStatus(chap.project_detail._id),
+        });
+      }
 
       return {
         id: chap._id,
@@ -143,5 +133,5 @@ export const useRoadmap = (currentLessonId?: string | null) => {
     setChapters(transformedChapters);
   }, [rawData, currentLessonId]); // <-- Phụ thuộc vào currentLessonId
 
-  return { chapters, isLoading };
+  return { chapters, rawData, isLoading };
 };

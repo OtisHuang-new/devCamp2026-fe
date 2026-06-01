@@ -31,7 +31,7 @@ function UserProfileCard({ userName }: UserProfileCardProps) {
       {/* --- KHỐI THÔNG TIN USER (NÚT BẤM ĐỂ MỞ DROPDOWN) --- */}
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="flex flex-row items-center justify-between gap-3 bg-white border border-solid border-primary rounded-full pr-3 py-0.5 pl-0.5 w-fit mt-1.5 cursor-pointer hover:bg-gray-50 transition-all duration-200"
+        className="flex flex-row items-center justify-between gap-3 bg-white border-2 border-solid border-[#6D7EAE] rounded-full pr-3 py-0.5 pl-0.5 w-fit mt-1.5 cursor-pointer hover:bg-gray-50 transition-all duration-200"
       >
         <div className="flex flex-row items-center gap-2">
           <img src={round_user_icon_prime} alt="User Avatar" className="w-10 h-10 object-contain" />

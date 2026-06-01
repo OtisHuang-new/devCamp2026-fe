@@ -22,7 +22,7 @@ const LessonButton: React.FC<LessonButtonProps> = ({
 
   const bgClass = isCompleted ? 'bg-[#6D7EAE]' : isLocked ? 'bg-[#898989]' : 'bg-primary';
   const shadowClass = isCompleted ? 'bg-[#374262]' : isLocked ? 'bg-[#6D6B6D]' : 'bg-[#051338]';
-  const displayIcon = isCompleted ? finish_icon : iconPath;
+  const displayIcon = isCompleted && !largerIcon ? finish_icon : iconPath;
 
   // --- BỔ SUNG: Hàm xử lý click chặn tác vụ nếu bài học đang bị khóa ---
   const handleClick = () => {
@@ -40,6 +40,15 @@ const LessonButton: React.FC<LessonButtonProps> = ({
       onClick={handleClick}
       title={title}
     >
+      {status === 'current' && (
+        <div className="absolute top-1/2 right-[100%] mr-5 -translate-y-[17px] bg-white border-2 border-primary text-primary font-extrabold text-[20px] px-3 py-1.5 rounded-xl shadow-md whitespace-nowrap z-10 flex items-center justify-center animate-fadeIn">
+          Your current Lesson
+          {/* Mũi tên nhọn chỉ vào button */}
+          <div className="absolute top-1/2 -right-[7px] -translate-y-1/2 w-0 h-0 border-y-[6px] border-y-transparent border-l-[6px] border-l-primary"></div>
+          <div className="absolute top-1/2 -right-[4px] -translate-y-1/2 w-0 h-0 border-y-[4px] border-y-transparent border-l-[4px] border-l-white"></div>
+        </div>
+      )}
+
       <div
         className={`absolute inset-0 ${shadowClass} rounded-full translate-y-[8px] transition-colors duration-300`}
       />

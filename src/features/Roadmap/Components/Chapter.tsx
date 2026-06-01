@@ -63,21 +63,22 @@ const Chapter: React.FC<ChapterProps> = ({
       {/* Chỉ hiển thị Header ngăn cách nếu KHÔNG phải là Chapter đầu tiên */}
       {!isFirstChapter && (
         <div className="flex items-center justify-center my-8 gap-4 w-full opacity-60">
-          <hr className="flex-1 border-gray-300" />
-          <span className="text-gray-500 font-bold text-sm tracking-wide uppercase">
-            Chapter {chapterNumber}: {chapterTitle}
+          <hr className="flex-1 border-gray-300 border-[2px] border-solid" />
+          <span className="text-gray-500 font-bold text-[16px] tracking-wide uppercase">
+            Chapter {chapterNumber - 1}: {chapterTitle}
           </span>
-          <hr className="flex-1 border-gray-300" />
+          <hr className="flex-1 border-gray-300 border-[2px] border-solid" />
         </div>
       )}
 
       {/* --- ROADMAP PATH CHO CHAPTER NÀY --- */}
       {/* Thêm mt-8 cho chapter đầu tiên để nó không dính chặt lên trên, các chapter sau thì dùng margin mặc định */}
-      <div className={`flex flex-col items-center gap-8 ${isFirstChapter ? 'mt-8' : 'mt-4'}`}>
+      <div className={`flex flex-col items-center gap-[40px] ${isFirstChapter ? 'mt-8' : 'mt-4'}`}>
         {nodes.map((node) => {
           return (
             <div
               key={node.id}
+              id={`roadmap-node-${node.id}`}
               className={node.translateX}
               {...(node.type === 'project' ? { 'data-project-marker': chapterTitle } : {})}
             >
@@ -93,7 +94,7 @@ const Chapter: React.FC<ChapterProps> = ({
 
               {/* Nếu là rương kho báu */}
               {node.type === 'treasure' && (
-                <div className="my-2">
+                <div className="">
                   {node.status === 'current' ? (
                     // CẬP NHẬT: Chapter hiện tại -> Hiện ảnh gốc sáng màu
                     <img
