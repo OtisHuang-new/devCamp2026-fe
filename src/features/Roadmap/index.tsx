@@ -7,17 +7,29 @@ import Register from '../auth/Register';
 import { useAuthContext } from '../../shared/context/AuthContext';
 import { useState, useRef, useEffect, useMemo } from 'react'; // BỔ SUNG IMPORT
 import { useRoadmap } from './hooks/useRoadmap'; // BỔ SUNG IMPORT TỪ HOOK VỪA TẠO
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import SideLessonSection from './Components/SideLessonSection';
 import ScrollToTopButton from '../../shared/Buttons/ScrollToTopButton';
 import { prefetchLessonContext } from '../LessonDetail/hooks/useLessonContext';
 
 function Roadmap() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const { user } = useAuthContext();
   const { chapters, rawData, isLoading } = useRoadmap(user?.current_lesson_id);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-  const navigate = useNavigate();
+  const [isRegisterOpen, setIsRegisterOpen] = useState(() => {
+    const shouldOpen = location.state?.openRegister || false;
+
+    // Pure function: Nếu có mở, dùng history API xóa state trên URL ngầm
+    // để lỡ người dùng ấn F5 thì popup không bị tự động bật lại
+    if (shouldOpen) {
+      window.history.replaceState({}, '');
+    }
+    return shouldOpen;
+  });
+
   const sideChapter = rawData.length > 0 ? rawData[0] : null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mainChapters: any[] = useMemo(() => {
@@ -84,27 +96,6 @@ function Roadmap() {
         onScroll={handleScroll}
         className="flex-1 flex flex-col h-screen overflow-y-auto overflow-x-hidden relative scroll-smooth"
       >
-        <div className="fixed top-3 right-10 z-50">
-          {user ? (
-            <UserProfileCard userName={user.name} />
-          ) : (
-            <div className="flex items-center gap-3 mt-1.5 animate-fadeIn">
-              <button
-                onClick={() => setIsLoginOpen(true)}
-                className="text-primary font-bold px-6 py-2 border-primary border hover:bg-blue-50 rounded-full transition-colors"
-              >
-                Login
-              </button>
-              <button
-                onClick={() => setIsRegisterOpen(true)}
-                className="bg-primary text-white font-bold px-5 py-2 rounded-full hover:bg-[#112255] transition-all shadow-md active:scale-95"
-              >
-                Sign up
-              </button>
-            </div>
-          )}
-        </div>
-
         <div className="w-full flex gap-12 ml-[140px] pr-10 pb-20">
           <div className="flex-1 max-w-2xl">
             <HeaderInfo
@@ -139,16 +130,39 @@ function Roadmap() {
             </div>
           </div>
 
-          {sideChapter && (
-            <div className="w-[350px] pt-[80px]">
-              <div className="sticky top-[80px]">
+          <div className="w-[350px] flex flex-col gap-6 mt-3 sticky top-3 h-fit z-40">
+            {/* 2.1: Khối Auth & Profile (Nằm sát trên cùng, căn lề phải 100%) */}
+            <div className="flex justify-end w-full z-50">
+              {user ? (
+                <UserProfileCard userName={user.name} />
+              ) : (
+                <div className="flex items-center gap-3 mt-1.5 animate-fadeIn">
+                  <button
+                    onClick={() => setIsLoginOpen(true)}
+                    className="text-primary font-bold px-6 py-2 border-primary border hover:bg-blue-50 rounded-full transition-colors"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => setIsRegisterOpen(true)}
+                    className="bg-primary text-white font-bold px-5 py-2 rounded-full hover:bg-[#112255] transition-all shadow-md active:scale-95"
+                  >
+                    Sign up
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {sideChapter && (
+              <div className="w-full">
                 <SideLessonSection
                   chapterData={sideChapter}
                   onLessonClick={(id) => navigate(`/lessons/${id}`)}
+                  isAuthenticated={!!user} // Truyền cờ xác thực vào đây
                 />
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         <Login

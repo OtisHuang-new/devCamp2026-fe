@@ -18,7 +18,12 @@ const LessonDetail = () => {
   const { lesson, isLoading } = useLesson(id);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const navigate = useNavigate();
-  const { submitCode, isSubmitting, submitResult, error: submitError } = useSubmitCode();
+  const {
+    submitCode,
+    isSubmitting,
+    submitResult,
+    error: submitError,
+  } = useSubmitCode(lesson?.exercise_id);
   const { triggerUpdate } = useUpdateProgress();
 
   useEffect(() => {

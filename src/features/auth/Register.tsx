@@ -1,4 +1,3 @@
-import google from './Assets/Google icon.svg';
 import background from './Assets/backGround.jpg';
 import { useAuth } from './hooks/useAuth';
 import { useState, useEffect } from 'react';
@@ -73,17 +72,6 @@ function Register({ isOpen, onClose, onSwitchToLogin }: RegisterProps) {
               Login now
             </span>
           </p>
-
-          <button className="w-full flex items-center justify-center gap-3 border border-gray-300 px-4 py-2.5 rounded-lg text-gray-700 font-medium text-sm transition-all hover:bg-gray-50 active:scale-[0.99] mb-6">
-            <img src={google} className="w-5 h-5" alt="Google icon" />
-            <span>Loggin using Google account</span>
-          </button>
-
-          <div className="flex items-center my-2 mb-4">
-            <div className="flex-1 border-t border-gray-200"></div>
-            <span className="px-3 text-xs font-bold text-[#1E3A8A] tracking-wider">OR</span>
-            <div className="flex-1 border-t border-gray-200"></div>
-          </div>
 
           <form onSubmit={onSubmit} className="flex flex-col gap-3">
             <div className="flex flex-col gap-1.5">

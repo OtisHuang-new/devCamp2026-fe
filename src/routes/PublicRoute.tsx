@@ -3,7 +3,6 @@ import { useAuthContext } from '../shared/context/AuthContext';
 
 const PublicRoute = () => {
   const { isAuthenticated, isLoading } = useAuthContext();
-  const hasCompletedSurvey = !!localStorage.getItem('survey_job');
 
   if (isLoading) {
     return (
@@ -13,7 +12,7 @@ const PublicRoute = () => {
     );
   }
 
-  if (isAuthenticated || hasCompletedSurvey) {
+  if (isAuthenticated) {
     return <Navigate to="/roadmap" replace />;
   }
 

@@ -4,13 +4,13 @@ import type { LessonDataAPI } from '../types/lessonTypes';
 export const lessonApi = {
   getLessonById: async (id: string): Promise<LessonDataAPI> => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response: any = await axiosClient.get(`/lesson/${id}`);
+    const response: any = await axiosClient.get(`/lessons/${id}`);
     return response;
   },
 
   contextualizeLesson: async (lessonId: string, userId: string): Promise<string> => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response: any = await axiosClient.post(`/lesson/${lessonId}/contextualize`, {
+    const response: any = await axiosClient.post(`/lessons/${lessonId}/contextualize`, {
       user_id: userId,
     });
 

@@ -27,6 +27,18 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+let pendingMeRequest: Promise<unknown> | null = null;
+
+const fetchMeDeduped = () => {
+  if (pendingMeRequest) return pendingMeRequest;
+
+  pendingMeRequest = axiosClient.get('auth/me').finally(() => {
+    pendingMeRequest = null;
+  });
+
+  return pendingMeRequest;
+};
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserInfo | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -40,7 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const response: any = await axiosClient.get('auth/me');
+      const response: any = await fetchMeDeduped();
       if (response) {
         setUser(response);
       }
@@ -61,18 +73,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
+    let isMounted = true;
+
     const checkCurrentUser = async () => {
       const localToken = localStorage.getItem('access_token');
 
       if (!localToken) {
-        setIsLoading(false);
+        if (isMounted) setIsLoading(false);
         return;
       }
 
       try {
-        setToken(localToken);
+        if (isMounted) setToken(localToken);
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const response: any = await axiosClient.get('auth/me');
+        const response: any = await fetchMeDeduped();
+
+        if (!isMounted) return;
 
         const userData = response.data ? response.data : response;
 
@@ -83,19 +100,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        console.error('Verify token failed:', error);
+        if (!isMounted) return;
 
+        console.error('Verify token failed:', error);
         const isUnauthorized = error?.status === 401 || error?.response?.status === 401;
         if (isUnauthorized) {
           logoutState();
         }
       } finally {
-        setIsLoading(false);
+        if (isMounted) setIsLoading(false);
       }
     };
 
     checkCurrentUser();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
+
   return (
     <AuthContext.Provider
       value={{

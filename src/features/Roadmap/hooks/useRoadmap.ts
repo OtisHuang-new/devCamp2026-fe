@@ -3,6 +3,18 @@ import { roadmapApi } from '../api/roadmapApi';
 import type { ChapterDataAPI } from '../types/roadmapTypes';
 import type { PathNode } from '../Components/Chapter';
 
+let pendingRoadmapRequest: Promise<ChapterDataAPI[]> | null = null;
+
+const fetchRoadmapDeduped = () => {
+  if (pendingRoadmapRequest) return pendingRoadmapRequest;
+
+  pendingRoadmapRequest = roadmapApi.getRoadmap().finally(() => {
+    pendingRoadmapRequest = null;
+  });
+
+  return pendingRoadmapRequest;
+};
+
 export const useRoadmap = (currentLessonId?: string | null) => {
   const [rawData, setRawData] = useState<ChapterDataAPI[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -10,17 +22,27 @@ export const useRoadmap = (currentLessonId?: string | null) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true; // --- 2. CỜ isMounted ---
+
     const fetchRoadmap = async () => {
       try {
-        const data = await roadmapApi.getRoadmap();
-        setRawData(data);
+        // --- 3. GỌI QUA HÀM DEDUPED ---
+        const data = await fetchRoadmapDeduped();
+
+        if (isMounted) setRawData(data); // Chỉ set khi component còn sống
       } catch (error) {
-        console.error('Failed to fetch roadmap:', error);
+        if (isMounted) console.error('Failed to fetch roadmap:', error);
       } finally {
-        setIsLoading(false);
+        if (isMounted) setIsLoading(false);
       }
     };
+
     fetchRoadmap();
+
+    // --- 4. CLEANUP COMPONENT ---
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {

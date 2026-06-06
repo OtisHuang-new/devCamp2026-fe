@@ -5,7 +5,7 @@ import imgBackGround from './Assets/backGround.jpg';
 import Login from '../auth/Login';
 import Register from '../auth/Register';
 
-function LandingPage() {
+export default function LandingPage() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
@@ -39,5 +39,3 @@ function LandingPage() {
     </div>
   );
 }
-
-export default LandingPage;
