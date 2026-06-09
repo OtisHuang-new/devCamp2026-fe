@@ -4,7 +4,7 @@ import HeaderInfo from './Components/HeaderInfo';
 import Chapter from './Components/Chapter';
 import Login from '../auth/Login';
 import Register from '../auth/Register';
-import { useAuthContext } from '../../shared/context/AuthContext';
+import { useAuthContext_v2 } from '../../shared/context/hooks/useAuthContext_v2';
 import { useState, useRef, useEffect, useMemo } from 'react'; // BỔ SUNG IMPORT
 import { useRoadmap } from './hooks/useRoadmap'; // BỔ SUNG IMPORT TỪ HOOK VỪA TẠO
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -16,7 +16,7 @@ function Roadmap() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { user } = useAuthContext();
+  const { user } = useAuthContext_v2();
   const { chapters, rawData, isLoading } = useRoadmap(user?.current_lesson_id);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(() => {

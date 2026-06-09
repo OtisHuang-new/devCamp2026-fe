@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { submitApi } from '../../Exercise/api/submitApi';
 import type { SubmitResponse } from '../../Exercise/types/submitTypes';
-import { useAuthContext } from '../../../shared/context/AuthContext';
+import { useAuthContext_v2 } from '../../../shared/context/hooks/useAuthContext_v2';
 
 export const useSubmitCode = (exerciseId?: string) => {
-  const { user } = useAuthContext();
+  const { user } = useAuthContext_v2();
 
   const cacheKey = user?._id && exerciseId ? `submission_${user._id}_${exerciseId}` : null;
 

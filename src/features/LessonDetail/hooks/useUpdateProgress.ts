@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { userProgressApi } from '../api/userProgressApi';
-import { useAuthContext } from '../../../shared/context/AuthContext';
+import { useAuthContext_v2 } from '../../../shared/context/hooks/useAuthContext_v2';
 
 export const useUpdateProgress = () => {
-  const { user, updateUser } = useAuthContext();
+  const { user, updateUser } = useAuthContext_v2();
   const [isUpdating, setIsUpdating] = useState(false);
 
   const triggerUpdate = async () => {

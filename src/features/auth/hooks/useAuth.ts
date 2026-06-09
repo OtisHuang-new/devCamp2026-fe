@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { authApi } from '../api/authApi';
-import type { LoginRequest, RegisterRequest } from '../types/authTypes';
-import { useAuthContext } from '../../../shared/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { authApi } from '../api/authApi';
+import { useAuthContext_v2 } from '../../../shared/context/hooks/useAuthContext_v2';
+import type { LoginRequest, RegisterRequest } from '../types/authTypes';
 
 export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { loginState } = useAuthContext();
+  const { loginState } = useAuthContext_v2();
   const navigate = useNavigate();
 
   const handleLogin = async (data: LoginRequest) => {

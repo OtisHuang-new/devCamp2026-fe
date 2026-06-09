@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuthContext } from '../../../shared/context/AuthContext';
+import { useAuthContext_v2 } from '../../../shared/context/hooks/useAuthContext_v2';
 import { useLessonContext } from '../hooks/useLessonContext';
 import bot_showing from '../../../shared/Assets/Mascots/bot_showing.svg';
 import bot_wrong from '../../../shared/Assets/Mascots/bot_wrong.svg';
@@ -9,7 +9,7 @@ interface ContextualizeMessageProps {
 }
 
 const ContextualizeMessage: React.FC<ContextualizeMessageProps> = ({ lessonId }) => {
-  const { user } = useAuthContext();
+  const { user } = useAuthContext_v2();
   const { context, isLoading, error } = useLessonContext(lessonId, user?._id);
 
   if (!user?._id) return null;

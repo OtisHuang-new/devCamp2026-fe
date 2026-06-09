@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useAuthContext } from '../context/AuthContext'; // Nhúng context để gọi hàm logout
+import { useAuthContext_v2 } from '../context/hooks/useAuthContext_v2';
+
 import icon_expand_more from '../Assets/icon_expand_more.svg';
 import icon_profile_prime from '../Assets/icon_profile_prime.svg';
 import round_user_icon_prime from './Assets/round_user_icon_prime.svg';
@@ -11,10 +12,10 @@ interface UserProfileCardProps {
 
 function UserProfileCard({ userName }: UserProfileCardProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { logoutState } = useAuthContext();
+  const { logoutState } = useAuthContext_v2(); // Destructuring, lấy thẳng data từ obj, tương tự với import
   const handleLogout = () => {
-    logoutState(); // Xóa local storage, set user = null
-    setIsOpen(false); // Đóng dropdown
+    logoutState();
+    setIsOpen(false);
   };
 
   return (

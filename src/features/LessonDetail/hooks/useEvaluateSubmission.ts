@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { evaluatorApi } from '../../Exercise/api/evaluatorApi';
 import type { EvaluateResponse } from '../../Exercise/types/evaluatorTypes';
-import { useAuthContext } from '../../../shared/context/AuthContext';
+import { useAuthContext_v2 } from '../../../shared/context/hooks/useAuthContext_v2';
 
 // --- 1. HẠ TẦNG CACHE VÀ DEDUPING ---
 const pendingEvaluations = new Map<string, Promise<EvaluateResponse | null>>();
@@ -50,7 +50,7 @@ const fetchAndCacheEvaluation = async (
 
 // --- 3. HOOK CHÍNH ---
 export const useEvaluateSubmission = (submissionId: string | undefined) => {
-  const { user } = useAuthContext();
+  const { user } = useAuthContext_v2();
 
   const [evaluationData, setEvaluationData] = useState<EvaluateResponse | null>(() => {
     return submissionId ? getCache(submissionId) : null;

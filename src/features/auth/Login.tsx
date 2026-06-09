@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from './hooks/useAuth';
 import background from './Assets/backGround.jpg';
-import { useAuthContext } from '../../shared/context/AuthContext';
+import { useAuthContext_v2 } from '../../shared/context/hooks/useAuthContext_v2';
 import CloseButton from '../../shared/Buttons/CloseButton';
 
 interface LoginProps {
@@ -10,10 +10,10 @@ interface LoginProps {
   onSwitchToRegister: () => void;
 }
 
-function Login({ isOpen, onClose, onSwitchToRegister }: LoginProps) {
+export default function Login({ isOpen, onClose, onSwitchToRegister }: LoginProps) {
   const { handleLogin, isLoading, error } = useAuth();
 
-  const { user } = useAuthContext();
+  const { user } = useAuthContext_v2();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -108,5 +108,3 @@ function Login({ isOpen, onClose, onSwitchToRegister }: LoginProps) {
     </div>
   );
 }
-
-export default Login;

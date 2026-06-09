@@ -1,7 +1,7 @@
 import background from './Assets/backGround.jpg';
 import { useAuth } from './hooks/useAuth';
 import { useState, useEffect } from 'react';
-import { useAuthContext } from '../../shared/context/AuthContext';
+import { useAuthContext_v2 } from '../../shared/context/hooks/useAuthContext_v2';
 import CloseButton from '../../shared/Buttons/CloseButton';
 
 interface RegisterProps {
@@ -12,7 +12,7 @@ interface RegisterProps {
 
 function Register({ isOpen, onClose, onSwitchToLogin }: RegisterProps) {
   const { handleRegister, isLoading, error } = useAuth();
-  const { user } = useAuthContext();
+  const { user } = useAuthContext_v2();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

@@ -1,8 +1,8 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuthContext } from '../shared/context/AuthContext';
+import { useAuthContext_v2 } from '../shared/context/hooks/useAuthContext_v2';
 
 const ProtectedRoute = () => {
-  const { isAuthenticated, isLoading } = useAuthContext();
+  const { isAuthenticated, isLoading } = useAuthContext_v2();
 
   const hasCompletedSurvey = !!localStorage.getItem('survey_job');
 
