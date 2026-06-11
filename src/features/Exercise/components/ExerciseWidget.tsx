@@ -1,6 +1,7 @@
 import { useExercise } from '../hooks/useExercise';
 import { useEffect } from 'react';
 import { useEditorStore } from '../../../shared/store/useEditorStore';
+import { MarkdownRender } from '../../../shared/components/MarkdownRender';
 
 interface ExerciseWidgetProps {
   exerciseId: string;
@@ -57,7 +58,10 @@ function ExerciseWidget({ exerciseId }: ExerciseWidgetProps) {
           </span>
         </div>
 
-        <p className="text-slate-700 font-medium leading-relaxed mb-8">{exercise.content}</p>
+        <MarkdownRender
+          content={exercise.content}
+          className="text-black font-medium leading-relaxed space-y-4 mb-8"
+        />
 
         <div className="space-y-6">
           {visibleExamples.map((ex, index) => (

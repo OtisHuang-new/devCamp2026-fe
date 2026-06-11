@@ -6,6 +6,6 @@ export const exerciseApi = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response: any = await axiosClient.get(`/exercises/${id}`);
 
-    return response.data;
+    return response;
   },
 };
