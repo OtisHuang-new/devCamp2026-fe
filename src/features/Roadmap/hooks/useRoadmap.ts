@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { roadmapApi } from '../api/roadmapApi';
-import type { ChapterDataAPI } from '../types/roadmapTypes';
+import type { ChapterDataAPI, TransformedChapter } from '../types/roadmapTypes';
 import type { PathNode } from '../Components/Chapter';
 
 let pendingRoadmapRequest: Promise<ChapterDataAPI[]> | null = null;
@@ -17,8 +17,8 @@ const fetchRoadmapDeduped = () => {
 
 export const useRoadmap = (currentLessonId?: string | null) => {
   const [rawData, setRawData] = useState<ChapterDataAPI[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [chapters, setChapters] = useState<any[]>([]);
+   
+  const [chapters, setChapters] = useState<TransformedChapter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

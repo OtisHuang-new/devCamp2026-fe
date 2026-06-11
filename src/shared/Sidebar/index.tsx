@@ -4,7 +4,6 @@ import SidebarButton from './components/Button';
 import logo_dark from '../Brand/Assets/logo_dark.svg';
 import icon_learning from './Assets/icon_learning_primary.svg';
 import icon_exercise from './Assets/icon_exercise_primary.svg';
-import icon_ai from './Assets/icon_AI_primary.svg';
 import icon_setting from './Assets/icon_setting.svg';
 
 const Sidebar = () => {
@@ -13,7 +12,6 @@ const Sidebar = () => {
   const mainNavItems = [
     { id: 'Learning', label: 'Learning', icon: icon_learning },
     { id: 'Exercise', label: 'Exercise', icon: icon_exercise },
-    { id: 'AI chat bot', label: 'AI chat bot', icon: icon_ai },
   ];
 
   return (

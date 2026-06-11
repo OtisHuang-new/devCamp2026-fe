@@ -6,6 +6,7 @@ export interface UserInfo {
   information: {
     job: string;
     level: number;
+    background: string;
   };
   current_lesson_id: string | null;
   current_streak: number;

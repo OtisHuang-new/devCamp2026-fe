@@ -7,6 +7,8 @@ import PageLanding from './features/LandingPage/index';
 import SurveyPage from './features/Survey';
 import Roadmap from './features/Roadmap';
 import LessonDetail from './features/LessonDetail';
+import { Profile } from './features/Profile';
+import { Layout } from './shared/Layout';
 
 function App() {
   return (
@@ -18,9 +20,11 @@ function App() {
         </Route>
 
         <Route element={<ProtectedRoute />}>
-          <Route path="/roadmap" element={<Roadmap />} />
-          <Route path="/lesson-detail" element={<LessonDetail />} />
           <Route path="/lessons/:id" element={<LessonDetail />} />
+          <Route element={<Layout />}>
+            <Route path="/roadmap" element={<Roadmap />} />
+            <Route path="/profile" element={<Profile />} />
+          </Route>
         </Route>
 
         <Route path="/" element={<Navigate to="/roadmap" replace />} />

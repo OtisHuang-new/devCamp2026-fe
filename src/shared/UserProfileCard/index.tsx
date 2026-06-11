@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuthContext_v2 } from '../context/hooks/useAuthContext_v2';
+import { useNavigate } from 'react-router-dom';
 
 import icon_expand_more from '../Assets/icon_expand_more.svg';
 import icon_profile_prime from '../Assets/icon_profile_prime.svg';
@@ -11,6 +12,7 @@ interface UserProfileCardProps {
 }
 
 function UserProfileCard({ userName }: UserProfileCardProps) {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const { logoutState } = useAuthContext_v2(); // Destructuring, lấy thẳng data từ obj, tương tự với import
   const handleLogout = () => {
@@ -38,7 +40,13 @@ function UserProfileCard({ userName }: UserProfileCardProps) {
 
       {isOpen && (
         <div className="absolute top-[110%] right-0 w-48 bg-white border border-gray-100 rounded-xl shadow-xl flex flex-col overflow-hidden z-50 animate-fadeIn">
-          <div className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors">
+          <div
+            onClick={function () {
+              navigate('/profile');
+              setIsOpen(false);
+            }}
+            className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors"
+          >
             <img src={icon_profile_prime} alt="Profile" className="w-5 h-5" />
             <span className="text-primary font-bold text-sm">User profile</span>
           </div>
