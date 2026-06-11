@@ -147,7 +147,7 @@ function ProfileContent({ user, logoutState }: ProfileContentProps) {
               options={LEVEL_OPTIONS}
               value={draftData.information.level}
               isEditing={isEditing}
-              onChange={(val) => handleNestedChange('level', Number(val))}
+              onChange={(val) => handleNestedChange('level', val)}
             />
           </div>
 
