@@ -1,7 +1,7 @@
 // Vị trí: src/shared/components/Layout/index.tsx
 import { Outlet } from 'react-router-dom';
-import Sidebar from '../Sidebar';
-import UserProfileCard from '../UserProfileCard';
+import Sidebar from '../components/Sidebar';
+import UserProfileCard from '../components/UserProfileCard';
 import { useAuthContext_v2 } from '../context/hooks/useAuthContext_v2';
 import { useModalStore } from '../store/useModalStore';
 import { useRightbarStore } from '../store/useRightbarStore'; // Import store mới

@@ -4,12 +4,12 @@ import { useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { oneDark } from '@codemirror/theme-one-dark';
-import { useEditorStore } from '../store/useEditorStore';
+import { useEditorStore } from '../../store/useEditorStore';
 import EditorTextArea from './components/EditorTextArea';
 import TestCaseNav from './components/TestCaseNav';
 import TestResultView from './components/TestResultView';
-import type { EditorTestCase } from '../store/useEditorStore';
-import { runApi } from '../../features/Exercise/api/runApi';
+import type { EditorTestCase } from '../../store/useEditorStore';
+import { runApi } from '../../../features/Exercise/api/runApi';
 import type { TestResultProps } from './components/TestResultView';
 interface CodeEditorProps {
   exerciseId: string; // Thêm dòng này

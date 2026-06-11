@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { useAuthContext_v2 } from '../context/hooks/useAuthContext_v2';
+import { useAuthContext_v2 } from '../../context/hooks/useAuthContext_v2';
 import { useNavigate } from 'react-router-dom';
 
-import icon_expand_more from '../Assets/icon_expand_more.svg';
-import icon_profile_prime from '../Assets/icon_profile_prime.svg';
+import icon_expand_more from '../../Assets/icon_expand_more.svg';
+import icon_profile_prime from '@Assets/icon_profile_prime.svg';
 import round_user_icon_prime from './Assets/round_user_icon_prime.svg';
-import power_icon from '../Assets/power.svg';
+import power_icon from '@Assets/power.svg';
 
 interface UserProfileCardProps {
   userName: string;

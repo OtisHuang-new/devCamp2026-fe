@@ -7,7 +7,7 @@ import { useRoadmapScroll } from './hooks/useRoadmapScroll';
 import HeaderInfo from './Components/HeaderInfo';
 import Chapter from './Components/Chapter';
 import SideLessonSection from './Components/SideLessonSection';
-import ScrollToTopButton from '../../shared/Buttons/ScrollToTopButton';
+import ScrollToTopButton from '../../shared/components/Buttons/ScrollToTopButton';
 import { prefetchLessonContext } from '../LessonDetail/hooks/useLessonContext';
 import { useRightbarStore } from '../../shared/store/useRightbarStore';
 

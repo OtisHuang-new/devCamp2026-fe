@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from './hooks/useAuth';
 import background from './Assets/backGround.jpg';
 import { useAuthContext_v2 } from '../../shared/context/hooks/useAuthContext_v2';
-import CloseButton from '../../shared/Buttons/CloseButton';
+import CloseButton from '../../shared/components/Buttons/CloseButton';
 
 interface LoginProps {
   isOpen: boolean;

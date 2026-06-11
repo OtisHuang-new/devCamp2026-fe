@@ -2,7 +2,7 @@ import background from './Assets/backGround.jpg';
 import { useAuth } from './hooks/useAuth';
 import { useState, useEffect } from 'react';
 import { useAuthContext_v2 } from '../../shared/context/hooks/useAuthContext_v2';
-import CloseButton from '../../shared/Buttons/CloseButton';
+import CloseButton from '../../shared/components/Buttons/CloseButton';
 
 interface RegisterProps {
   isOpen: boolean;

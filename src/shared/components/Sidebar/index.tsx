@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import NameBrandPrime from '../Brand/NameBrandPrime';
+import NameBrandPrime from '../../Assets/Brand/NameBrandPrime';
 import SidebarButton from './components/Button';
-import logo_dark from '../Brand/Assets/logo_dark.svg';
+import logo_dark from '@Assets/Brand/Assets/logo_dark.svg';
 import icon_learning from './Assets/icon_learning_primary.svg';
 import icon_exercise from './Assets/icon_exercise_primary.svg';
 import icon_setting from './Assets/icon_setting.svg';

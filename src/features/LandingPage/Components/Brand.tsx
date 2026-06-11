@@ -1,4 +1,5 @@
-import LogoLight from '../../../shared/Brand/Assets/logo_white.svg';
+import LogoLight from '@Assets/Brand/Assets/logo_white.svg';
+// C:\Users\Admin\Desktop\devCamp2026\devCamp2026-fe\src\shared\Assets\Brand\Assets\logo_white.svg
 
 function Brand() {
   return (
