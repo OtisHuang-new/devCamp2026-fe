@@ -9,6 +9,7 @@ import Roadmap from './features/Roadmap';
 import LessonDetail from './features/LessonDetail';
 import { Profile } from './features/Profile';
 import { Layout } from './shared/Layout';
+import { ExerciseList } from './features/Exercise';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/exercises" element={<ExerciseList />} />
           </Route>
         </Route>
 

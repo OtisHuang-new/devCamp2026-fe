@@ -1,17 +1,20 @@
-import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 import NameBrandPrime from '../../Assets/Brand/NameBrandPrime';
 import SidebarButton from './components/Button';
+
 import logo_dark from '@Assets/Brand/Assets/logo_dark.svg';
 import icon_learning from './Assets/icon_learning_primary.svg';
 import icon_exercise from './Assets/icon_exercise_primary.svg';
-import icon_setting from './Assets/icon_setting.svg';
+import type { MainNavItems } from './types/sideBarTypes';
 
 const Sidebar = () => {
-  const [activeTab, setActiveTab] = useState('Learning');
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const mainNavItems = [
-    { id: 'Learning', label: 'Learning', icon: icon_learning },
-    { id: 'Exercise', label: 'Exercise', icon: icon_exercise },
+  const mainNavItems: MainNavItems[] = [
+    { id: 'Learning', label: 'Learning', icon: icon_learning, path: '/roadmap' },
+    { id: 'Exercise', label: 'Exercise', icon: icon_exercise, path: '/exercises' },
   ];
 
   return (
@@ -23,25 +26,20 @@ const Sidebar = () => {
       />
 
       <nav className="flex flex-col gap-3 px-4">
-        {mainNavItems.map((item) => (
-          <SidebarButton
-            key={item.id}
-            label={item.label}
-            iconPath={item.icon}
-            isActive={activeTab === item.id}
-            onClick={() => setActiveTab(item.id)}
-          />
-        ))}
-      </nav>
+        {mainNavItems.map((item) => {
+          const isActive: boolean = location.pathname.startsWith(item.path);
 
-      <div className="mt-auto px-4">
-        <SidebarButton
-          label="Setting"
-          iconPath={icon_setting}
-          isActive={activeTab === 'Setting'}
-          onClick={() => setActiveTab('Setting')}
-        />
-      </div>
+          return (
+            <SidebarButton
+              key={item.id}
+              label={item.label}
+              iconPath={item.icon}
+              isActive={isActive}
+              onClick={() => navigate(item.path)}
+            />
+          );
+        })}
+      </nav>
     </aside>
   );
 };
