@@ -1,19 +1,21 @@
-import bot_like from '../../../shared/Assets/Mascots/bot_like.svg';
-import icon_sent_white from '../assets/icon_sent_white.svg';
+import bot_like from '@Assets/Mascots/bot_like.svg';
+import icon_sent_white from './assets/icon_sent_white.svg';
 
 const SidePanel = ({ videoUrl }: { videoUrl?: string }) => {
   return (
     <div className="w-full h-full flex flex-col p-6 gap-6 bg-[#F9FAFB]">
-      <div className="w-full aspect-video rounded-xl overflow-hidden shadow-sm bg-black">
-        <iframe
-          className="w-full h-full"
-          src={videoUrl || ''}
-          title="Lesson Video"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
-        ></iframe>
-      </div>
+      {videoUrl && (
+        <div className="w-full aspect-video rounded-xl overflow-hidden shadow-sm bg-black">
+          <iframe
+            className="w-full h-full"
+            src={videoUrl || ''}
+            title="Lesson Video"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          ></iframe>
+        </div>
+      )}
 
       <div className="flex-1 flex flex-col bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
         <div className="p-4 border-b border-gray-100 bg-white">

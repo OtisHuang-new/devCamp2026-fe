@@ -1,8 +1,8 @@
 import React from 'react';
 import AIAnalysisSection from './AIAnalysisSection';
 import TestCaseResultItem from './TestCaseResultItem';
-import type { SubmitResponse } from '../../../Exercise/types/submitTypes';
-import { useEditorStore } from '../../../../shared/store/useEditorStore';
+import type { SubmitResponse } from '../../../features/Exercise/types/submitTypes';
+import { useEditorStore } from '../../store/useEditorStore';
 
 interface SubmissionResultProps {
   data: SubmitResponse;

@@ -17,7 +17,7 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({
     <button
       onClick={onClick}
       className={`
-        w-full flex items-center gap-4 px-6 py-2 rounded-lg transition-all duration-200 group
+        w-full flex items-center gap-8 pl-4 py-[11px] rounded-lg transition-all duration-200 group
         ${
           isActive
             ? 'bg-[#6D7EAE] text-white shadow-md'
@@ -33,7 +33,7 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({
         `}
       />
 
-      <span className="font-bold text-lg whitespace-nowrap">{label}</span>
+      <span className="font-bold text-xl whitespace-nowrap">{label}</span>
     </button>
   );
 };

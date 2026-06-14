@@ -16,4 +16,5 @@ export interface UpdateProfileResponse {
     background: string;
   };
   updatedAt: string;
+  hello: string;
 }

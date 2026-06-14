@@ -1,6 +1,6 @@
 // Vị trí: src/features/LessonDetail/components/SubmissionResult/TestCaseResultItem.tsx
 import React, { useState } from 'react';
-import DiffViewer from '../../../../shared/components/CodeEditor/components/DiffViewer';
+import DiffViewer from '../CodeEditor/components/DiffViewer';
 
 interface TestCaseResultItemProps {
   index: number;

@@ -1,11 +1,11 @@
 // Vị trí: src/features/Exercise/types/submitTypes.ts
 
 export interface SubmitPayload {
-  exerciseId: string;
-  userId: string;
-  src_code: string;
+  exercise_id: string;
   language?: string;
-  lessonId: string;
+  lesson_id: string;
+  src_code: string;
+  user_id: string;
 }
 
 export interface SubmitTestCaseResult {
@@ -15,9 +15,9 @@ export interface SubmitTestCaseResult {
 
 export interface SubmitResponse {
   _id: string;
-  exerciseId: string;
-  lessonId: string;
-  userId: string;
+  exercise_id: string;
+  lesson_id: string;
+  user_id: string;
   results: SubmitTestCaseResult[];
   passedCount: number;
   total: number;

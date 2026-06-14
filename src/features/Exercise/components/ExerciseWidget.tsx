@@ -1,7 +1,9 @@
 import { useExercise } from '../hooks/useExercise';
-import { useEffect } from 'react';
-import { useEditorStore } from '../../../shared/store/useEditorStore';
+// import { useEffect } from 'react';
+// import { useEditorStore } from '../../../shared/store/useEditorStore';
 import { MarkdownRender } from '../../../shared/components/MarkdownRender';
+import { useSyncEditorStore } from '../hooks/useSyncEditorStore';
+import { TestCaseList } from './TestCaseList';
 
 interface ExerciseWidgetProps {
   exerciseId: string;
@@ -9,19 +11,8 @@ interface ExerciseWidgetProps {
 
 function ExerciseWidget({ exerciseId }: ExerciseWidgetProps) {
   const { exercise, isLoading } = useExercise(exerciseId);
-  const setInitialCode = useEditorStore((state) => state.setInitialCode);
-  const setPublicTestCases = useEditorStore((state) => state.setPublicTestCases);
 
-  useEffect(() => {
-    if (exercise) {
-      if (exercise.initial_code) {
-        setInitialCode(exercise.initial_code);
-      }
-
-      const visibleCases = exercise.test_cases.filter((tc) => !tc.is_hidden);
-      setPublicTestCases(visibleCases);
-    }
-  }, [exercise, setInitialCode, setPublicTestCases]);
+  useSyncEditorStore(exercise);
 
   if (isLoading) {
     return (
@@ -32,8 +23,6 @@ function ExerciseWidget({ exerciseId }: ExerciseWidgetProps) {
   }
 
   if (!exercise) return null;
-
-  const visibleExamples = exercise.test_cases.filter((tc) => !tc.is_hidden);
 
   return (
     <div className="w-full animate-fadeIn">
@@ -63,23 +52,7 @@ function ExerciseWidget({ exerciseId }: ExerciseWidgetProps) {
           className="text-black font-medium leading-relaxed space-y-4 mb-8"
         />
 
-        <div className="space-y-6">
-          {visibleExamples.map((ex, index) => (
-            <div key={index} className="flex flex-col gap-2">
-              <p className="text-sm font-bold text-slate-600">Example {index + 1}:</p>
-              <div className="bg-white border border-slate-300 rounded-xl p-4 shadow-inner">
-                <div className="font-mono text-sm flex flex-col gap-1">
-                  <p>
-                    <span className="font-bold">Input:</span> {ex.input}
-                  </p>
-                  <p>
-                    <span className="font-bold">Output:</span> {ex.expected_output}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <TestCaseList testCases={exercise.test_cases} />
       </div>
     </div>
   );

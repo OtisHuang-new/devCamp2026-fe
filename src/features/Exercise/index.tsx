@@ -1,30 +1,45 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { TopicFilter } from './components/TopicFilter';
 import { SearchBar } from './components/SearchBar';
 import { ExerciseListRow } from './components/ExerciseListRow';
-import type { ExerciseListItem } from './types/exerciseListTypes';
+import { useExerciseList } from './hooks/useExerciseList';
 
-// DỮ LIỆU GIẢ (Mock Data) - Chuẩn bị cho API ngày mai
-const MOCK_EXERCISES: ExerciseListItem[] = [
-  { id: 1, title: 'Contains Duplicate', difficulty: 'Easy', isSolved: false },
-  { id: 2, title: 'Add Two Numbers', difficulty: 'Medium', isSolved: true },
-  {
-    id: 3,
-    title: 'Longest Substring Without Reapeating Characters',
-    difficulty: 'Easy',
-    isSolved: true,
-  },
-  { id: 4, title: 'Median of Two Sorted Arrays', difficulty: 'Hard', isSolved: false },
-  { id: 5, title: 'Longest Palindromic Substring', difficulty: 'Hard', isSolved: false },
-  { id: 6, title: 'Zigzag Conversion', difficulty: 'Medium', isSolved: false },
-  { id: 7, title: 'Reverse Interger', difficulty: 'Hard', isSolved: true },
-  { id: 8, title: 'String to Interger', difficulty: 'Medium', isSolved: false },
-];
-
-const TOPICS = ['All topics', 'Array', 'String', 'Math', 'Sorting'];
+const TOPICS = ['All', 'Array', 'String', 'Math', 'Sorting'];
 
 export function ExerciseList() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const activeTopic = searchParams.get('topic') || 'All';
+  const activeTitle = searchParams.get('title') || '';
+
+  const handleTopicChange = (newTopic: string) => {
+    const newParams = new URLSearchParams(searchParams);
+
+    if (newTopic === 'All') {
+      newParams.delete('topic');
+    } else {
+      newParams.set('topic', newTopic);
+    }
+
+    setSearchParams(newParams);
+  };
+
+  const handleTitleChange = (newTitle: string) => {
+    const newParams = new URLSearchParams(searchParams);
+
+    if (newTitle === '') {
+      newParams.delete('title');
+    } else {
+      newParams.set('title', newTitle);
+    }
+
+    setSearchParams(newParams);
+  };
+
+  const { exercises, isLoading } = useExerciseList(activeTopic, activeTitle);
+
+  if (isLoading) return <div>Đang tải dữ liệu...</div>;
 
   return (
     <div className="w-full mx-auto px-8 pt-4 font-sans max-w-5xl">
@@ -53,14 +68,23 @@ export function ExerciseList() {
       </div>
 
       {/* VÙNG CHỨA BỘ LỌC (Topic & Search) */}
-      <TopicFilter topics={TOPICS} activeTopic="All topics" />
-      <SearchBar />
+      <TopicFilter
+        topics={TOPICS} //để tạm fix sau
+        activeTopic={activeTopic}
+        onTopicChange={handleTopicChange}
+      />
+
+      <SearchBar activeTitle={activeTitle} onTitleChange={handleTitleChange} />
 
       {/* DANH SÁCH BÀI TẬP */}
       <div className="flex flex-col rounded-xl overflow-hidden">
-        {MOCK_EXERCISES.map((exercise) => (
-          <ExerciseListRow key={exercise.id} data={exercise} />
-        ))}
+        {exercises.map(
+          (
+            exercise, // để tạm fix sau
+          ) => (
+            <ExerciseListRow key={exercise._id} data={exercise} />
+          ),
+        )}
       </div>
     </div>
   );

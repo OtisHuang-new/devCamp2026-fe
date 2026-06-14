@@ -32,7 +32,7 @@ export const useSubmitCode = (exerciseId?: string) => {
 
   const submitCode = async (
     exId: string,
-    lessonId: string,
+    lesson_id: string,
     code: string,
     language: string = 'python-3.14',
   ) => {
@@ -46,9 +46,9 @@ export const useSubmitCode = (exerciseId?: string) => {
 
     try {
       const response = await submitApi.submitCode(exId, {
-        exerciseId: exId,
-        userId: user._id,
-        lessonId,
+        exercise_id: exId,
+        user_id: user._id,
+        lesson_id,
         src_code: code,
         language,
       });

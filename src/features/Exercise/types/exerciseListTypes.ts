@@ -1,9 +1,15 @@
-// Định nghĩa tường minh các cấp độ để tránh gõ sai chính tả
 export type Difficulty = 'Easy' | 'Medium' | 'Hard';
+export type Status = 'accepted' | 'failed' | 'none';
 
 export interface ExerciseListItem {
-  id: number;
+  _id: string;
   title: string;
+  topic: string;
+  status: Status;
   difficulty: Difficulty;
-  isSolved: boolean;
+}
+
+export interface ParamExerciseListItem {
+  topic?: string;
+  title?: string;
 }

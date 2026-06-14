@@ -3,13 +3,13 @@ import { useParams } from 'react-router-dom';
 import { useLesson } from './hooks/useLesson';
 import { useSubmitCode } from './hooks/useSubmitCode';
 
-import SidePanel from './components/SidePanel';
+import SidePanel from '../../shared/components/SidePanel';
 import LessonContent from './components/LessonContent';
 import ExerciseWidget from '../Exercise/components/ExerciseWidget';
 import CodeToggleButton from '../../shared/components/Buttons/CodeToggleButton';
 import CodeEditor from '../../shared/components/CodeEditor';
 import ScrollToTopButton from '../../shared/components/Buttons/ScrollToTopButton';
-import SubmissionResult from './components/SubmissionResult';
+import SubmissionResult from '../../shared/components/SubmissionResult';
 import { useNavigate } from 'react-router-dom';
 import { useUpdateProgress } from './hooks/useUpdateProgress';
 

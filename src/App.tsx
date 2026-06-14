@@ -10,10 +10,13 @@ import LessonDetail from './features/LessonDetail';
 import { Profile } from './features/Profile';
 import { Layout } from './shared/Layout';
 import { ExerciseList } from './features/Exercise';
+import { ExerciseDetail } from './features/ExerciseDetail';
+import { GlobalAudioPlayer } from './shared/components/GlobalAudioPlayer';
 
 function App() {
   return (
     <BrowserRouter>
+      <GlobalAudioPlayer />
       <Routes>
         <Route element={<PublicRoute />}>
           <Route path="/landing" element={<PageLanding />} />
@@ -22,6 +25,7 @@ function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/lessons/:id" element={<LessonDetail />} />
+          <Route path="/exercises/:id" element={<ExerciseDetail />} />
           <Route element={<Layout />}>
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/profile" element={<Profile />} />
