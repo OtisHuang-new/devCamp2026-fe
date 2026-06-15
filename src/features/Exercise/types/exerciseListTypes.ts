@@ -12,4 +12,5 @@ export interface ExerciseListItem {
 export interface ParamExerciseListItem {
   topic?: string;
   title?: string;
+  user_id: string | undefined;
 }

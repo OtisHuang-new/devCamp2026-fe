@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useLesson } from './hooks/useLesson';
-import { useSubmitCode } from './hooks/useSubmitCode';
+import { useSubmitCode } from '../Exercise/hooks/useSubmitCode';
 
 import SidePanel from '../../shared/components/SidePanel';
 import LessonContent from './components/LessonContent';

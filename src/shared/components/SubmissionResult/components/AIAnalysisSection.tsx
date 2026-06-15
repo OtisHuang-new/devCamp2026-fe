@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEvaluateSubmission } from '../../../features/LessonDetail/hooks/useEvaluateSubmission';
+import { useEvaluateSubmission } from '../../../../features/Exercise/hooks/useEvaluateSubmission';
 
 interface AIAnalysisSectionProps {
   submissionId: string;

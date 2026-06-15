@@ -11,7 +11,7 @@ import CodeToggleButton from '../../shared/components/Buttons/CodeToggleButton';
 
 // LƯU Ý ĐƯỜNG DẪN: Nếu useSubmitCode vẫn nằm trong LessonDetail, bạn trỏ về đó.
 // (Chuẩn Senior: Bạn nên move hook này ra src/shared/hooks/useSubmitCode.ts để dùng chung)
-import { useSubmitCode } from '@/features/LessonDetail/hooks/useSubmitCode';
+import { useSubmitCode } from '@/features/Exercise/hooks/useSubmitCode';
 import { useSyncEditorStore } from '../Exercise/hooks/useSyncEditorStore';
 import { TestCaseList } from '../Exercise/components/TestCaseList';
 
@@ -53,11 +53,10 @@ export function ExerciseDetail() {
   const handleSubmit = async (code: string) => {
     if (!exerciseDetail?._id) return;
 
-    // Trong LessonDetail: submitCode(exercise_id, lesson_id, code)
-    // Vì đây là trang bài tập độc lập (không thuộc bài học nào), ta truyền ID bài tập vào, và lesson_id có thể để trống hoặc truyền chính nó tuỳ thiết kế API của bạn.
-    await submitCode(exerciseDetail._id, '', code);
+    // SENIOR FIX: Truyền lesson_id thực sự của bài tập này thay vì chuỗi rỗng
+    await submitCode(exerciseDetail._id, exerciseDetail.lesson_id, code);
 
-    setIsEditorOpen(false); // Nộp xong thì đóng bảng Code lại
+    setIsEditorOpen(false);
   };
 
   // --- XỬ LÝ GIAO DIỆN LOADING & ERROR ---

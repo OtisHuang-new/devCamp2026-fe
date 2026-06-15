@@ -7,6 +7,7 @@ import { useModalStore } from '../store/useModalStore';
 import { useRightbarStore } from '../store/useRightbarStore'; // Import store mới
 import Login from '../../features/auth/Login';
 import Register from '../../features/auth/Register';
+import { StreakWidget } from './components/StreakWidget';
 
 export function Layout() {
   const { user } = useAuthContext_v2();
@@ -66,6 +67,13 @@ export function Layout() {
               </div>
             )}
           </div>
+
+          {/* SENIOR UPDATE: Gắn cứng Streak Widget ở Layout (Chỉ hiện khi đã đăng nhập) */}
+          {user && (
+            <div className="w-full animate-slideUp">
+              <StreakWidget currentStreak={user.current_streak || 0} />
+            </div>
+          )}
 
           {/* Phần dưới: Cổng kết nối hiển thị nội dung động */}
           <div className="w-full flex-1">{rightbarContent}</div>

@@ -1,6 +1,6 @@
 import React from 'react';
-import AIAnalysisSection from './AIAnalysisSection';
-import TestCaseResultItem from './TestCaseResultItem';
+import AIAnalysisSection from './components/AIAnalysisSection';
+import TestCaseResultItem from './components/TestCaseResultItem';
 import type { SubmitResponse } from '../../../features/Exercise/types/submitTypes';
 import { useEditorStore } from '../../store/useEditorStore';
 
@@ -35,6 +35,10 @@ const SubmissionResult: React.FC<SubmissionResultProps> = ({ data, onActionClick
 
   return (
     <div className="w-full space-y-4 animate-fadeIn mb-10">
+      <div>
+        {/* a drop down button, chosing the 5 lasted createdAt, hiển thị by default khi mở lên là cái createdAt mới nhất */}
+      </div>
+
       <p className="text-sm font-medium">
         Submission result: <span className={`${statusColor} font-bold`}>{statusText}</span>
       </p>
@@ -53,6 +57,7 @@ const SubmissionResult: React.FC<SubmissionResultProps> = ({ data, onActionClick
                 expectedOutput={originalCase.expected_output}
                 userOutput={result.output}
                 status={result.status}
+                error={result.error}
               />
             );
           })}

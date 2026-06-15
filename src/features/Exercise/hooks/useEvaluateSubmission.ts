@@ -1,31 +1,33 @@
+// Vị trí mới: src/features/Exercise/hooks/useEvaluateSubmission.ts
+
 import { useState, useEffect } from 'react';
-import { evaluatorApi } from '../../Exercise/api/evaluatorApi';
-import type { EvaluateResponse } from '../../Exercise/types/evaluatorTypes';
+import { evaluatorApi } from '../api/evaluatorApi';
+import type { EvaluateResponse } from '../types/evaluatorTypes';
 import { useAuthContext_v2 } from '../../../shared/context/hooks/useAuthContext_v2';
 
 // --- 1. HẠ TẦNG CACHE VÀ DEDUPING ---
 const pendingEvaluations = new Map<string, Promise<EvaluateResponse | null>>();
 const CACHE_PREFIX = 'ai_eval_';
 
-const getCache = (submissionId: string): EvaluateResponse | null => {
+function getCache(submissionId: string): EvaluateResponse | null {
   const cached = sessionStorage.getItem(`${CACHE_PREFIX}${submissionId}`);
   return cached ? JSON.parse(cached) : null;
-};
+}
 
-const setCache = (submissionId: string, data: EvaluateResponse) => {
+function setCache(submissionId: string, data: EvaluateResponse) {
   sessionStorage.setItem(`${CACHE_PREFIX}${submissionId}`, JSON.stringify(data));
-};
+}
 
 // --- 2. HÀM LÕI (CORE FETCHER) ---
-const fetchAndCacheEvaluation = async (
+async function fetchAndCacheEvaluation(
   submissionId: string,
   userId: string,
-): Promise<EvaluateResponse | null> => {
+): Promise<EvaluateResponse | null> {
   const cachedData = getCache(submissionId);
   if (cachedData) return cachedData; // Có cache -> Trả về ngay
 
   if (pendingEvaluations.has(submissionId)) {
-    return pendingEvaluations.get(submissionId) as Promise<EvaluateResponse | null>; // Có promise đang chạy -> Ké kết quả
+    return pendingEvaluations.get(submissionId) as Promise<EvaluateResponse | null>;
   }
 
   const requestPromise = (async () => {
@@ -40,17 +42,20 @@ const fetchAndCacheEvaluation = async (
       }
       return null;
     } finally {
-      pendingEvaluations.delete(submissionId); // Luôn dọn dẹp hàng đợi
+      pendingEvaluations.delete(submissionId);
     }
   })();
 
   pendingEvaluations.set(submissionId, requestPromise);
   return requestPromise;
-};
+}
 
 // --- 3. HOOK CHÍNH ---
-export const useEvaluateSubmission = (submissionId: string | undefined) => {
+export function useEvaluateSubmission(submissionId: string | undefined) {
   const { user } = useAuthContext_v2();
+
+  // SENIOR FIX: Rút ID ra thành một biến chuỗi (Primitive) ngay từ đầu
+  const userId = user?._id;
 
   const [evaluationData, setEvaluationData] = useState<EvaluateResponse | null>(() => {
     return submissionId ? getCache(submissionId) : null;
@@ -63,13 +68,14 @@ export const useEvaluateSubmission = (submissionId: string | undefined) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!submissionId || !user?._id) return;
+    // Chỉ sử dụng biến chuỗi userId, Linter sẽ không đòi theo dõi cả cục Object user nữa
+    if (!submissionId || !userId) return;
 
-    let isMounted = true; // Biến cờ bảo vệ Pure Function
+    let isMounted = true;
 
-    const fetchEvaluation = async () => {
-      if (getCache(submissionId)) {
-        setEvaluationData(getCache(submissionId));
+    async function fetchEvaluation() {
+      if (getCache(submissionId!)) {
+        setEvaluationData(getCache(submissionId!));
         setIsEvaluating(false);
         setError(null);
         return;
@@ -79,28 +85,27 @@ export const useEvaluateSubmission = (submissionId: string | undefined) => {
       setError(null);
 
       try {
-        const data = await fetchAndCacheEvaluation(submissionId, user._id);
+        const data = await fetchAndCacheEvaluation(submissionId!, userId!);
         if (isMounted && data) {
           setEvaluationData(data);
         }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (err: any) {
+      } catch (err: unknown) {
         if (isMounted) {
-          setError(err?.message || JSON.stringify(err) || 'Failed to fetch AI evaluation');
+          setError(err instanceof Error ? err.message : 'Failed to fetch AI evaluation');
         }
       } finally {
         if (isMounted) {
           setIsEvaluating(false);
         }
       }
-    };
+    }
 
     fetchEvaluation();
 
     return () => {
-      isMounted = false; // Cleanup: Hủy cập nhật state nếu component unmount
+      isMounted = false;
     };
-  }, [submissionId, user?._id]);
+  }, [submissionId, userId]); // Dùng userId làm dependency an toàn
 
   return { isEvaluating, evaluationData, error };
-};
+}

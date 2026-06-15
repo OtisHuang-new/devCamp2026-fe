@@ -3,12 +3,14 @@ import { TopicFilter } from './components/TopicFilter';
 import { SearchBar } from './components/SearchBar';
 import { ExerciseListRow } from './components/ExerciseListRow';
 import { useExerciseList } from './hooks/useExerciseList';
+import { useAuthContext_v2 } from '@/shared/context/hooks/useAuthContext_v2';
 
 const TOPICS = ['All', 'Array', 'String', 'Math', 'Sorting'];
 
 export function ExerciseList() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { user } = useAuthContext_v2();
 
   const activeTopic = searchParams.get('topic') || 'All';
   const activeTitle = searchParams.get('title') || '';
@@ -37,7 +39,7 @@ export function ExerciseList() {
     setSearchParams(newParams);
   };
 
-  const { exercises, isLoading } = useExerciseList(activeTopic, activeTitle);
+  const { exercises, isLoading } = useExerciseList(activeTopic, activeTitle, user?._id);
 
   if (isLoading) return <div>Đang tải dữ liệu...</div>;
 
@@ -68,22 +70,19 @@ export function ExerciseList() {
       </div>
 
       {/* VÙNG CHỨA BỘ LỌC (Topic & Search) */}
-      <TopicFilter
-        topics={TOPICS} //để tạm fix sau
-        activeTopic={activeTopic}
-        onTopicChange={handleTopicChange}
-      />
+      <TopicFilter topics={TOPICS} activeTopic={activeTopic} onTopicChange={handleTopicChange} />
 
       <SearchBar activeTitle={activeTitle} onTitleChange={handleTitleChange} />
 
       {/* DANH SÁCH BÀI TẬP */}
       <div className="flex flex-col rounded-xl overflow-hidden">
-        {exercises.map(
-          (
-            exercise, // để tạm fix sau
-          ) => (
-            <ExerciseListRow key={exercise._id} data={exercise} />
-          ),
+        {/* SENIOR FIX: Code phòng thủ. Chỉ map khi nó chắc chắn là 1 Array */}
+        {Array.isArray(exercises) && exercises.length > 0 ? (
+          exercises.map((exercise) => <ExerciseListRow key={exercise._id} data={exercise} />)
+        ) : (
+          <div className="text-center py-10 text-gray-500 font-medium">
+            Không có bài tập nào hoặc dữ liệu bị lỗi.
+          </div>
         )}
       </div>
     </div>

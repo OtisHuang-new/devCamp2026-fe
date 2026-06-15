@@ -1,9 +1,11 @@
+// Vị trí mới: src/features/Exercise/hooks/useSubmitCode.ts
+
 import { useState, useEffect } from 'react';
-import { submitApi } from '../../Exercise/api/submitApi';
-import type { SubmitResponse } from '../../Exercise/types/submitTypes';
+import { submitApi } from '../api/submitApi';
+import type { SubmitResponse } from '../types/submitTypes';
 import { useAuthContext_v2 } from '../../../shared/context/hooks/useAuthContext_v2';
 
-export const useSubmitCode = (exerciseId?: string) => {
+export function useSubmitCode(exerciseId?: string) {
   const { user } = useAuthContext_v2();
 
   const cacheKey = user?._id && exerciseId ? `submission_${user._id}_${exerciseId}` : null;
@@ -18,24 +20,24 @@ export const useSubmitCode = (exerciseId?: string) => {
   });
 
   useEffect(() => {
-    const syncCache = async () => {
+    async function syncCache() {
       if (cacheKey) {
         const cached = sessionStorage.getItem(cacheKey);
         setSubmitResult(cached ? JSON.parse(cached) : null);
       } else {
         setSubmitResult(null);
       }
-    };
+    }
 
     syncCache();
   }, [cacheKey]);
 
-  const submitCode = async (
+  async function submitCode(
     exId: string,
     lesson_id: string,
     code: string,
     language: string = 'python-3.14',
-  ) => {
+  ) {
     if (!user?._id) {
       setError('User not authenticated');
       return;
@@ -58,13 +60,13 @@ export const useSubmitCode = (exerciseId?: string) => {
       }
 
       setSubmitResult(response);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      setError(err?.message || 'Failed to submit code');
+    } catch (err: unknown) {
+      // SENIOR CATCH: Dùng unknown thay vì any, sau đó check instanceof Error
+      setError(err instanceof Error ? err.message : 'Failed to submit code');
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }
 
   return { submitCode, isSubmitting, submitResult, error };
-};
+}
