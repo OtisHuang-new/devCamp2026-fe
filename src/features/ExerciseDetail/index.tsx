@@ -123,7 +123,7 @@ export function ExerciseDetail() {
 
       {/* CỘT PHẢI: AI Assistant */}
       <div className="w-[35%] h-full">
-        <SidePanel />
+        <SidePanel lessonId={exerciseDetail.lesson_id} exerciseId={exerciseDetail._id} />
       </div>
 
       {/* --- CÁC COMPONENT NỔI (ABSOLUTE/FIXED) BÊN NGOÀI LAYOUT CHÍNH --- */}

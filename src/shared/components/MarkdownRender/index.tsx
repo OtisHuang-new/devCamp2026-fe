@@ -41,7 +41,7 @@ export function MarkdownRender({
           h3: (props) => (
             <h3 className="text-xl font-bold text-slate-800 mt-6 mb-3" {...omitNode(props)} />
           ),
-          p: (props) => <p className="mb-4" {...omitNode(props)} />,
+          p: (props) => <p className="mb-2" {...omitNode(props)} />,
           ul: (props) => <ul className="list-disc ml-6 space-y-2 mb-4" {...omitNode(props)} />,
           ol: (props) => <ol className="list-decimal ml-6 space-y-2 mb-4" {...omitNode(props)} />,
           li: (props) => <li className="text-base" {...omitNode(props)} />,

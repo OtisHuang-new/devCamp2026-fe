@@ -129,7 +129,11 @@ const LessonDetail = () => {
       </div>
 
       <div className="w-[35%] h-full">
-        <SidePanel videoUrl={lesson.video_url} />
+        <SidePanel
+          videoUrl={lesson.video_url}
+          lessonId={lesson._id}
+          exerciseId={lesson.exercise_id}
+        />
       </div>
 
       {!isEditorOpen && (
