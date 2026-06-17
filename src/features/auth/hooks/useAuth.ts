@@ -8,7 +8,7 @@ export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { loginState } = useAuthContext_v2();
+  const { loginState, logoutState } = useAuthContext_v2();
   const navigate = useNavigate();
 
   const handleLogin = async (data: LoginRequest) => {
@@ -46,5 +46,20 @@ export const useAuth = () => {
     }
   };
 
-  return { handleLogin, handleRegister, isLoading, error };
+  const handleLogout = async () => {
+    setIsLoading(true);
+    try {
+      await authApi.logout();
+    } catch (err: unknown) {
+      // Bỏ qua lỗi hiển thị UI vì đằng nào mình cũng ép đăng xuất cục bộ
+      console.error('Lỗi khi gọi API đăng xuất:', err instanceof Error ? err.message : String(err));
+    } finally {
+      // Dù API có tèo thì vẫn phải dọn rác ở LocalStorage và Context
+      logoutState();
+      navigate('/'); // Đá user về trang chủ hoặc trang đăng nhập tùy bạn
+      setIsLoading(false);
+    }
+  };
+
+  return { handleLogin, handleLogout, handleRegister, isLoading, error };
 };

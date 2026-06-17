@@ -1,4 +1,5 @@
 // Vị trí: src/shared/Layout/components/StreakWidget.tsx
+
 import { calculateWeeklyStreak } from '../utils/streakLogic';
 import { DayCircle } from './DayCircle';
 
@@ -7,14 +8,14 @@ import iconStreak from '../assets/icon_streak.svg';
 
 interface StreakWidgetProps {
   currentStreak: number;
+  lastActiveAt?: string | null; // <-- MỚI: Nhận thêm mỏ neo từ Layout cha
 }
 
-// Mảng cố định để in ra UI
 const DAYS_OF_WEEK = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
 
-export function StreakWidget({ currentStreak }: StreakWidgetProps) {
-  // 1. Chạy thuật toán để lấy mảng 7 ngày [true, true, false, ...]
-  const weekStatus = calculateWeeklyStreak(currentStreak);
+export function StreakWidget({ currentStreak, lastActiveAt }: StreakWidgetProps) {
+  // 1. SỬA: Truyền thêm mỏ neo vào hàm tính toán
+  const weekStatus = calculateWeeklyStreak(currentStreak, lastActiveAt);
 
   return (
     <div className="w-full bg-[#F6F6F6] rounded-2xl p-5 flex flex-col gap-2 animate-fadeIn">
@@ -34,12 +35,7 @@ export function StreakWidget({ currentStreak }: StreakWidgetProps) {
       {/* PHẦN DƯỚI: Thanh hiển thị 7 ngày */}
       <div className="bg-white rounded-2xl p-4 px-6 flex justify-between items-center shadow-sm">
         {DAYS_OF_WEEK.map((dayLabel, index) => (
-          <DayCircle
-            key={dayLabel}
-            dayLabel={dayLabel}
-            // Trạng thái true/false lấy từ thuật toán
-            isActive={weekStatus[index]}
-          />
+          <DayCircle key={dayLabel} dayLabel={dayLabel} isActive={weekStatus[index]} />
         ))}
       </div>
     </div>

@@ -1,15 +1,14 @@
-import React from 'react';
-import { useEvaluateSubmission } from '../../../../features/Exercise/hooks/useEvaluateSubmission';
+// Vị trí: src/shared/components/SubmissionResult/components/AIAnalysisSection.tsx
+import type { AIEvaluation } from '../../../../features/Exercise/types/submitTypes';
 
 interface AIAnalysisSectionProps {
-  submissionId: string;
   isAllPassed: boolean;
+  evaluationData?: AIEvaluation;
 }
 
-const AIAnalysisSection: React.FC<AIAnalysisSectionProps> = ({ submissionId, isAllPassed }) => {
-  const { isEvaluating, evaluationData, error } = useEvaluateSubmission(submissionId);
-
-  if (isEvaluating) {
+export default function AIAnalysisSection({ isAllPassed, evaluationData }: AIAnalysisSectionProps) {
+  // Nếu chưa có data (AI đang chấm hoặc lỗi), ta hiện trạng thái chờ
+  if (!evaluationData) {
     return (
       <div className="pt-6 border-t border-gray-100">
         <div className="flex items-center gap-2.5 mb-6 animate-pulse">
@@ -35,82 +34,44 @@ const AIAnalysisSection: React.FC<AIAnalysisSectionProps> = ({ submissionId, isA
           </svg>
           <span className="font-bold text-slate-700 text-sm">AI is evaluating your code...</span>
         </div>
-
-        <div className="grid grid-cols-2 gap-10 animate-pulse opacity-50">
-          <div className="space-y-4">
-            <div>
-              <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded w-full mb-1"></div>
-              <div className="h-3 bg-gray-200 rounded w-5/6"></div>
-            </div>
-            <div>
-              <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded w-full mb-1"></div>
-              <div className="h-3 bg-gray-200 rounded w-4/6"></div>
-            </div>
-          </div>
-          <div className="flex flex-col items-end gap-2 text-right">
-            <div className="h-8 bg-gray-100 rounded-lg w-32 mb-2"></div>
-            <div className="h-3 bg-gray-200 rounded w-32 mb-1"></div>
-            <div className="h-3 bg-gray-200 rounded w-24"></div>
-          </div>
-        </div>
       </div>
     );
   }
 
-  if (error) {
-    return (
-      <div className="pt-4 border-t border-gray-100 animate-fadeIn">
-        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
-          <span className="font-bold">Lỗi phân tích AI: </span>
-          {error}
-        </div>
-      </div>
-    );
-  }
+  // Nếu đã có data thì render bình thường
+  const title1 = isAllPassed ? 'Clean Code:' : 'Error destination:';
+  const title2 = isAllPassed ? 'Refactoring:' : 'How to fix:';
 
-  if (evaluationData) {
-    const title1 = isAllPassed ? 'Clean Code:' : 'Error destination:';
-    const title2 = isAllPassed ? 'Refactoring:' : 'How to fix:';
-
-    const { first_res, second_res } = evaluationData.AI_evaluation;
-
-    return (
-      <div className="grid grid-cols-2 gap-10 pt-4 border-t border-gray-100 animate-fadeIn">
-        <div className="space-y-4">
-          <div>
-            <h4 className="text-sm font-bold text-slate-800 mb-1">{title1}</h4>
-            <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap">
-              {first_res || 'No detail description.'}
-            </p>
-          </div>
-          {second_res && (
-            <div>
-              <h4 className="text-sm font-bold text-slate-800 mb-1">{title2}</h4>
-              <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap">
-                {second_res}
-              </p>
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col items-end gap-2 text-right">
-          <select className="bg-gray-100 border-none text-xs font-bold rounded-lg px-3 py-1.5 outline-none cursor-pointer mb-2">
-            <option>Analyze further</option>
-          </select>
-          <p className="text-xs text-slate-600">Time Complexity: $O(n \log n)$</p>
-          <p className="text-xs text-slate-600">Space Complexity: $O(n)$</p>
-          <p className="text-[10px] text-slate-400 italic mt-2 leading-tight">
-            Use memory efficiently, however,
-            <br /> unnecessary temporary variables can be reduced.
+  return (
+    <div className="grid grid-cols-2 gap-10 pt-4 border-t border-gray-100 animate-fadeIn">
+      <div className="space-y-4">
+        <div>
+          <h4 className="text-sm font-bold text-slate-800 mb-1">{title1}</h4>
+          <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap">
+            {evaluationData.first_res || 'No detail description.'}
           </p>
         </div>
+        {evaluationData.second_res && (
+          <div>
+            <h4 className="text-sm font-bold text-slate-800 mb-1">{title2}</h4>
+            <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap">
+              {evaluationData.second_res}
+            </p>
+          </div>
+        )}
       </div>
-    );
-  }
 
-  return null;
-};
-
-export default AIAnalysisSection;
+      <div className="flex flex-col items-end gap-2 text-right">
+        <select className="bg-gray-100 border-none text-xs font-bold rounded-lg px-3 py-1.5 outline-none cursor-pointer mb-2">
+          <option>Analyze further</option>
+        </select>
+        <p className="text-xs text-slate-600">Time Complexity: $O(n \log n)$</p>
+        <p className="text-xs text-slate-600">Space Complexity: $O(n)$</p>
+        <p className="text-[10px] text-slate-400 italic mt-2 leading-tight">
+          Use memory efficiently, however,
+          <br /> unnecessary temporary variables can be reduced.
+        </p>
+      </div>
+    </div>
+  );
+}

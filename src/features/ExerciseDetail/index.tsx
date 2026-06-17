@@ -12,6 +12,7 @@ import CodeToggleButton from '../../shared/components/Buttons/CodeToggleButton';
 // LƯU Ý ĐƯỜNG DẪN: Nếu useSubmitCode vẫn nằm trong LessonDetail, bạn trỏ về đó.
 // (Chuẩn Senior: Bạn nên move hook này ra src/shared/hooks/useSubmitCode.ts để dùng chung)
 import { useSubmitCode } from '@/features/Exercise/hooks/useSubmitCode';
+import { useSubmissionHistory } from '@/features/Exercise/hooks/useSubmissionHistory';
 import { useSyncEditorStore } from '../Exercise/hooks/useSyncEditorStore';
 import { TestCaseList } from '../Exercise/components/TestCaseList';
 
@@ -26,12 +27,11 @@ export function ExerciseDetail() {
 
   // 2. HOOK XỬ LÝ NỘP BÀI
   // Dùng toán tử optional chaining (?) vì lúc đầu exerciseDetail có thể null
-  const {
-    submitCode,
-    isSubmitting,
-    submitResult,
-    error: submitError,
-  } = useSubmitCode(exerciseDetail?._id);
+  const { submitCode, isSubmitting, error: submitError } = useSubmitCode(exerciseDetail?._id);
+
+  const { history, selectedIndex, setSelectedIndex, fetchHistory } = useSubmissionHistory(
+    exerciseDetail?._id,
+  );
 
   // 3. EFFECT: Phím tắt đóng/mở Editor (Giống hệt LessonDetail)
   useEffect(() => {
@@ -49,12 +49,15 @@ export function ExerciseDetail() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // 4. HÀM XỬ LÝ NỘP BÀI TỪ CODE EDITOR
+  // 3. SỬA HÀM NÀY:
   const handleSubmit = async (code: string) => {
     if (!exerciseDetail?._id) return;
 
-    // SENIOR FIX: Truyền lesson_id thực sự của bài tập này thay vì chuỗi rỗng
+    // Nộp bài
     await submitCode(exerciseDetail._id, exerciseDetail.lesson_id, code);
+
+    // Nộp xong thì ra lệnh cho History nạp lại dữ liệu mới nhất
+    await fetchHistory();
 
     setIsEditorOpen(false);
   };
@@ -115,8 +118,14 @@ export function ExerciseDetail() {
             </div>
           )}
 
-          {!isSubmitting && submitResult && (
-            <SubmissionResult data={submitResult} onActionClick={() => navigate('/exercises')} />
+          {/* 4. SỬA ĐOẠN NÀY: Dùng history.length > 0 thay vì submitResult */}
+          {!isSubmitting && history.length > 0 && (
+            <SubmissionResult
+              history={history}
+              selectedIndex={selectedIndex}
+              onSelectIndex={setSelectedIndex}
+              onActionClick={() => navigate('/exercises')}
+            />
           )}
         </div>
       </div>

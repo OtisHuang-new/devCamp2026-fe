@@ -1,18 +1,34 @@
-import React from 'react';
+// Vị trí: src/shared/components/SubmissionResult/index.tsx
 import AIAnalysisSection from './components/AIAnalysisSection';
 import TestCaseResultItem from './components/TestCaseResultItem';
-import type { SubmitResponse } from '../../../features/Exercise/types/submitTypes';
+import type { SubmissionHistoryItem } from '../../../features/Exercise/types/submitTypes';
 import { useEditorStore } from '../../store/useEditorStore';
 
 interface SubmissionResultProps {
-  data: SubmitResponse;
+  history: SubmissionHistoryItem[];
+  selectedIndex: number;
+  onSelectIndex: (index: number) => void;
   onActionClick?: () => void;
 }
 
-const SubmissionResult: React.FC<SubmissionResultProps> = ({ data, onActionClick }) => {
+export default function SubmissionResult({
+  history,
+  selectedIndex,
+  onSelectIndex,
+  onActionClick,
+}: SubmissionResultProps) {
   const publicTestCases = useEditorStore((state) => state.publicTestCases);
-  const publicResults = data.results.slice(0, publicTestCases.length);
-  const isAllPassed = data.passedCount === data.total;
+
+  // Lấy dữ liệu của Version đang được chọn
+  const currentData = history[selectedIndex];
+
+  if (!currentData) return null;
+
+  const publicResults = currentData.results.slice(0, publicTestCases.length);
+  const passedCount = currentData.results.filter((r) => r.status === 'passed').length;
+  const total = currentData.results.length;
+
+  const isAllPassed = passedCount === total;
   const isPublicPassed = publicResults.every((r) => r.status === 'passed');
 
   let statusText = '';
@@ -33,17 +49,41 @@ const SubmissionResult: React.FC<SubmissionResultProps> = ({ data, onActionClick
     borderColor = 'border-red-500';
   }
 
+  // Hàm phụ trợ fomat ngày tháng cho đẹp: "17:29 - 16/06/2026"
+  function formatDate(isoString: string) {
+    const d = new Date(isoString);
+    const time = d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    const date = d.toLocaleDateString('vi-VN');
+    return `${time} - ${date}`;
+  }
+
   return (
     <div className="w-full space-y-4 animate-fadeIn mb-10">
-      <div>
-        {/* a drop down button, chosing the 5 lasted createdAt, hiển thị by default khi mở lên là cái createdAt mới nhất */}
+      {/* KHU VỰC 1: DROPDOWN CHỌN VERSION */}
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-medium">
+          Submission result: <span className={`${statusColor} font-bold`}>{statusText}</span>
+        </p>
+
+        {/* Dropdown HTML tiêu chuẩn, dễ xài, bo góc đẹp */}
+        <select
+          value={selectedIndex}
+          onChange={(e) => onSelectIndex(Number(e.target.value))}
+          className="bg-gray-100 border border-gray-300 text-sm font-bold text-slate-700 rounded-lg px-3 py-1.5 outline-none cursor-pointer focus:ring-2 focus:ring-[#1E3A8A]"
+        >
+          {history.map((item, index) => (
+            <option key={item._id} value={index}>
+              {index === 0 ? 'Latest: ' : `Version ${history.length - index}: `}
+              {formatDate(item.createdAt)}
+            </option>
+          ))}
+        </select>
       </div>
 
-      <p className="text-sm font-medium">
-        Submission result: <span className={`${statusColor} font-bold`}>{statusText}</span>
-      </p>
-
-      <div className={`border-2 ${borderColor} rounded-2xl py-6 px-4 bg-white shadow-sm space-y-6`}>
+      {/* KHU VỰC 2: HIỂN THỊ KẾT QUẢ */}
+      <div
+        className={`border-2 ${borderColor} rounded-2xl py-6 px-4 bg-white shadow-sm space-y-6 transition-colors duration-300`}
+      >
         <div className="max-h-[450px] overflow-y-auto custom-scrollbar pr-2 space-y-6">
           {publicResults.map((result, index) => {
             const originalCase = publicTestCases[index];
@@ -63,7 +103,7 @@ const SubmissionResult: React.FC<SubmissionResultProps> = ({ data, onActionClick
           })}
         </div>
 
-        <AIAnalysisSection submissionId={data._id} isAllPassed={isAllPassed} />
+        <AIAnalysisSection isAllPassed={isAllPassed} evaluationData={currentData.AI_evaluation} />
       </div>
 
       <div className="flex justify-center mt-8">
@@ -76,6 +116,4 @@ const SubmissionResult: React.FC<SubmissionResultProps> = ({ data, onActionClick
       </div>
     </div>
   );
-};
-
-export default SubmissionResult;
+}

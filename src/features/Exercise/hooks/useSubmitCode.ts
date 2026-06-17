@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { submitApi } from '../api/submitApi';
-import type { SubmitResponse } from '../types/submitTypes';
+import type { PostSubmitResponse } from '../types/submitTypes';
+import { evaluatorApi } from '../api/evaluatorApi';
 import { useAuthContext_v2 } from '../../../shared/context/hooks/useAuthContext_v2';
 
 export function useSubmitCode(exerciseId?: string) {
@@ -13,7 +14,8 @@ export function useSubmitCode(exerciseId?: string) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [submitResult, setSubmitResult] = useState<SubmitResponse | null>(() => {
+  // 2. SỬA: Thay SubmitResponse bằng PostSubmitResponse
+  const [submitResult, setSubmitResult] = useState<PostSubmitResponse | null>(() => {
     if (!cacheKey) return null;
     const cached = sessionStorage.getItem(cacheKey);
     return cached ? JSON.parse(cached) : null;
@@ -47,6 +49,7 @@ export function useSubmitCode(exerciseId?: string) {
     setError(null);
 
     try {
+      // HÀNH ĐỘNG 1: Gọi API Nộp bài (Bắt buộc thành công)
       const response = await submitApi.submitCode(exId, {
         exercise_id: exId,
         user_id: user._id,
@@ -55,13 +58,28 @@ export function useSubmitCode(exerciseId?: string) {
         language,
       });
 
+      // HÀNH ĐỘNG 2: Gọi AI đánh giá (Graceful Degradation - Lỗi thì bỏ qua)
+      try {
+        // Truyền response._id (chính là submissionId) vào API AI
+        await evaluatorApi.evaluateSubmission(response._id, {
+          isExercise: true,
+          userId: user._id, // User ID đã được check tồn tại ở đầu hàm
+        });
+      } catch (aiError: unknown) {
+        // Chỉ Log ra console, KHÔNG throw lỗi để luồng nộp bài vẫn đi tiếp
+        console.warn(
+          'AI Evaluation bị bỏ qua do lỗi (nhưng bài nộp đã thành công):',
+          aiError instanceof Error ? aiError.message : String(aiError),
+        );
+      }
+
       if (cacheKey) {
         sessionStorage.setItem(cacheKey, JSON.stringify(response));
       }
 
       setSubmitResult(response);
     } catch (err: unknown) {
-      // SENIOR CATCH: Dùng unknown thay vì any, sau đó check instanceof Error
+      // Chỉ những lỗi nghiêm trọng của HÀNH ĐỘNG 1 mới rớt xuống đây
       setError(err instanceof Error ? err.message : 'Failed to submit code');
     } finally {
       setIsSubmitting(false);

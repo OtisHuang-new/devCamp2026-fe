@@ -71,7 +71,10 @@ export function Layout() {
           {/* SENIOR UPDATE: Gắn cứng Streak Widget ở Layout (Chỉ hiện khi đã đăng nhập) */}
           {user && (
             <div className="w-full animate-slideUp">
-              <StreakWidget currentStreak={user.current_streak || 0} />
+              <StreakWidget
+                currentStreak={user.current_streak || 0}
+                lastActiveAt={user.lastActiveAt} // <-- MỚI: Truyền xuống
+              />
             </div>
           )}
 

@@ -2,34 +2,46 @@
 
 /**
  * Hàm Pure Function: Tính toán mảng 7 ngày (T2 -> CN) có được đánh dấu Streak hay không.
- * @param currentStreak Số ngày học liên tiếp hiện tại
- * @param currentDate Ngày hiện tại (Mặc định là thời gian hệ thống thực)
- * @returns Mảng 7 boolean tương ứng từ Thứ 2 đến Chủ Nhật
+ * Nâng cấp: Sử dụng lastActiveAt làm mỏ neo thay vì "Hôm nay".
  */
 export function calculateWeeklyStreak(
   currentStreak: number,
-  currentDate: Date = new Date(),
+  lastActiveAt: string | null | undefined,
 ): boolean[] {
-  // 1. Lấy vị trí ngày hôm nay (0: Chủ Nhật -> 6: Thứ Bảy)
-  const dayOfWeek = currentDate.getDay();
-
-  // 2. Chuyển đổi sang chuẩn VN: 0 (Thứ 2) -> 6 (Chủ Nhật)
-  const todayIndex = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-
-  // 3. Khởi tạo mảng 7 ngày mặc định là chưa học (false)
+  // Khởi tạo mảng mặc định 7 ngày false
   const weekStatus = [false, false, false, false, false, false, false];
 
-  // 4. Lùi dần về quá khứ dựa trên số ngày streak
-  for (let i = 0; i < currentStreak; i++) {
-    const targetIndex = todayIndex - i;
+  // Nếu không có mỏ neo thời gian hoặc streak = 0, trả về rỗng luôn
+  if (!lastActiveAt || currentStreak <= 0) {
+    return weekStatus;
+  }
 
-    // Guard: Nếu lùi quá Thứ 2 của tuần này (index < 0) thì dừng vòng lặp
-    if (targetIndex < 0) {
-      break;
+  // 1. Tính toán Mốc thời gian của Streak (Đưa tất cả về 00:00:00 để so sánh chuẩn xác)
+  const lastActiveDate = new Date(lastActiveAt);
+  lastActiveDate.setHours(0, 0, 0, 0);
+
+  const streakStartDate = new Date(lastActiveDate);
+  streakStartDate.setDate(streakStartDate.getDate() - (currentStreak - 1));
+
+  // 2. Tìm ngày Thứ Hai của TUẦN HIỆN TẠI (Làm Cửa sổ quét)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const dayOfWeek = today.getDay(); // 0 là Chủ Nhật, 1 là T2...
+  const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+  const mondayOfThisWeek = new Date(today);
+  mondayOfThisWeek.setDate(today.getDate() + diffToMonday);
+
+  // 3. Duyệt 7 ngày của tuần này xem ngày nào rơi vào Streak thì bôi đen (true)
+  for (let i = 0; i < 7; i++) {
+    const currentDayNode = new Date(mondayOfThisWeek);
+    currentDayNode.setDate(mondayOfThisWeek.getDate() + i);
+
+    // Nếu ô tròn của ngày này nằm TRONG KHOẢNG từ streakStart đến lastActive
+    if (currentDayNode >= streakStartDate && currentDayNode <= lastActiveDate) {
+      weekStatus[i] = true;
     }
-
-    // Đánh dấu ngày đó là đã học (true)
-    weekStatus[targetIndex] = true;
   }
 
   return weekStatus;

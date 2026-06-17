@@ -13,6 +13,7 @@ export interface UserInfo {
   score_avg: number;
   createdAt: string;
   updatedAt: string;
+  lastActiveAt?: string | null; // <-- MỚI: Thêm trường này vào
 }
 
 export interface AuthContextType {

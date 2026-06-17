@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useLesson } from './hooks/useLesson';
 import { useSubmitCode } from '../Exercise/hooks/useSubmitCode';
+import { useSubmissionHistory } from '../Exercise/hooks/useSubmissionHistory';
 
 import SidePanel from '../../shared/components/SidePanel';
 import LessonContent from './components/LessonContent';
@@ -24,11 +25,23 @@ const LessonDetail = () => {
     submitResult,
     error: submitError,
   } = useSubmitCode(lesson?.exercise_id);
+
+  const { history, selectedIndex, setSelectedIndex, fetchHistory } = useSubmissionHistory(
+    lesson?.exercise_id,
+  );
+
   const { triggerUpdate } = useUpdateProgress();
 
+  // SỬA LỖI TYPESCRIPT: Tính toán passedCount và total từ mảng results
   useEffect(() => {
-    if (submitResult && submitResult.passedCount === submitResult.total) {
-      triggerUpdate();
+    if (submitResult && submitResult.results) {
+      const total = submitResult.results.length;
+      const passedCount = submitResult.results.filter((r) => r.status === 'passed').length;
+
+      // Nếu có testcase và Pass 100% thì trigger cập nhật bài học
+      if (total > 0 && passedCount === total) {
+        triggerUpdate();
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submitResult]);
@@ -76,10 +89,14 @@ const LessonDetail = () => {
       </div>
     );
 
+  // 3. SỬA HÀM NÀY:
   const handleSubmit = async (code: string) => {
     if (!lesson?.exercise_id || !id) return;
 
     await submitCode(lesson.exercise_id, id, code);
+
+    // Nạp lại History sau khi nộp
+    await fetchHistory();
 
     setIsEditorOpen(false);
   };
@@ -117,8 +134,13 @@ const LessonDetail = () => {
                 Lỗi khi nộp bài: {submitError}
               </div>
             )}
-            {!isSubmitting && submitResult && (
-              <SubmissionResult data={submitResult} onActionClick={() => navigate('/roadmap')} />
+            {!isSubmitting && history.length > 0 && (
+              <SubmissionResult
+                history={history}
+                selectedIndex={selectedIndex}
+                onSelectIndex={setSelectedIndex}
+                onActionClick={() => navigate('/roadmap')}
+              />
             )}
           </div>
         </div>

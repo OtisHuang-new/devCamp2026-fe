@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuthContext_v2 } from '../../context/hooks/useAuthContext_v2';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 import icon_expand_more from '../../Assets/icon_expand_more.svg';
@@ -14,10 +14,15 @@ interface UserProfileCardProps {
 function UserProfileCard({ userName }: UserProfileCardProps) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const { logoutState } = useAuthContext_v2(); // Destructuring, lấy thẳng data từ obj, tương tự với import
-  const handleLogout = () => {
-    logoutState();
-    setIsOpen(false);
+
+  // 2. SỬA LOGIC: Lấy apiLogout và isLoading từ hook
+  const { handleLogout: apiLogout, isLoading } = useAuth();
+
+  // Hàm xử lý khi user bấm nút
+  const handleLogoutClick = async () => {
+    if (isLoading) return; // Nếu đang chờ API thì không cho bấm nữa
+    await apiLogout(); // Gọi hàm có chứa API Logout
+    setIsOpen(false); // Đóng menu xuống
   };
 
   return (
@@ -52,11 +57,16 @@ function UserProfileCard({ userName }: UserProfileCardProps) {
           </div>
 
           <div
-            onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-3 hover:bg-red-50 cursor-pointer transition-colors border-t border-gray-50"
+            // 3. SỬA UI: Gọi hàm handleLogoutClick và thêm hiệu ứng Loading
+            onClick={handleLogoutClick}
+            className={`flex items-center gap-3 px-4 py-3 transition-colors border-t border-gray-50 ${
+              isLoading ? 'bg-gray-100 opacity-50 cursor-wait' : 'hover:bg-red-50 cursor-pointer'
+            }`}
           >
             <img src={power_icon} alt="Logout" className="w-5 h-5" />
-            <span className="text-[#DB4437] font-bold text-sm">Logout</span>
+            <span className="text-[#DB4437] font-bold text-sm">
+              {isLoading ? 'Logging out...' : 'Logout'}
+            </span>
           </div>
         </div>
       )}

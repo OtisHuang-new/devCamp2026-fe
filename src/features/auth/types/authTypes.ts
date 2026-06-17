@@ -20,3 +20,7 @@ export interface AuthResponse {
   user: any;
   access_token: string;
 }
+
+export interface LogoutResponse {
+  message: string;
+}
