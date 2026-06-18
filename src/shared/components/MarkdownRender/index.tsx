@@ -2,8 +2,10 @@ import type { ComponentPropsWithoutRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
+import remarkBreaks from 'remark-breaks';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
+import { InteractiveCompilerBlock } from './components/InteractiveCompilerBlock';
 
 // Tường minh Type, tuyệt đối không dùng any
 export interface CodeProps extends ComponentPropsWithoutRef<'code'> {
@@ -31,7 +33,7 @@ export function MarkdownRender({
   return (
     <div className={className}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkMath]}
+        remarkPlugins={[remarkGfm, remarkMath, remarkBreaks]}
         rehypePlugins={[rehypeKatex]}
         components={{
           // Gọi hàm omitNode thay vì destructuring, code cực kỳ gọn gàng và không có biến thừa
@@ -71,9 +73,18 @@ export function MarkdownRender({
           ),
           td: (props) => <td className="border border-gray-200 px-4 py-3" {...omitNode(props)} />,
           // Sửa triệt để thẻ code: Lấy ra className để nối chuỗi (đảm bảo nó được dùng), phần còn lại đưa qua omitNode
+          // Sửa triệt để thẻ code: Lấy ra className để nối chuỗi (đảm bảo nó được dùng), phần còn lại đưa qua omitNode
           code: (props: CodeProps) => {
             const { inline, className: customClass, children, ...rest } = props;
 
+            // 2. SENIOR FIX: Hệ thống Đánh chặn (Interceptor)
+            // Nếu phát hiện class là 'language-runable' (Quy ước của team giáo án) -> Render Fake Compiler
+            if (!inline && customClass?.includes('language-runable')) {
+              // Bắt buộc ép kiểu children về string để hàm split() có thể hoạt động ở component con
+              return <InteractiveCompilerBlock content={String(children)} />;
+            }
+
+            // Nếu là code bình thường thì trả về UI mặc định cũ của bạn
             return inline ? (
               <code
                 className={`bg-gray-100 text-red-500 px-1.5 py-0.5 rounded text-sm font-mono ${customClass || ''}`.trim()}

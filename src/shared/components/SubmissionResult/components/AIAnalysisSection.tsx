@@ -60,18 +60,6 @@ export default function AIAnalysisSection({ isAllPassed, evaluationData }: AIAna
           </div>
         )}
       </div>
-
-      <div className="flex flex-col items-end gap-2 text-right">
-        <select className="bg-gray-100 border-none text-xs font-bold rounded-lg px-3 py-1.5 outline-none cursor-pointer mb-2">
-          <option>Analyze further</option>
-        </select>
-        <p className="text-xs text-slate-600">Time Complexity: $O(n \log n)$</p>
-        <p className="text-xs text-slate-600">Space Complexity: $O(n)$</p>
-        <p className="text-[10px] text-slate-400 italic mt-2 leading-tight">
-          Use memory efficiently, however,
-          <br /> unnecessary temporary variables can be reduced.
-        </p>
-      </div>
     </div>
   );
 }
