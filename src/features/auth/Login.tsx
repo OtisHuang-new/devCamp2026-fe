@@ -3,6 +3,7 @@ import { useAuth } from './hooks/useAuth';
 import background from './Assets/backGround.jpg';
 import { useAuthContext_v2 } from '../../shared/context/hooks/useAuthContext_v2';
 import CloseButton from '../../shared/components/Buttons/CloseButton';
+import { useOverlayClose } from '@/shared/hooks/useOverlayClose';
 
 interface LoginProps {
   isOpen: boolean;
@@ -16,6 +17,8 @@ export default function Login({ isOpen, onClose, onSwitchToRegister }: LoginProp
   const { user } = useAuthContext_v2();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const { handleMouseDown, handleMouseUp } = useOverlayClose(onClose);
 
   useEffect(() => {
     if (user && isOpen) {
@@ -34,7 +37,8 @@ export default function Login({ isOpen, onClose, onSwitchToRegister }: LoginProp
   return (
     <div
       className="fixed inset-0 z-[100] bg-black/40 flex justify-center items-center p-4 font-sans animate-fadeIn"
-      onClick={onClose} // Click ra ngoài sẽ đóng
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
     >
       <div
         className="relative w-full max-w-4xl h-[620px] rounded-[8px] shadow-2xl overflow-hidden flex flex-row"

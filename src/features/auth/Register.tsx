@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useAuthContext_v2 } from '../../shared/context/hooks/useAuthContext_v2';
 import CloseButton from '../../shared/components/Buttons/CloseButton';
 
+import { useOverlayClose } from '@/shared/hooks/useOverlayClose';
+
 interface RegisterProps {
   isOpen: boolean;
   onClose: () => void;
@@ -17,6 +19,8 @@ function Register({ isOpen, onClose, onSwitchToLogin }: RegisterProps) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [validationError, setValidationError] = useState('');
+
+  const { handleMouseDown, handleMouseUp } = useOverlayClose(onClose);
 
   useEffect(() => {
     if (user && isOpen) {
@@ -51,7 +55,8 @@ function Register({ isOpen, onClose, onSwitchToLogin }: RegisterProps) {
   return (
     <div
       className="fixed inset-0 z-[100] bg-black/40 flex justify-center items-center p-4 font-sans animate-fadeIn"
-      onClick={onClose}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
     >
       <div
         className="relative w-full max-w-4xl h-[620px] rounded-[8px] shadow-2xl overflow-hidden flex flex-row"
