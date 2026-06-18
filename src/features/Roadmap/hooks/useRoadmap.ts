@@ -17,7 +17,7 @@ const fetchRoadmapDeduped = () => {
 
 export const useRoadmap = (currentLessonId?: string | null) => {
   const [rawData, setRawData] = useState<ChapterDataAPI[]>([]);
-   
+
   const [chapters, setChapters] = useState<TransformedChapter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

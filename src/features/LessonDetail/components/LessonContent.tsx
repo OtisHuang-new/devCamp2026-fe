@@ -1,4 +1,3 @@
- 
 import type { LessonDataAPI } from '../types/lessonTypes';
 import ContextualizeMessage from './ContextualizeMessage';
 import { MarkdownRender } from '../../../shared/components/MarkdownRender';
