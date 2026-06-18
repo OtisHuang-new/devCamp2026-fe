@@ -16,6 +16,8 @@ import { useSubmissionHistory } from '@/features/Exercise/hooks/useSubmissionHis
 import { useSyncEditorStore } from '../Exercise/hooks/useSyncEditorStore';
 import { TestCaseList } from '../Exercise/components/TestCaseList';
 
+import { LoadingSpinner } from '@/shared/components/Loading/LoadingSpinner';
+
 export function ExerciseDetail() {
   const navigate = useNavigate();
   const { exerciseDetail, isLoading } = useExerciseDetail();
@@ -94,7 +96,7 @@ export function ExerciseDetail() {
           </button>
         </div>
 
-        <div className="px-10 py-4 flex flex-col gap-4">
+        <div className="px-10 py-4 flex flex-col gap-3">
           <ExerciseContent data={exerciseDetail} />
 
           {exerciseDetail && (
@@ -103,12 +105,16 @@ export function ExerciseDetail() {
             </div>
           )}
 
-          <hr className="border-gray-100 my-4" />
+          <hr className="border-gray-100 my-1" />
 
-          {/* KHU VỰC HIỂN THỊ KẾT QUẢ CHẤM BÀI */}
+          {/* THAY THẾ CHỖ NÀY */}
           {isSubmitting && (
-            <div className="w-full text-center py-6 text-gray-500 font-bold animate-pulse">
-              Đang chấm điểm...
+            <div className="w-full py-10">
+              <LoadingSpinner
+                text="Đang chấm điểm testcases..."
+                iconSize="w-8 h-8"
+                textColor="text-gray-500"
+              />
             </div>
           )}
 

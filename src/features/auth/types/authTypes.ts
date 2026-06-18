@@ -4,6 +4,7 @@ export interface UserInformation {
 }
 
 export interface RegisterRequest {
+  name: string; // 1. MỚI: Thêm name vào Payload
   email: string;
   password: string;
   information: UserInformation;

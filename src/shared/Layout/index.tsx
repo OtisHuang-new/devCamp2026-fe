@@ -35,16 +35,16 @@ export function Layout() {
       {/* VÙNG CUỘN CHUNG (Chứa Cột Giữa & Cột Phải) */}
       <div
         id="main-scroll-container"
-        className="flex-1 h-full overflow-y-auto flex relative scroll-smooth"
+        className="flex-1 h-full overflow-y-auto flex relative scroll-smooth [scrollbar-gutter:stable]"
       >
         {/* CỘT 2: GIỮA (Outlet - Tự bung chiều cao theo nội dung) */}
-        <div className="flex-1 relative pl-[100px] pr-[40px]">
+        <div className="flex-1 min-w-0 relative pl-[100px] pr-[40px]">
           <Outlet />
         </div>
 
         {/* CỘT 3: PHẢI (UserProfile + Dynamic Content) */}
         {/* Thêm sticky top-0 self-start h-screen để ghim cột này đứng yên khi cuộn */}
-        <div className="w-[400px] shrink-0 px-6 pt-4 mr-[200px] flex flex-col gap-8 z-10 sticky top-0 self-start h-screen overflow-y-auto custom-scrollbar">
+        <div className="w-[400px] shrink-0 px-6 pt-4 mr-[200px] flex flex-col gap-8 z-10 sticky top-0 self-start h-screen overflow-y-auto custom-scrollbar [scrollbar-gutter:stable]">
           {/* Phần trên cùng: User / Auth */}
           {/* Thêm sticky top-0 nếu bạn muốn Card này dính lại khi cuộn, tạm thời để bình thường để cuộn đồng bộ */}
           <div className="flex justify-end w-full">

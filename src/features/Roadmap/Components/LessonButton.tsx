@@ -48,13 +48,21 @@ const LessonButton: React.FC<LessonButtonProps> = ({
         className={`absolute inset-0 ${shadowClass} rounded-full translate-y-[8px] transition-colors duration-300`}
       />
 
+      {/* Lớp mặt nút (Top Layer) */}
       <div
-        className={`relative w-full h-full ${bgClass} rounded-full flex items-center justify-center transition-all duration-300 ${!isLocked ? 'hover:brightness-90' : ''}`}
+        className={`relative w-full h-full ${bgClass} rounded-full flex items-center justify-center transition-all duration-150 ease-out 
+          transform-gpu will-change-transform /* 1. SENIOR FIX: Bật GPU và khóa nét lớp mặt */
+          ${
+            !isLocked
+              ? 'hover:brightness-90 group-hover:translate-y-[3px] group-active:translate-y-[8px]'
+              : ''
+          }`}
       >
         <img
           src={displayIcon}
           alt="lesson-icon"
-          className={`${largerIcon ? 'w-[60px] h-[60px]' : 'w-8 h-8'} object-contain pointer-events-none select-none`}
+          className={`${largerIcon ? 'w-[60px] h-[60px]' : 'w-8 h-8'} object-contain pointer-events-none select-none 
+          transform-gpu /* 2. SENIOR FIX: Khóa nét bức ảnh tuyệt đối */`}
         />
       </div>
     </div>

@@ -44,7 +44,7 @@ export function ExerciseList() {
   if (isLoading) return <div>Đang tải dữ liệu...</div>;
 
   return (
-    <div className="w-full mx-auto px-8 pt-4 font-sans max-w-5xl">
+    <div className="w-full pt-4 font-sans max-w-5xl">
       {/* HEADER (Sẽ refactor thành Component chung sau) */}
       <div className="flex justify-between items-center mb-[15px] border-b border-gray-800 pb-3">
         <button

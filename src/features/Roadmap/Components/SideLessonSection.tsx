@@ -17,7 +17,7 @@ const SideLessonSection: React.FC<SideLessonSectionProps> = ({
   if (!chapterData || !chapterData.lessons || chapterData.lessons.length === 0) return null;
 
   return (
-    <div className="relative overflow-hidden w-full border-2 border-[#6D7EAE] rounded-lg p-5 bg-white shadow-sm flex flex-col gap-4">
+    <div className="relative overflow-hidden w-full rounded-lg p-5 bg-[#F6F6F6] shadow-sm flex flex-col gap-4">
       {!isAuthenticated && (
         <div
           className="absolute inset-0 z-10 bg-[#6D7EAE]/60 cursor-not-allowed"
@@ -25,7 +25,7 @@ const SideLessonSection: React.FC<SideLessonSectionProps> = ({
         />
       )}
 
-      <h3 className="font-extrabold text-xl text-primary uppercase tracking-wide">Side Lesson</h3>
+      <h3 className="font-extrabold text-2xl text-primary uppercase tracking-wide">Side Lesson</h3>
       <div className="flex flex-col gap-3">
         {chapterData.lessons.map((lesson, index) => (
           <SideLessonItem

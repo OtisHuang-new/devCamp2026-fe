@@ -4,6 +4,7 @@ import { useProfileForm } from './hooks/useProfileForm';
 import { EditableField } from './components/EditableField';
 import { formatDateTime } from '../../shared/utils/dateFormatter';
 import type { UserInfo } from '../../shared/context/types/contextTypes';
+import icon_person from './assets/person.svg';
 
 const LEVEL_OPTIONS = [
   { value: 1, label: 'Complete Beginner (No prior experience)' },
@@ -58,10 +59,17 @@ function ProfileContent({ user, logoutState }: ProfileContentProps) {
         </button>
       </div>
 
-      {/* 2. Cover Photo & Avatar */}
+      {/* 2. Cover Photo */}
       <div className="relative mb-[20px]">
         {/* Cover Background */}
-        <div className="w-full h-56 bg-gray-200 rounded-xl"></div>
+        <div className="w-full h-56 bg-gray-200 rounded-xl flex items-start justify-center overflow-hidden">
+          {/* Ảnh được căn giữa tuyệt đối nhờ flex, items-center và justify-center của thẻ cha */}
+          <img
+            src={icon_person}
+            alt="Default Cover"
+            className="w-[280px] h-[280px] object-contain opacity-30 -translate-y-1"
+          />
+        </div>
       </div>
 
       {/* 3. User Basic Info */}

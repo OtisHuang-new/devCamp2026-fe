@@ -72,27 +72,33 @@ export function MarkdownRender({
             />
           ),
           td: (props) => <td className="border border-gray-200 px-4 py-3" {...omitNode(props)} />,
-          // Sửa triệt để thẻ code: Lấy ra className để nối chuỗi (đảm bảo nó được dùng), phần còn lại đưa qua omitNode
-          // Sửa triệt để thẻ code: Lấy ra className để nối chuỗi (đảm bảo nó được dùng), phần còn lại đưa qua omitNode
+
+          pre: (props) => <pre className="m-0 p-0 bg-transparent" {...omitNode(props)} />,
+
           code: (props: CodeProps) => {
             const { inline, className: customClass, children, ...rest } = props;
 
-            // 2. SENIOR FIX: Hệ thống Đánh chặn (Interceptor)
-            // Nếu phát hiện class là 'language-runable' (Quy ước của team giáo án) -> Render Fake Compiler
-            if (!inline && customClass?.includes('language-runable')) {
-              // Bắt buộc ép kiểu children về string để hàm split() có thể hoạt động ở component con
+            // 2. SENIOR FIX: Nhận diện chính xác Inline vs Block (Bypass lỗi của thư viện)
+            const isBlock =
+              inline === false ||
+              customClass?.includes('language-') ||
+              String(children).includes('\n');
+
+            // 3. Hệ thống Đánh chặn (Interceptor)
+            if (isBlock && customClass?.includes('language-runable')) {
               return <InteractiveCompilerBlock content={String(children)} />;
             }
 
-            // Nếu là code bình thường thì trả về UI mặc định cũ của bạn
-            return inline ? (
+            // Nếu KHÔNG PHẢI là block -> Render Inline nhỏ nhắn xinh xắn
+            return !isBlock ? (
               <code
-                className={`bg-gray-100 text-red-500 px-1.5 py-0.5 rounded text-sm font-mono ${customClass || ''}`.trim()}
+                className={`bg-blue-50/80 text-primary font-extrabold border-[1.2px] shadow-sm px-1.5 py-0.5 rounded text-sm font-mono ${customClass || ''}`.trim()}
                 {...omitNode(rest)}
               >
                 {children}
               </code>
             ) : (
+              // Nếu LÀ block -> Render cục to màu đen
               <code
                 className={`block bg-[#1E1E1E] text-white p-4 rounded-xl my-4 overflow-x-auto text-sm font-mono shadow-sm ${customClass || ''}`.trim()}
                 {...omitNode(rest)}

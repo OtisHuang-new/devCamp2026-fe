@@ -10,6 +10,8 @@ import { ChatInput } from './components/ChatInput';
 // Import con bot mascot (Đảm bảo đường dẫn khớp dự án của bạn)
 import bot_like from '@Assets/Mascots/bot_like.svg';
 
+import { LoadingSpinner } from '../../Loading/LoadingSpinner';
+
 interface AIChatbotProps {
   lessonId?: string;
   exerciseId?: string;
@@ -86,10 +88,13 @@ export function AIChatbot({ lessonId = '', exerciseId = '', isCompact = false }:
 
         {/* Animation AI đang gõ chữ (Hiện khi isSending = true) */}
         {isSending && (
-          <div className="flex gap-1.5 items-center mb-4 pl-3 animate-pulse opacity-60">
-            <div className="w-2 h-2 bg-[#1E3A8A] rounded-full"></div>
-            <div className="w-2 h-2 bg-[#1E3A8A] rounded-full delay-75"></div>
-            <div className="w-2 h-2 bg-[#1E3A8A] rounded-full delay-150"></div>
+          // 2. SENIOR FIX: Dùng flex justify-start để neo nó sang trái giống hệt bong bóng chat
+          <div className="mb-4 pl-3 flex justify-start opacity-80 animate-fadeIn">
+            <LoadingSpinner
+              text="Cận is thinking for answer..."
+              iconSize="w-4 h-4"
+              textColor="text-[#1E3A8A] italic"
+            />
           </div>
         )}
       </div>

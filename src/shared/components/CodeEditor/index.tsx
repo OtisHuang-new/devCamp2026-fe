@@ -145,7 +145,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }
     }
   };
   return (
-    <div className="fixed inset-0 z-[90] bg-black/25 animate-fadeIn pointer-events-none">
+    <div className="fixed inset-0 z-[90] bg-black/10 animate-fadeIn pointer-events-none">
       <div className="fixed bottom-5 left-5 right-5 h-[50vh] rounded-lg bg-[#121212] flex flex-col p-4 pt-8 shadow-2xl animate-slideUp pointer-events-auto">
         <div className="absolute top-1.5 left-5">
           <CodeToggleButton isOpen={true} onToggle={onClose} isInsideEditor={true} />
@@ -177,7 +177,11 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }
                 {isRunning ? 'Running...' : 'Run'}
               </button>
               <button
-                onClick={() => onSubmit(code)}
+                // 3. SỬA LOGIC: Đóng form TRƯỚC, gọi API SAU
+                onClick={() => {
+                  onClose(); // Đóng Editor ngay tắp lự
+                  onSubmit(code); // Kích hoạt luồng API ngầm
+                }}
                 className="bg-[#22C55E] text-white px-4 py-1 rounded-md font-bold text-sm hover:bg-[#16a34a] transition-all"
               >
                 Submit

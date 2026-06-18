@@ -15,9 +15,10 @@ interface RegisterProps {
 function Register({ isOpen, onClose, onSwitchToLogin }: RegisterProps) {
   const { handleRegister, isLoading, error } = useAuth();
   const { user } = useAuthContext_v2();
+
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [validationError, setValidationError] = useState('');
 
   const { handleMouseDown, handleMouseUp } = useOverlayClose(onClose);
@@ -34,15 +35,12 @@ function Register({ isOpen, onClose, onSwitchToLogin }: RegisterProps) {
     e.preventDefault();
     setValidationError('');
 
-    if (password !== confirmPassword) {
-      setValidationError('Mật khẩu nhập lại không khớp!');
-      return;
-    }
-
     const surveyJob = localStorage.getItem('survey_job') || 'Student';
     const surveyLevel = Number(localStorage.getItem('survey_level')) || 1;
 
+    // Gọi API với Payload mới đã có name
     handleRegister({
+      name, // MỚI
       email,
       password,
       information: {
@@ -79,6 +77,19 @@ function Register({ isOpen, onClose, onSwitchToLogin }: RegisterProps) {
           </p>
 
           <form onSubmit={onSubmit} className="flex flex-col gap-3">
+            {/* THÊM MỚI: Ô nhập Tên */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-extrabold text-[#1E3A8A]">Your name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Nguyen Van Can"
+                className="w-full border border-gray-300 px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1E3A8A] placeholder:text-gray-400 placeholder:text-xs"
+                required
+              />
+            </div>
+
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-extrabold text-[#1E3A8A]">Email</label>
               <input
@@ -104,17 +115,7 @@ function Register({ isOpen, onClose, onSwitchToLogin }: RegisterProps) {
               />
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-extrabold text-[#1E3A8A]">Type again password</label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="type again your passowrd"
-                className="w-full border border-gray-300 px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1E3A8A] placeholder:text-gray-400 placeholder:text-xs"
-                required
-              />
-            </div>
+            {/* ĐÃ XÓA KHỐI TYPE AGAIN PASSWORD Ở ĐÂY */}
 
             <div className="min-h-[20px]">
               <span className="text-xs font-bold text-red-500">{validationError || error}</span>

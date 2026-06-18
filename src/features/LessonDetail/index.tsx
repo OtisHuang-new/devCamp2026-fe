@@ -14,6 +14,8 @@ import SubmissionResult from '../../shared/components/SubmissionResult';
 import { useNavigate } from 'react-router-dom';
 import { useUpdateProgress } from './hooks/useUpdateProgress';
 
+import { LoadingSpinner } from '@/shared/components/Loading/LoadingSpinner';
+
 const LessonDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { lesson, isLoading } = useLesson(id);
@@ -120,15 +122,20 @@ const LessonDetail = () => {
 
           <div className="px-10 py-4 flex flex-col gap-4">
             <LessonContent data={lesson} />
-            <hr className="border-gray-100 my-4" />
+            <hr className="border-gray-100 my-1" />
 
             {lesson.exercise_id && <ExerciseWidget exerciseId={lesson.exercise_id} />}
 
             {isSubmitting && (
-              <div className="w-full text-center py-6 text-gray-500 font-bold animate-pulse">
-                Đang chấm điểm...
+              <div className="w-full py-10">
+                <LoadingSpinner
+                  text="Đang chấm điểm testcases..."
+                  iconSize="w-8 h-8"
+                  textColor="text-gray-500"
+                />
               </div>
             )}
+
             {submitError && (
               <div className="w-full text-center py-6 text-red-500 font-bold">
                 Lỗi khi nộp bài: {submitError}

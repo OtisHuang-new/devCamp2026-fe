@@ -3,6 +3,7 @@ import AIAnalysisSection from './components/AIAnalysisSection';
 import TestCaseResultItem from './components/TestCaseResultItem';
 import type { SubmissionHistoryItem } from '../../../features/Exercise/types/submitTypes';
 import { useEditorStore } from '../../store/useEditorStore';
+import { formatDateTime } from '../../utils/dateFormatter';
 
 interface SubmissionResultProps {
   history: SubmissionHistoryItem[];
@@ -49,35 +50,30 @@ export default function SubmissionResult({
     borderColor = 'border-red-500';
   }
 
-  // Hàm phụ trợ fomat ngày tháng cho đẹp: "17:29 - 16/06/2026"
-  function formatDate(isoString: string) {
-    const d = new Date(isoString);
-    const time = d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-    const date = d.toLocaleDateString('vi-VN');
-    return `${time} - ${date}`;
-  }
-
   return (
     <div className="w-full space-y-4 animate-fadeIn mb-10">
       {/* KHU VỰC 1: DROPDOWN CHỌN VERSION */}
-      <div className="flex items-center justify-between">
+      {/* 1. SỬA: Đổi items-center thành items-end để căn mọi thứ xuống đáy */}
+      <div className="flex items-end justify-between">
+        {/* 2. SỬA: Thêm mb-1.5 (margin-bottom khoảng 6px) để đường chân chữ cân bằng hoàn hảo với chữ bên trong Dropdown */}
         <p className="text-sm font-medium">
           Submission result: <span className={`${statusColor} font-bold`}>{statusText}</span>
         </p>
 
-        {/* Dropdown HTML tiêu chuẩn, dễ xài, bo góc đẹp */}
-        <select
-          value={selectedIndex}
-          onChange={(e) => onSelectIndex(Number(e.target.value))}
-          className="bg-gray-100 border border-gray-300 text-sm font-bold text-slate-700 rounded-lg px-3 py-1.5 outline-none cursor-pointer focus:ring-2 focus:ring-[#1E3A8A]"
-        >
-          {history.map((item, index) => (
-            <option key={item._id} value={index}>
-              {index === 0 ? 'Latest: ' : `Version ${history.length - index}: `}
-              {formatDate(item.createdAt)}
-            </option>
-          ))}
-        </select>
+        <div className="flex flex-col items-end gap-1.5">
+          <label className="text-xs font-bold text-slate-500">Choose your version:</label>
+          <select
+            value={selectedIndex}
+            onChange={(e) => onSelectIndex(Number(e.target.value))}
+            className="bg-gray-100 border border-gray-300 text-sm font-bold text-slate-700 rounded-lg px-3 py-1.5 outline-none cursor-pointer focus:ring-2 focus:ring-[#1E3A8A]"
+          >
+            {history.map((item, index) => (
+              <option key={item._id} value={index}>
+                {formatDateTime(item.createdAt)}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* KHU VỰC 2: HIỂN THỊ KẾT QUẢ */}
