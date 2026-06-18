@@ -14,10 +14,13 @@ export interface LoginRequest {
   password: string;
 }
 
-// Bám sát format trả về trong AuthService.js của Backend
 export interface AuthResponse {
   status: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  user: any; // Chứa _id, name, email,...
+  user: any;
   access_token: string;
+}
+
+export interface LogoutResponse {
+  message: string;
 }

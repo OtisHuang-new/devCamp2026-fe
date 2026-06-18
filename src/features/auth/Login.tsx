@@ -1,31 +1,22 @@
-// src/features/auth/components/Login.tsx
 import { useState, useEffect } from 'react';
 import { useAuth } from './hooks/useAuth';
-import google from './Assets/Google icon.svg';
 import background from './Assets/backGround.jpg';
+import { useAuthContext_v2 } from '../../shared/context/hooks/useAuthContext_v2';
+import CloseButton from '../../shared/components/Buttons/CloseButton';
 
-// THAY ĐỔI 2: Import useAuthContext để lấy state user
-import { useAuthContext } from '../../shared/context/AuthContext';
-
-import CloseButton from '../../shared/Buttons/CloseButton';
-
-// Khai báo Props để điều khiển Overlay
 interface LoginProps {
   isOpen: boolean;
   onClose: () => void;
   onSwitchToRegister: () => void;
 }
 
-function Login({ isOpen, onClose, onSwitchToRegister }: LoginProps) {
+export default function Login({ isOpen, onClose, onSwitchToRegister }: LoginProps) {
   const { handleLogin, isLoading, error } = useAuth();
 
-  const { user } = useAuthContext();
-
-  // State quản lý input
+  const { user } = useAuthContext_v2();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // THAY ĐỔI 4: Lắng nghe nếu đăng nhập thành công (user có data) thì đóng Form
   useEffect(() => {
     if (user && isOpen) {
       onClose();
@@ -41,17 +32,14 @@ function Login({ isOpen, onClose, onSwitchToRegister }: LoginProps) {
   };
 
   return (
-    /* THAY ĐỔI: fixed inset-0 để phủ toàn màn hình, bg-black/15 cho nền tối 15%, z-[100] để đè lên Landing */
     <div
       className="fixed inset-0 z-[100] bg-black/40 flex justify-center items-center p-4 font-sans animate-fadeIn"
       onClick={onClose} // Click ra ngoài sẽ đóng
     >
-      {/* THAY ĐỔI: Thêm relative, và e.stopPropagation() để click vào form không bị đóng */}
       <div
         className="relative w-full max-w-4xl h-[620px] rounded-[8px] shadow-2xl overflow-hidden flex flex-row"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* THÊM MỚI: Nút CloseButton đặt ở góc phải trên cùng */}
         <div className="absolute top-4 right-4 z-50">
           <CloseButton onClick={onClose} />
         </div>
@@ -61,26 +49,14 @@ function Login({ isOpen, onClose, onSwitchToRegister }: LoginProps) {
           <p className="text-gray-600 text-sm mb-6 font-medium">
             Haven't had any account yet?{' '}
             <span
-              onClick={onSwitchToRegister} // THAY ĐỔI Ở ĐÂY
+              onClick={onSwitchToRegister}
               className="text-[#1E3A8A] font-bold underline cursor-pointer hover:opacity-80"
             >
               Resgister here
             </span>
           </p>
 
-          <button className="w-full flex items-center justify-center gap-3 border border-gray-300 px-4 py-2.5 rounded-lg text-gray-700 font-medium text-sm transition-all hover:bg-gray-50 active:scale-[0.99] mb-6">
-            <img src={google} className="w-5 h-5" alt="Google icon" />
-            <span>Loggin using Google account</span>
-          </button>
-
-          <div className="flex items-center my-2 mb-6">
-            <div className="flex-1 border-t border-gray-200"></div>
-            <span className="px-3 text-xs font-bold text-[#1E3A8A] tracking-wider">OR</span>
-            <div className="flex-1 border-t border-gray-200"></div>
-          </div>
-
           <form onSubmit={onSubmit} className="flex flex-col gap-4">
-            {/* THAY ĐỔI: Username -> Email */}
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-extrabold text-[#1E3A8A]">Email</label>
               <input
@@ -106,7 +82,6 @@ function Login({ isOpen, onClose, onSwitchToRegister }: LoginProps) {
             </div>
 
             <div className="flex justify-between items-center -mt-1">
-              {/* Hiển thị lỗi nếu có */}
               <span className="text-xs font-bold text-red-500">{error}</span>
               <span className="text-sm font-bold text-[#1E3A8A] underline cursor-pointer hover:opacity-80 ml-auto">
                 Forget your password?
@@ -133,5 +108,3 @@ function Login({ isOpen, onClose, onSwitchToRegister }: LoginProps) {
     </div>
   );
 }
-
-export default Login;

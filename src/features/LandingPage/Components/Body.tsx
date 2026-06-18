@@ -1,7 +1,6 @@
 import gemini from '../../../shared/Assets/gemini-png (1).png';
 import Button from './Button';
 
-// 2. THÊM MỚI Ở ĐÂY: Khai báo interface cho Props
 interface BodyProps {
   onOpenLogin: () => void;
 }

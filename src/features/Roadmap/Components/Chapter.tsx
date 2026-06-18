@@ -1,13 +1,10 @@
 import React from 'react';
 import LessonButton from './LessonButton';
-import { useNavigate } from 'react-router-dom'; // BỔ SUNG 1: Import hook chuyển trang
-
-// Import Assets
+import { useNavigate } from 'react-router-dom';
 import star_icon from '../Assets/star_icon_white.svg';
 import cup_icon from '../Assets/cup_icon_white.svg';
 import treasure_icon from '../Assets/treasure_icon_prime.svg';
 
-// 1. Định nghĩa các loại Node có thể xuất hiện trên đường đi
 export type NodeType = 'lesson' | 'treasure' | 'project';
 export type NodeStatus = 'completed' | 'current' | 'locked'; // BỔ SUNG DÒNG NÀY
 
@@ -19,7 +16,6 @@ export interface PathNode {
   status?: NodeStatus; // BỔ SUNG DÒNG NÀY
 }
 
-// 2. Định nghĩa Props cho Component Chapter
 interface ChapterProps {
   chapterNumber: number;
   chapterTitle: string;
@@ -27,7 +23,6 @@ interface ChapterProps {
   nodes: PathNode[];
 }
 
-// 2. Định nghĩa Props cho Component Chapter
 interface ChapterProps {
   chapterNumber: number;
   chapterTitle: string;
@@ -48,7 +43,6 @@ const Chapter: React.FC<ChapterProps> = ({
 }) => {
   const navigate = useNavigate(); // BỔ SUNG 2: Khởi tạo navigate
 
-  // --- 3. BỔ SUNG: Hàm kiểm tra Auth trước khi chuyển trang ---
   const handleNodeClick = (nodeId: string | number) => {
     if (!isAuthenticated) {
       onRequireAuth(); // Chưa đăng nhập -> Gọi hàm mở Popup Đăng ký
@@ -59,8 +53,6 @@ const Chapter: React.FC<ChapterProps> = ({
 
   return (
     <div className="flex flex-col w-full relative">
-      {/* --- HEADER PHÂN CÁCH CHAPTER --- */}
-      {/* Chỉ hiển thị Header ngăn cách nếu KHÔNG phải là Chapter đầu tiên */}
       {!isFirstChapter && (
         <div className="flex items-center justify-center my-8 gap-4 w-full opacity-60">
           <hr className="flex-1 border-gray-300 border-[2px] border-solid" />
@@ -71,8 +63,6 @@ const Chapter: React.FC<ChapterProps> = ({
         </div>
       )}
 
-      {/* --- ROADMAP PATH CHO CHAPTER NÀY --- */}
-      {/* Thêm mt-8 cho chapter đầu tiên để nó không dính chặt lên trên, các chapter sau thì dùng margin mặc định */}
       <div className={`flex flex-col items-center gap-[40px] ${isFirstChapter ? 'mt-8' : 'mt-4'}`}>
         {nodes.map((node) => {
           return (
@@ -82,7 +72,6 @@ const Chapter: React.FC<ChapterProps> = ({
               className={node.translateX}
               {...(node.type === 'project' ? { 'data-project-marker': chapterTitle } : {})}
             >
-              {/* Nếu là bài học bình thường (Ngôi sao) */}
               {node.type === 'lesson' && (
                 <LessonButton
                   iconPath={star_icon}
@@ -92,18 +81,15 @@ const Chapter: React.FC<ChapterProps> = ({
                 />
               )}
 
-              {/* Nếu là rương kho báu */}
               {node.type === 'treasure' && (
                 <div className="">
                   {node.status === 'current' ? (
-                    // CẬP NHẬT: Chapter hiện tại -> Hiện ảnh gốc sáng màu
                     <img
                       src={treasure_icon}
                       alt="Treasure"
                       className="w-[160px] cursor-pointer hover:scale-110 transition-transform"
                     />
                   ) : (
-                    // CẬP NHẬT: Chapter cũ (completed) hoặc tương lai (locked) -> Phủ màu
                     <div
                       className={`w-[160px] aspect-[4/3] ${node.status === 'completed' ? 'bg-[#6D7EAE]' : 'bg-[#898989]'}`}
                       style={{
@@ -121,7 +107,6 @@ const Chapter: React.FC<ChapterProps> = ({
                 </div>
               )}
 
-              {/* Nếu là Project (Cúp) */}
               {node.type === 'project' && (
                 <LessonButton
                   iconPath={cup_icon}

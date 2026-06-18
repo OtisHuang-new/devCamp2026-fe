@@ -60,16 +60,3 @@ export const mockLessonData: LessonData = {
     },
   ],
 };
-
-// // Thêm interface này vào src/features/LessonDetail/LessonData.ts
-// export interface ExerciseExample {
-//   input: string;
-//   output: string;
-// }
-
-// export interface ExerciseData {
-//   title: string;
-//   difficulty: 'Easy' | 'Medium' | 'Hard';
-//   description: string;
-//   examples: ExerciseExample[];
-// }

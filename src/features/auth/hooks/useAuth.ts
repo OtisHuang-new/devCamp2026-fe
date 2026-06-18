@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { authApi } from '../api/authApi';
-import type { LoginRequest, RegisterRequest } from '../types/authTypes';
-import { useAuthContext } from '../../../shared/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { authApi } from '../api/authApi';
+import { useAuthContext_v2 } from '../../../shared/context/hooks/useAuthContext_v2';
+import type { LoginRequest, RegisterRequest } from '../types/authTypes';
 
 export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { loginState } = useAuthContext();
+  const { loginState, logoutState } = useAuthContext_v2();
   const navigate = useNavigate();
 
   const handleLogin = async (data: LoginRequest) => {
@@ -16,7 +16,6 @@ export const useAuth = () => {
     setError(null);
     try {
       const response = await authApi.login(data);
-      // Lưu token & user vào context + local storage
       loginState(response.access_token, response.user);
       navigate('/roadmap');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,10 +31,9 @@ export const useAuth = () => {
     setError(null);
     try {
       const response = await authApi.register(data);
-      // Đăng ký xong coi như login luôn
+
       loginState(response.access_token, response.user);
 
-      // Xóa dữ liệu survey tạm thời đi cho sạch Local Storage
       localStorage.removeItem('survey_job');
       localStorage.removeItem('survey_level');
 
@@ -48,5 +46,20 @@ export const useAuth = () => {
     }
   };
 
-  return { handleLogin, handleRegister, isLoading, error };
+  const handleLogout = async () => {
+    setIsLoading(true);
+    try {
+      await authApi.logout();
+    } catch (err: unknown) {
+      // Bỏ qua lỗi hiển thị UI vì đằng nào mình cũng ép đăng xuất cục bộ
+      console.error('Lỗi khi gọi API đăng xuất:', err instanceof Error ? err.message : String(err));
+    } finally {
+      // Dù API có tèo thì vẫn phải dọn rác ở LocalStorage và Context
+      logoutState();
+      navigate('/'); // Đá user về trang chủ hoặc trang đăng nhập tùy bạn
+      setIsLoading(false);
+    }
+  };
+
+  return { handleLogin, handleLogout, handleRegister, isLoading, error };
 };

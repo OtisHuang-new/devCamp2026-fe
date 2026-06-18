@@ -1,3 +1,5 @@
+import type { PathNode } from '../Components/Chapter';
+
 export interface LessonData {
   _id: string;
   title: string;
@@ -15,4 +17,11 @@ export interface ChapterDataAPI {
   description: string;
   lessons: LessonData[];
   project_detail: ProjectData;
+}
+
+export interface TransformedChapter {
+  id: string;
+  chapterNumber: number;
+  title: string;
+  nodes: PathNode[];
 }

@@ -1,70 +1,125 @@
-// Vị trí: src/features/LessonDetail/hooks/useLessonContext.ts
 import { useState, useEffect } from 'react';
 import { lessonApi } from '../api/lessonApi';
 
-const contextCache = new Map<string, string>();
+const pendingRequests = new Map<string, Promise<string | null>>();
+
+const CACHE_PREFIX = 'ai_context_';
+
+const getCache = (lessonId: string): string | null => {
+  return sessionStorage.getItem(`${CACHE_PREFIX}${lessonId}`);
+};
+
+const setCache = (lessonId: string, data: string) => {
+  sessionStorage.setItem(`${CACHE_PREFIX}${lessonId}`, data);
+};
+
+const fetchAndCacheContext = async (lessonId: string, userId: string): Promise<string | null> => {
+  const cachedData = getCache(lessonId);
+  if (cachedData) {
+    return cachedData;
+  }
+
+  if (pendingRequests.has(lessonId)) {
+    return pendingRequests.get(lessonId) as Promise<string | null>;
+  }
+
+  const requestPromise = (async () => {
+    try {
+      const data = await lessonApi.contextualizeLesson(lessonId, userId);
+
+      if (
+        typeof data === 'string' &&
+        (data.includes('RESOURCE_EXHAUSTED') || data.includes('429'))
+      ) {
+        throw new Error('Hết token AI ròi bro ơi huhu 😭');
+      }
+
+      if (data) {
+        setCache(lessonId, data);
+        return data;
+      }
+
+      return null;
+    } catch (error: unknown) {
+      const errString = JSON.stringify(error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+
+      if (
+        errString.includes('429') ||
+        errString.includes('RESOURCE_EXHAUSTED') ||
+        errorMessage.includes('Hết token')
+      ) {
+        throw new Error('Hết token AI ròi bro ơi huhu 😭');
+      }
+      throw new Error('Có lỗi xảy ra khi gọi AI phân tích.');
+    } finally {
+      pendingRequests.delete(lessonId);
+    }
+  })();
+
+  pendingRequests.set(lessonId, requestPromise);
+
+  return requestPromise;
+};
 
 export const prefetchLessonContext = async (lessonId?: string | null, userId?: string | null) => {
-  if (!lessonId || !userId || contextCache.has(lessonId)) return;
+  if (!lessonId || !userId) return;
   try {
-    const data = await lessonApi.contextualizeLesson(lessonId, userId);
-    if (data) contextCache.set(lessonId, data);
+    await fetchAndCacheContext(lessonId, userId);
   } catch (error) {
     console.error('Failed to prefetch AI context', error);
   }
 };
 
 export const useLessonContext = (lessonId?: string, userId?: string) => {
-  const initialData = lessonId ? contextCache.get(lessonId) || null : null;
   const [context, setContext] = useState<string | null>(() => {
-    return lessonId ? contextCache.get(lessonId) || null : null;
+    return lessonId ? getCache(lessonId) : null;
   });
-  const [isLoading, setIsLoading] = useState<boolean>(!initialData);
+
+  const [isLoading, setIsLoading] = useState<boolean>(() => {
+    return lessonId ? !getCache(lessonId) : false;
+  });
+
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!lessonId || !userId || contextCache.has(lessonId)) return; // Chỉ chạy khi CHƯA có cache
+    if (!lessonId || !userId) return;
+
+    let isMounted = true;
 
     const fetchContext = async () => {
+      if (getCache(lessonId)) {
+        setContext(getCache(lessonId));
+        setIsLoading(false);
+        setError(null);
+        return;
+      }
+
       setIsLoading(true);
       setError(null);
       try {
-        const data = await lessonApi.contextualizeLesson(lessonId, userId);
+        const data = await fetchAndCacheContext(lessonId, userId);
 
-        // Đề phòng trường hợp API trả về HTTP 200 nhưng body chứa chữ "RESOURCE_EXHAUSTED"
-        if (
-          typeof data === 'string' &&
-          (data.includes('RESOURCE_EXHAUSTED') || data.includes('429'))
-        ) {
-          setError('Hết token AI ròi bro ơi huhu 😭');
-          return;
-        }
-
-        if (data) {
-          contextCache.set(lessonId, data);
+        if (isMounted && data) {
           setContext(data);
         }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (err: any) {
-        console.error('Lỗi khi lấy AI Context:', err);
-
-        // --- 2. BẮT TỪ KHÓA LỖI TỪ CATCH ---
-        const errString = JSON.stringify(err);
-        if (errString.includes('429') || errString.includes('RESOURCE_EXHAUSTED')) {
-          setError('Hết token AI ròi bro ơi huhu 😭');
-        } else if (err.response?.data?.message && err.response.data.message.includes('429')) {
-          setError('Hết token AI ròi bro ơi huhu 😭');
-        } else {
-          setError('Có lỗi xảy ra khi gọi AI phân tích.');
+      } catch (err: unknown) {
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : 'Đã có lỗi xảy ra');
         }
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchContext();
+
+    return () => {
+      isMounted = false;
+    };
   }, [lessonId, userId]);
 
-  // --- 3. EXPORT THÊM ERROR ---
   return { context, isLoading, error };
 };

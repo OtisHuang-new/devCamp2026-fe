@@ -1,10 +1,8 @@
-// Vị trí: src/routes/PublicRoute.tsx
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuthContext } from '../shared/context/AuthContext';
+import { useAuthContext_v2 } from '../shared/context/hooks/useAuthContext_v2';
 
 const PublicRoute = () => {
-  const { isAuthenticated, isLoading } = useAuthContext();
-  const hasCompletedSurvey = !!localStorage.getItem('survey_job');
+  const { isAuthenticated, isLoading } = useAuthContext_v2();
 
   if (isLoading) {
     return (
@@ -14,12 +12,10 @@ const PublicRoute = () => {
     );
   }
 
-  // Nếu ĐÃ đăng nhập HOẶC ĐÃ làm survey -> Đuổi vào Roadmap, không cho xem Landing nữa
-  if (isAuthenticated || hasCompletedSurvey) {
+  if (isAuthenticated) {
     return <Navigate to="/roadmap" replace />;
   }
 
-  // Nếu là người lạ -> Cho phép xem Landing/Survey
   return <Outlet />;
 };
 

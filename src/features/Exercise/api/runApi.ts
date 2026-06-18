@@ -1,14 +1,11 @@
-// Vị trí: src/features/Exercise/api/runApi.ts
 import axiosClient from '../../../shared/api/axiosClient';
 
 export interface RunPayload {
   src_code: string;
   language?: string;
-  // 1. Đổi input thành mảng inputs
   inputs: string[];
 }
 
-// 2. Khai báo cấu trúc phần tử trả về từ API Batch
 export interface RunResultItem {
   output: string;
   error: string;
@@ -21,7 +18,6 @@ export interface RunResultItem {
 }
 
 export const runApi = {
-  // 3. Đổi kiểu trả về thành mảng Promise<RunResultItem[]>
   runCode: async (exerciseId: string, payload: RunPayload): Promise<RunResultItem[]> => {
     const requestData = {
       src_code: payload.src_code,

@@ -1,9 +1,7 @@
-// Vị trí: src/features/LessonDetail/components/ContextualizeMessage.tsx
 import React from 'react';
-import { useAuthContext } from '../../../shared/context/AuthContext';
+import { useAuthContext_v2 } from '../../../shared/context/hooks/useAuthContext_v2';
 import { useLessonContext } from '../hooks/useLessonContext';
 import bot_showing from '../../../shared/Assets/Mascots/bot_showing.svg';
-// --- 1. IMPORT THÊM ICON BOT LỖI ---
 import bot_wrong from '../../../shared/Assets/Mascots/bot_wrong.svg';
 
 interface ContextualizeMessageProps {
@@ -11,9 +9,7 @@ interface ContextualizeMessageProps {
 }
 
 const ContextualizeMessage: React.FC<ContextualizeMessageProps> = ({ lessonId }) => {
-  const { user } = useAuthContext();
-
-  // --- 2. LẤY BIẾN error TỪ HOOK ---
+  const { user } = useAuthContext_v2();
   const { context, isLoading, error } = useLessonContext(lessonId, user?._id);
 
   if (!user?._id) return null;
@@ -29,7 +25,6 @@ const ContextualizeMessage: React.FC<ContextualizeMessageProps> = ({ lessonId })
     );
   }
 
-  // --- 3. XỬ LÝ GIAO DIỆN HIỂN THỊ KHI CÓ LỖI ---
   if (error) {
     return (
       <div className="flex items-center gap-4 bg-red-50/80 border border-red-200 rounded-xl p-4 my-2 shadow-sm animate-fadeIn w-full">
@@ -38,7 +33,6 @@ const ContextualizeMessage: React.FC<ContextualizeMessageProps> = ({ lessonId })
       </div>
     );
   }
-  // ----------------------------------------------
 
   if (!context) return null;
 
