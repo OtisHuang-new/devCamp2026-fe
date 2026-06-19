@@ -81,7 +81,7 @@ export function ExerciseList() {
           exercises.map((exercise) => <ExerciseListRow key={exercise._id} data={exercise} />)
         ) : (
           <div className="text-center py-10 text-gray-500 font-medium">
-            Không có bài tập nào hoặc dữ liệu bị lỗi.
+            No data found in Database.
           </div>
         )}
       </div>
