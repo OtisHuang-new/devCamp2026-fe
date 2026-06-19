@@ -179,4 +179,6 @@
     right: 0;
     border-right-color: var(--border);
   }
+
+  /* Màu background khi người dùng bôi đen text */
 }

@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUpdateProgress } from './hooks/useUpdateProgress';
 
 import { LoadingSpinner } from '@/shared/components/Loading/LoadingSpinner';
+import { TextSelectionPopover } from '../../shared/components/TextSelectionPopover';
 
 const LessonDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -176,6 +177,8 @@ const LessonDetail = () => {
           onSubmit={handleSubmit}
         />
       </div>
+
+      <TextSelectionPopover />
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { useChat } from './hooks/useChat';
 import { UserMessage } from './components/UserMessage';
 import { AIMessage } from './components/AIMessage';
 import { ChatInput } from './components/ChatInput';
+import { useAIChatStore } from '@/shared/store/useAIChatStore';
 
 // Import con bot mascot (Đảm bảo đường dẫn khớp dự án của bạn)
 import bot_like from '@Assets/Mascots/bot_like.svg';
@@ -37,6 +38,27 @@ export function AIChatbot({ lessonId = '', exerciseId = '', isCompact = false }:
     lessonId,
     exerciseId,
   );
+
+  const { setChatMounted, externalQuery, setExternalQuery, setAILoading } = useAIChatStore();
+
+  // Luồng 1: Báo hiệu cho Popover biết Chatbot đang mở
+  useEffect(() => {
+    setChatMounted(true);
+    return () => setChatMounted(false);
+  }, [setChatMounted]);
+
+  // Luồng 2: Đồng bộ trạng thái AI bận lên Store
+  useEffect(() => {
+    setAILoading(isSending);
+  }, [isSending, setAILoading]);
+
+  // Luồng 3: Nhận Text bôi đen và Bắn thẳng vào hệ thống nhắn tin
+  useEffect(() => {
+    if (externalQuery) {
+      sendMessage(externalQuery, srcCode);
+      setExternalQuery(null); // Bắn xong thì dọn rác ngay lập tức
+    }
+  }, [externalQuery, sendMessage, srcCode, setExternalQuery]);
 
   // LOGIC: TỰ ĐỘNG CUỘN XUỐNG ĐÁY KHI CÓ TIN NHẮN MỚI
   const scrollRef = useRef<HTMLDivElement>(null);

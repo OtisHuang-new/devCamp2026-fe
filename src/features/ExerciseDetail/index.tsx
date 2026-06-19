@@ -17,6 +17,7 @@ import { useSyncEditorStore } from '../Exercise/hooks/useSyncEditorStore';
 import { TestCaseList } from '../Exercise/components/TestCaseList';
 
 import { LoadingSpinner } from '@/shared/components/Loading/LoadingSpinner';
+import { TextSelectionPopover } from '@/shared/components/TextSelectionPopover';
 
 export function ExerciseDetail() {
   const navigate = useNavigate();
@@ -156,6 +157,8 @@ export function ExerciseDetail() {
           onSubmit={handleSubmit}
         />
       </div>
+
+      <TextSelectionPopover />
     </div>
   );
 }

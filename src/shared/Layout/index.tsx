@@ -8,6 +8,7 @@ import { useRightbarStore } from '../store/useRightbarStore'; // Import store má
 import Login from '../../features/auth/Login';
 import Register from '../../features/auth/Register';
 import { StreakWidget } from './components/StreakWidget';
+import { TextSelectionPopover } from '../components/TextSelectionPopover';
 
 export function Layout() {
   const { user } = useAuthContext_v2();
@@ -86,6 +87,7 @@ export function Layout() {
       {/* Popups */}
       <Login isOpen={isLoginOpen} onClose={closeLogin} onSwitchToRegister={switchToRegister} />
       <Register isOpen={isRegisterOpen} onClose={closeRegister} onSwitchToLogin={switchToLogin} />
+      <TextSelectionPopover />
     </div>
   );
 }
