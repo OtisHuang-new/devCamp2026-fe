@@ -43,11 +43,16 @@ const Chapter: React.FC<ChapterProps> = ({
 }) => {
   const navigate = useNavigate(); // BỔ SUNG 2: Khởi tạo navigate
 
-  const handleNodeClick = (nodeId: string | number) => {
+  const handleNodeClick = (nodeId: string | number, nodeType: NodeType) => {
     if (!isAuthenticated) {
       onRequireAuth(); // Chưa đăng nhập -> Gọi hàm mở Popup Đăng ký
     } else {
-      navigate(`/lessons/${nodeId}`); // Đã đăng nhập -> Chuyển vào bài học
+      // Đã đăng nhập -> Chuyển vào bài học hoặc bài tập tùy loại
+      if (nodeType === 'project') {
+        navigate(`/exercises/${nodeId}`);
+      } else {
+        navigate(`/lessons/${nodeId}`);
+      }
     }
   };
 
@@ -76,8 +81,9 @@ const Chapter: React.FC<ChapterProps> = ({
                 <LessonButton
                   iconPath={star_icon}
                   title={node.title}
-                  status={node.status} // BỔ SUNG DÒNG NÀY
-                  onClick={() => handleNodeClick(node.id)}
+                  status={node.status}
+                  // 2. SENIOR FIX: Truyền thêm node.type
+                  onClick={() => handleNodeClick(node.id, node.type)}
                 />
               )}
 
@@ -112,8 +118,9 @@ const Chapter: React.FC<ChapterProps> = ({
                   iconPath={cup_icon}
                   largerIcon={true}
                   title={node.title}
-                  status={node.status} // BỔ SUNG DÒNG NÀY
-                  onClick={() => handleNodeClick(node.id)}
+                  status={node.status}
+                  // 2. SENIOR FIX: Truyền thêm node.type
+                  onClick={() => handleNodeClick(node.id, node.type)}
                 />
               )}
             </div>

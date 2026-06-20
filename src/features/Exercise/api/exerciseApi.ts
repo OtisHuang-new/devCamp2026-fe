@@ -3,8 +3,11 @@ import type { ExerciseListItem, ParamExerciseListItem } from '../types/exerciseL
 import type { ExerciseDataAPI } from '../types/exerciseTypes';
 
 export const exerciseApi = {
-  async getExerciseById(id: string): Promise<ExerciseDataAPI> {
-    const response = await axiosClient.get<ExerciseDataAPI, ExerciseDataAPI>(`/exercises/${id}`);
+  // 1. SENIOR FIX: Thêm tham số userId và truyền vào params
+  async getExerciseById(id: string, userId: string): Promise<ExerciseDataAPI> {
+    const response = await axiosClient.get<ExerciseDataAPI, ExerciseDataAPI>(`/exercises/${id}`, {
+      params: { user_id: userId },
+    });
     return response;
   },
 

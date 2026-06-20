@@ -56,7 +56,7 @@ function Roadmap() {
   if (isAuthLoading) {
     return (
       <div className="flex justify-center items-center h-full text-gray-500 font-medium">
-        Kiểm tra phiên đăng nhập...
+        Checking for Login...
       </div>
     );
   }
