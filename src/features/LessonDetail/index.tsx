@@ -14,6 +14,8 @@ import SubmissionResult from '../../shared/components/SubmissionResult';
 import { useNavigate } from 'react-router-dom';
 import { useUpdateProgress } from './hooks/useUpdateProgress';
 
+import { Return } from '@/shared/components/Return';
+
 import { LoadingSpinner } from '@/shared/components/Loading/LoadingSpinner';
 import { TextSelectionPopover } from '../../shared/components/TextSelectionPopover';
 
@@ -113,12 +115,7 @@ const LessonDetail = () => {
           className="w-full h-full overflow-y-auto flex flex-col scroll-smooth pb-[100px]"
         >
           <div className="pt-6 px-10">
-            <button
-              onClick={() => navigate('/roadmap')}
-              className="text-gray-500 text-sm hover:text-[#1E3A8A] flex items-center gap-2 "
-            >
-              <span>←</span> Return to progress
-            </button>
+            <Return text="Return to progress" />
           </div>
 
           <div className="px-10 py-4 flex flex-col gap-4">

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import icon_expand_more from '../../Assets/icon_expand_more.svg';
 import icon_profile_prime from '@Assets/icon_profile_prime.svg';
@@ -13,10 +13,19 @@ interface UserProfileCardProps {
 
 function UserProfileCard({ userName }: UserProfileCardProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
   // 2. SỬA LOGIC: Lấy apiLogout và isLoading từ hook
   const { handleLogout: apiLogout, isLoading } = useAuth();
+
+  const handleGoToProfile = () => {
+    // SENIOR FIX: Nếu đang ở '/profile' rồi thì bật cờ replace: true
+    navigate('/profile', {
+      replace: location.pathname === '/profile',
+    });
+    setIsOpen(false);
+  };
 
   // Hàm xử lý khi user bấm nút
   const handleLogoutClick = async () => {
@@ -47,8 +56,7 @@ function UserProfileCard({ userName }: UserProfileCardProps) {
         <div className="absolute top-[110%] right-0 w-48 bg-white border border-gray-100 rounded-xl shadow-xl flex flex-col overflow-hidden z-50 animate-fadeIn">
           <div
             onClick={function () {
-              navigate('/profile');
-              setIsOpen(false);
+              handleGoToProfile();
             }}
             className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors"
           >

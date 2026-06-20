@@ -9,7 +9,7 @@ interface LessonContentProps {
 export default function LessonContent({ data }: LessonContentProps) {
   return (
     <div className="w-full animate-fadeIn">
-      <h1 className="text-4xl font-bold text-[#1E3A8A] border-t border-gray-200 py-8">
+      <h1 className="text-4xl font-bold text-[#1E3A8A] border-gray-200 pb-8">
         Lesson {data.order}: {data.title}
       </h1>
 
