@@ -80,13 +80,13 @@ export function useTextSelection() {
       if (isBackwards) {
         safeY = targetRect.top - popoverHeight - SPACE_Y;
         if (safeY < 10) safeY = targetRect.bottom + SPACE_Y;
-        safeX = targetRect.left - popoverWidth + 90;
+        safeX = targetRect.left - popoverWidth + 150;
       } else {
-        safeY = targetRect.bottom + SPACE_Y;
+        safeY = targetRect.bottom + SPACE_Y + 8;
         if (safeY + popoverHeight > window.innerHeight - 10) {
           safeY = targetRect.top - popoverHeight - SPACE_Y;
         }
-        safeX = targetRect.right + SPACE_X;
+        safeX = targetRect.right + SPACE_X - 50;
       }
 
       if (safeX < 10) safeX = 10;

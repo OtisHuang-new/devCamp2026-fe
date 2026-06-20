@@ -241,7 +241,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }
                     />
                   </div>
                 ) : (
-                  <div className="text-gray-500 text-sm mt-4">Không có Testcase công khai nào.</div>
+                  <div className="text-gray-500 text-sm mt-4">No Testcase found</div>
                 )
               ) : (
                 localTestCases.length > 0 &&

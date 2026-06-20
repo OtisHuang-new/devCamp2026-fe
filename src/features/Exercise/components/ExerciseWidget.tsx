@@ -17,7 +17,7 @@ function ExerciseWidget({ exerciseId }: ExerciseWidgetProps) {
   if (isLoading) {
     return (
       <div className="w-full py-10 flex justify-center items-center text-gray-500 font-medium animate-pulse">
-        Đang tải bài tập...
+        Loading exercise...
       </div>
     );
   }

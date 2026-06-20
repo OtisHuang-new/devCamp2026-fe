@@ -87,7 +87,10 @@ export default function Login({ isOpen, onClose, onSwitchToRegister }: LoginProp
 
             <div className="flex justify-between items-center -mt-1">
               <span className="text-xs font-bold text-red-500">{error}</span>
-              <span className="text-sm font-bold text-[#1E3A8A] underline cursor-pointer hover:opacity-80 ml-auto">
+              <span
+                onClick={() => alert('This feature is still in developing')}
+                className="text-sm font-bold text-[#1E3A8A] underline cursor-pointer hover:opacity-80 ml-auto"
+              >
                 Forget your password?
               </span>
             </div>
