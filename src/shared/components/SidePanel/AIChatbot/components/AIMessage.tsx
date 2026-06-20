@@ -3,14 +3,18 @@ import icon_copy from '../assets/icon_copy.svg';
 import bot_like from '@Assets/Mascots/bot_like.svg';
 // Nhúng Markdown Render
 import { MarkdownRender } from '../../../../components/MarkdownRender';
+import { useToastStore } from '@/shared/store/useToastStore';
 
 interface AIMessageProps {
   content: string;
 }
 
 export function AIMessage({ content }: AIMessageProps) {
+  const addToast = useToastStore((state) => state.addToast);
+
   function handleCopy() {
     navigator.clipboard.writeText(content);
+    addToast('Copied to clipboard successful', 2000);
   }
 
   return (

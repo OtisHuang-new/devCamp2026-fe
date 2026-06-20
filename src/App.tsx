@@ -12,6 +12,7 @@ import { Layout } from './shared/Layout';
 import { ExerciseList } from './features/Exercise';
 import { ExerciseDetail } from './features/ExerciseDetail';
 import { GlobalAudioPlayer } from './shared/components/GlobalAudioPlayer';
+import { ToastContainer } from './shared/components/Toast';
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
 
         <Route path="*" element={<Navigate to="/roadmap" replace />} />
       </Routes>
+      <ToastContainer />
     </BrowserRouter>
   );
 }
