@@ -47,7 +47,7 @@ export function ExerciseList() {
   if (isAuthLoading) {
     return (
       <div className="w-full pt-20 text-center text-gray-500 font-medium">
-        Kiểm tra phiên đăng nhập...
+        Checking for Login...
       </div>
     );
   }
@@ -64,7 +64,7 @@ export function ExerciseList() {
     );
   }
 
-  if (isLoading) return <div>Đang tải dữ liệu...</div>;
+  if (isLoading) return <div>Loading data...</div>;
 
   return (
     <div className="w-full pt-4 font-sans max-w-5xl">

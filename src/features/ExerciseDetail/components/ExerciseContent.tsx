@@ -17,7 +17,9 @@ export function ExerciseContent({ data }: ExerciseContentProps) {
     <div className="w-full animate-fadeIn">
       {/* KHỐI TIÊU ĐỀ & ĐỘ KHÓ */}
       <div className="flex items-center gap-4 border-gray-200 pb-8">
-        <h1 className="text-4xl font-bold text-[#1E3A8A]">Exercise: {data.title}</h1>
+        <h1 className="text-4xl font-bold text-[#1E3A8A]">
+          {data.is_project ? 'Project' : 'Exercise'}: {data.title}
+        </h1>
 
         {/* Nút badge (nhãn) hiển thị độ khó */}
         <span

@@ -7,6 +7,7 @@ export interface ExerciseListItem {
   topic: string;
   status: Status;
   difficulty: Difficulty;
+  index: number; // 1. SENIOR FIX: Bổ sung trường index
 }
 
 export interface ParamExerciseListItem {
