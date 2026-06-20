@@ -85,8 +85,8 @@ function SurveyPage() {
   };
 
   const handleCreateProfile = () => {
-    // Truyền state openRegister sang Roadmap
-    navigate('/roadmap', { state: { openRegister: true } });
+    // Chuyển tới roadmap và phát tín hiệu ngầm yêu cầu Layout mở form
+    navigate('/roadmap', { state: { autoOpenSignup: true } });
   };
 
   const handleMaybeLater = () => {

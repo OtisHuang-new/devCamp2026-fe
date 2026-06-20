@@ -1,5 +1,5 @@
 // Vị trí: src/shared/components/Layout/index.tsx
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import UserProfileCard from '../components/UserProfileCard';
 import { useAuthContext_v2 } from '../context/hooks/useAuthContext_v2';
@@ -9,8 +9,15 @@ import Login from '../../features/auth/Login';
 import Register from '../../features/auth/Register';
 import { StreakWidget } from './components/StreakWidget';
 import { TextSelectionPopover } from '../components/TextSelectionPopover';
+import { useEffect } from 'react';
+
+interface CustomLocationState {
+  autoOpenSignup?: boolean;
+}
 
 export function Layout() {
+  const location = useLocation(); // Khai báo
+  const navigate = useNavigate(); // Khai báo
   const { user } = useAuthContext_v2();
   const {
     isLoginOpen,
@@ -23,8 +30,18 @@ export function Layout() {
     switchToRegister,
   } = useModalStore();
 
-  // Rút nội dung từ Store ra để hiển thị ở cột phải
   const rightbarContent = useRightbarStore((state) => state.content);
+
+  useEffect(() => {
+    const state = location.state as CustomLocationState | null;
+
+    if (state && state.autoOpenSignup) {
+      openRegister(); // Bật form đăng ký
+      // Lập tức "tẩy xóa" tín hiệu trên URL State bằng cờ replace: true
+      // Để nếu user bấm F5 (reload), form sẽ KHÔNG bị bật lên lại một cách vô duyên!
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.pathname, location.state, navigate, openRegister]);
 
   return (
     <div className="flex w-full h-screen overflow-hidden">

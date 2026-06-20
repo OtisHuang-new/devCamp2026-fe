@@ -10,10 +10,11 @@ import SideLessonSection from './Components/SideLessonSection';
 import ScrollToTopButton from '../../shared/components/Buttons/ScrollToTopButton';
 import { prefetchLessonContext } from '../LessonDetail/hooks/useLessonContext';
 import { useRightbarStore } from '../../shared/store/useRightbarStore';
+import { AuthGatekeeper } from '@/shared/components/AuthGatekeeper';
 
 function Roadmap() {
   const navigate = useNavigate();
-  const { user } = useAuthContext_v2();
+  const { user, isLoading: isAuthLoading } = useAuthContext_v2();
   const { openRegister } = useModalStore();
 
   const { chapters, rawData, isLoading } = useRoadmap(user?.current_lesson_id);
@@ -31,7 +32,8 @@ function Roadmap() {
   const setRightbarContent = useRightbarStore((state) => state.setContent);
 
   useEffect(() => {
-    if (sideChapter) {
+    // 3. SỬA: Nếu chưa đăng nhập thì dọn sạch Rightbar (chỉ để lại nút login)
+    if (user && sideChapter) {
       setRightbarContent(
         <SideLessonSection
           chapterData={sideChapter}
@@ -39,11 +41,10 @@ function Roadmap() {
           isAuthenticated={!!user}
         />,
       );
-    }
-
-    return () => {
+    } else {
       setRightbarContent(null);
-    };
+    }
+    return () => setRightbarContent(null);
   }, [sideChapter, navigate, user, setRightbarContent]);
 
   useEffect(() => {
@@ -51,6 +52,26 @@ function Roadmap() {
       prefetchLessonContext(user.current_lesson_id, user._id);
     }
   }, [user?.current_lesson_id, user?._id]);
+
+  if (isAuthLoading) {
+    return (
+      <div className="flex justify-center items-center h-full text-gray-500 font-medium">
+        Kiểm tra phiên đăng nhập...
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <main className="w-full flex justify-center pt-10 px-8">
+        <AuthGatekeeper
+          title="Cận Learning Roadmap"
+          subtitle="AI, Personalize, and Easy to Learn: Learning Roadmap"
+          promptText="Let start learning with AI personalize! Log in to start learning now!"
+        />
+      </main>
+    );
+  }
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-full">Loading Roadmap...</div>;

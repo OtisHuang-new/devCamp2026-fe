@@ -5,12 +5,13 @@ import { ExerciseListRow } from './components/ExerciseListRow';
 import { useExerciseList } from './hooks/useExerciseList';
 import { useAuthContext_v2 } from '@/shared/context/hooks/useAuthContext_v2';
 import { Return } from '@/shared/components/Return';
+import { AuthGatekeeper } from '@/shared/components/AuthGatekeeper';
 
 const TOPICS = ['All', 'Array', 'String', 'Math', 'Sorting'];
 
 export function ExerciseList() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { user } = useAuthContext_v2();
+  const { user, isLoading: isAuthLoading } = useAuthContext_v2();
 
   const activeTopic = searchParams.get('topic') || 'All';
   const activeTitle = searchParams.get('title') || '';
@@ -42,6 +43,26 @@ export function ExerciseList() {
   };
 
   const { exercises, isLoading } = useExerciseList(activeTopic, activeTitle, user?._id);
+
+  if (isAuthLoading) {
+    return (
+      <div className="w-full pt-20 text-center text-gray-500 font-medium">
+        Kiểm tra phiên đăng nhập...
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="w-full pt-10 px-8 max-w-5xl mx-auto flex justify-center">
+        <AuthGatekeeper
+          title="Cận Exercises List"
+          subtitle="AI, Personalize, and Easy to Learn: Exercises List"
+          promptText="Let start practice with AI personalize! Log in to start practice now!"
+        />
+      </div>
+    );
+  }
 
   if (isLoading) return <div>Đang tải dữ liệu...</div>;
 
