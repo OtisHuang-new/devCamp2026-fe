@@ -14,7 +14,7 @@ export function DayCircle({ dayLabel, isActive }: DayCircleProps) {
 
       {/* Vòng tròn hiển thị trạng thái */}
       <div
-        className={`w-[30px] h-[30px] rounded-full flex items-center justify-center transition-all ${
+        className={`w-[30px] h-[30px] pl-[1px] pt-[1px] rounded-full flex items-center justify-center transition-all ${
           isActive ? 'bg-[#F58C14]' : 'bg-[#EEEEEE]'
         }`}
       >

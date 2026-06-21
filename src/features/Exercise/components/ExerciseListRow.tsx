@@ -36,13 +36,13 @@ export function ExerciseListRow({ data }: ExerciseListRowProps) {
           <span className="text-[#1A2E72] font-medium text-[18px]">{data.title}</span>
 
           {/* Badge Topic hiển thị bên phải, bo tròn, màu nền phân biệt */}
-          <span className="ml-3 mt-[3px] border border-gray-500 bg-[#D3D8E8] text-[#1A2E72] text-[11px] font-bold px-2.5 rounded-full uppercase tracking-wider opacity-80">
+          <span className="ml-3 mt-[3px] border border-gray-500 bg-[#D3D8E8] text-[#1A2E72] text-[11px] font-medium px-2.5 rounded-full uppercase tracking-wider opacity-80">
             {data.topic}
           </span>
         </div>
       </div>
 
-      <span className={`text-sm font-medium ${difficultyColors[data.difficulty]}`}>
+      <span className={` pl-2 text-sm font-medium ${difficultyColors[data.difficulty]}`}>
         {data.difficulty}
       </span>
     </div>

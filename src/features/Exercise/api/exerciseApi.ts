@@ -1,5 +1,5 @@
 import axiosClient from '../../../shared/api/axiosClient';
-import type { ExerciseListItem, ParamExerciseListItem } from '../types/exerciseListTypes';
+import type { ParamExerciseListItem, ExerciseListResponse } from '../types/exerciseListTypes';
 import type { ExerciseDataAPI } from '../types/exerciseTypes';
 
 export const exerciseApi = {
@@ -11,10 +11,13 @@ export const exerciseApi = {
     return response;
   },
 
-  async getExerciseList(params: ParamExerciseListItem): Promise<ExerciseListItem[]> {
-    const response = await axiosClient.get<ExerciseListItem[], ExerciseListItem[]>(`/exercises`, {
-      params: params,
-    });
+  async getExerciseList(params: ParamExerciseListItem): Promise<ExerciseListResponse> {
+    const response = await axiosClient.get<ExerciseListResponse, ExerciseListResponse>(
+      `/exercises`,
+      {
+        params: params,
+      },
+    );
     return response;
   },
 };
