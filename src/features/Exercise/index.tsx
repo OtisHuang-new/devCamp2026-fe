@@ -1,16 +1,15 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { TopicFilter } from './components/TopicFilter';
 import { SearchBar } from './components/SearchBar';
 import { ExerciseListRow } from './components/ExerciseListRow';
 import { useExerciseList } from './hooks/useExerciseList';
 import { useAuthContext_v2 } from '@/shared/context/hooks/useAuthContext_v2';
-
-const TOPICS = ['All', 'Array', 'String', 'Math', 'Sorting'];
+import { Return } from '@/shared/components/Return';
+import { AuthGatekeeper } from '@/shared/components/AuthGatekeeper';
 
 export function ExerciseList() {
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { user } = useAuthContext_v2();
+  const { user, isLoading: isAuthLoading } = useAuthContext_v2();
 
   const activeTopic = searchParams.get('topic') || 'All';
   const activeTitle = searchParams.get('title') || '';
@@ -24,7 +23,8 @@ export function ExerciseList() {
       newParams.set('topic', newTopic);
     }
 
-    setSearchParams(newParams);
+    // 1. SENIOR FIX: Bật replace để không lưu filter vào History Stack
+    setSearchParams(newParams, { replace: true });
   };
 
   const handleTitleChange = (newTitle: string) => {
@@ -36,52 +36,59 @@ export function ExerciseList() {
       newParams.set('title', newTitle);
     }
 
-    setSearchParams(newParams);
+    // 2. SENIOR FIX: Tương tự cho thanh Search
+    setSearchParams(newParams, { replace: true });
   };
 
-  const { exercises, isLoading } = useExerciseList(activeTopic, activeTitle, user?._id);
+  const { exercises, isLoading, topics } = useExerciseList(activeTopic, activeTitle, user?._id);
 
-  if (isLoading) return <div>Đang tải dữ liệu...</div>;
+  const displayTopics = ['All', ...topics];
+
+  if (isAuthLoading) {
+    return (
+      <div className="w-full pt-20 text-center text-gray-500 font-medium">
+        Checking for Login...
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="w-full pt-10 px-8 max-w-5xl mx-auto flex justify-center">
+        <AuthGatekeeper
+          title="Cận Exercises List"
+          subtitle="AI, Personalize, and Easy to Learn: Exercises List"
+          promptText="Let start practice with AI personalize! Log in to start practice now!"
+        />
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full mx-auto px-8 pt-4 font-sans max-w-5xl">
-      {/* HEADER (Sẽ refactor thành Component chung sau) */}
-      <div className="flex justify-between items-center mb-[15px] border-b border-gray-800 pb-3">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center text-gray-900 font-medium transition-colors hover:opacity-70"
-        >
-          <svg
-            className="w-4 h-4 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"
-            ></path>
-          </svg>
-          Return to progress
-        </button>
-      </div>
+    <div className="w-full pt-4 font-sans max-w-5xl">
+      <Return text="Return to progress" />
 
       {/* VÙNG CHỨA BỘ LỌC (Topic & Search) */}
-      <TopicFilter topics={TOPICS} activeTopic={activeTopic} onTopicChange={handleTopicChange} />
+      <TopicFilter
+        topics={displayTopics}
+        activeTopic={activeTopic}
+        onTopicChange={handleTopicChange}
+      />
 
       <SearchBar activeTitle={activeTitle} onTitleChange={handleTitleChange} />
 
       {/* DANH SÁCH BÀI TẬP */}
       <div className="flex flex-col rounded-xl overflow-hidden">
-        {/* SENIOR FIX: Code phòng thủ. Chỉ map khi nó chắc chắn là 1 Array */}
-        {Array.isArray(exercises) && exercises.length > 0 ? (
+        {/* SENIOR FIX: Chỉ hiển thị chữ Loading ở danh sách, không làm chết bộ lọc */}
+        {isLoading ? (
+          <div className="text-center py-10 text-gray-500 font-medium animate-pulse">
+            Loading data...
+          </div>
+        ) : Array.isArray(exercises) && exercises.length > 0 ? (
           exercises.map((exercise) => <ExerciseListRow key={exercise._id} data={exercise} />)
         ) : (
           <div className="text-center py-10 text-gray-500 font-medium">
-            Không có bài tập nào hoặc dữ liệu bị lỗi.
+            No data found in Database.
           </div>
         )}
       </div>

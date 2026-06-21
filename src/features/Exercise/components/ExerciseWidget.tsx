@@ -17,7 +17,7 @@ function ExerciseWidget({ exerciseId }: ExerciseWidgetProps) {
   if (isLoading) {
     return (
       <div className="w-full py-10 flex justify-center items-center text-gray-500 font-medium animate-pulse">
-        Đang tải bài tập...
+        Loading exercise...
       </div>
     );
   }
@@ -26,7 +26,9 @@ function ExerciseWidget({ exerciseId }: ExerciseWidgetProps) {
 
   return (
     <div className="w-full animate-fadeIn">
-      <h2 className="text-4xl font-bold text-[#1E3A8A] mb-6">Exercise</h2>
+      <h2 className="text-4xl font-bold text-[#1E3A8A] mb-6">
+        {exercise.is_project ? 'Project' : 'Exercise'}
+      </h2>
 
       <div className="bg-[#F8F9FA] rounded-2xl py-8 px-4 border border-gray-100 shadow-sm">
         <div className="flex flex-col gap-3 mb-6">

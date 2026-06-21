@@ -14,6 +14,11 @@ import SubmissionResult from '../../shared/components/SubmissionResult';
 import { useNavigate } from 'react-router-dom';
 import { useUpdateProgress } from './hooks/useUpdateProgress';
 
+import { Return } from '@/shared/components/Return';
+
+import { LoadingSpinner } from '@/shared/components/Loading/LoadingSpinner';
+import { TextSelectionPopover } from '../../shared/components/TextSelectionPopover';
+
 const LessonDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { lesson, isLoading } = useLesson(id);
@@ -110,25 +115,25 @@ const LessonDetail = () => {
           className="w-full h-full overflow-y-auto flex flex-col scroll-smooth pb-[100px]"
         >
           <div className="pt-6 px-10">
-            <button
-              onClick={() => navigate('/roadmap')}
-              className="text-gray-500 text-sm hover:text-[#1E3A8A] flex items-center gap-2 "
-            >
-              <span>←</span> Return to progress
-            </button>
+            <Return text="Return to progress" />
           </div>
 
           <div className="px-10 py-4 flex flex-col gap-4">
             <LessonContent data={lesson} />
-            <hr className="border-gray-100 my-4" />
+            <hr className="border-gray-100 my-1" />
 
             {lesson.exercise_id && <ExerciseWidget exerciseId={lesson.exercise_id} />}
 
             {isSubmitting && (
-              <div className="w-full text-center py-6 text-gray-500 font-bold animate-pulse">
-                Đang chấm điểm...
+              <div className="w-full py-10">
+                <LoadingSpinner
+                  text="Đang chấm điểm testcases..."
+                  iconSize="w-8 h-8"
+                  textColor="text-gray-500"
+                />
               </div>
             )}
+
             {submitError && (
               <div className="w-full text-center py-6 text-red-500 font-bold">
                 Lỗi khi nộp bài: {submitError}
@@ -169,6 +174,8 @@ const LessonDetail = () => {
           onSubmit={handleSubmit}
         />
       </div>
+
+      <TextSelectionPopover />
     </div>
   );
 };

@@ -3,18 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import { useExerciseDetail } from './hooks/useExerciseDetail';
 import { ExerciseContent } from './components/ExerciseContent';
 
-// --- IMPORT CÁC COMPONENT & HOOK DÙNG CHUNG ---
 import SidePanel from '../../shared/components/SidePanel';
 import CodeEditor from '../../shared/components/CodeEditor';
 import SubmissionResult from '../../shared/components/SubmissionResult';
 import CodeToggleButton from '../../shared/components/Buttons/CodeToggleButton';
 
-// LƯU Ý ĐƯỜNG DẪN: Nếu useSubmitCode vẫn nằm trong LessonDetail, bạn trỏ về đó.
-// (Chuẩn Senior: Bạn nên move hook này ra src/shared/hooks/useSubmitCode.ts để dùng chung)
 import { useSubmitCode } from '@/features/Exercise/hooks/useSubmitCode';
 import { useSubmissionHistory } from '@/features/Exercise/hooks/useSubmissionHistory';
 import { useSyncEditorStore } from '../Exercise/hooks/useSyncEditorStore';
 import { TestCaseList } from '../Exercise/components/TestCaseList';
+
+import { LoadingSpinner } from '@/shared/components/Loading/LoadingSpinner';
+import { TextSelectionPopover } from '@/shared/components/TextSelectionPopover';
+
+import { Return } from '@/shared/components/Return';
 
 export function ExerciseDetail() {
   const navigate = useNavigate();
@@ -86,15 +88,10 @@ export function ExerciseDetail() {
       <div className="flex-1 h-full overflow-y-auto flex flex-col scroll-smooth pb-[100px] border-r border-gray-100">
         {/* Nút Back */}
         <div className="pt-6 px-10">
-          <button
-            onClick={() => navigate('/exercises')}
-            className="text-gray-500 text-sm hover:text-[#1E3A8A] flex items-center gap-2"
-          >
-            <span>←</span> Return to exercises
-          </button>
+          <Return text="Return to exercises" />
         </div>
 
-        <div className="px-10 py-4 flex flex-col gap-4">
+        <div className="px-10 py-4 flex flex-col gap-3">
           <ExerciseContent data={exerciseDetail} />
 
           {exerciseDetail && (
@@ -103,12 +100,16 @@ export function ExerciseDetail() {
             </div>
           )}
 
-          <hr className="border-gray-100 my-4" />
+          <hr className="border-gray-100 my-1" />
 
-          {/* KHU VỰC HIỂN THỊ KẾT QUẢ CHẤM BÀI */}
+          {/* THAY THẾ CHỖ NÀY */}
           {isSubmitting && (
-            <div className="w-full text-center py-6 text-gray-500 font-bold animate-pulse">
-              Đang chấm điểm...
+            <div className="w-full py-10">
+              <LoadingSpinner
+                text="Đang chấm điểm testcases..."
+                iconSize="w-8 h-8"
+                textColor="text-gray-500"
+              />
             </div>
           )}
 
@@ -150,6 +151,8 @@ export function ExerciseDetail() {
           onSubmit={handleSubmit}
         />
       </div>
+
+      <TextSelectionPopover />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 // Vị trí: src/shared/components/SubmissionResult/components/AIAnalysisSection.tsx
 import type { AIEvaluation } from '../../../../features/Exercise/types/submitTypes';
+import { LoadingSpinner } from '../../Loading/LoadingSpinner';
 
 interface AIAnalysisSectionProps {
   isAllPassed: boolean;
@@ -10,30 +11,9 @@ export default function AIAnalysisSection({ isAllPassed, evaluationData }: AIAna
   // Nếu chưa có data (AI đang chấm hoặc lỗi), ta hiện trạng thái chờ
   if (!evaluationData) {
     return (
-      <div className="pt-6 border-t border-gray-100">
-        <div className="flex items-center gap-2.5 mb-6 animate-pulse">
-          <svg
-            className="animate-spin h-5 w-5 text-[#22C55E]"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-          <span className="font-bold text-slate-700 text-sm">AI is evaluating your code...</span>
-        </div>
+      <div className="pt-6 border-t border-gray-100 flex justify-start mb-6">
+        {/* 2. SỬ DỤNG COMPONENT MỚI */}
+        <LoadingSpinner text="AI is evaluating your code..." iconSize="w-5 h-5" />
       </div>
     );
   }
@@ -59,18 +39,6 @@ export default function AIAnalysisSection({ isAllPassed, evaluationData }: AIAna
             </p>
           </div>
         )}
-      </div>
-
-      <div className="flex flex-col items-end gap-2 text-right">
-        <select className="bg-gray-100 border-none text-xs font-bold rounded-lg px-3 py-1.5 outline-none cursor-pointer mb-2">
-          <option>Analyze further</option>
-        </select>
-        <p className="text-xs text-slate-600">Time Complexity: $O(n \log n)$</p>
-        <p className="text-xs text-slate-600">Space Complexity: $O(n)$</p>
-        <p className="text-[10px] text-slate-400 italic mt-2 leading-tight">
-          Use memory efficiently, however,
-          <br /> unnecessary temporary variables can be reduced.
-        </p>
       </div>
     </div>
   );

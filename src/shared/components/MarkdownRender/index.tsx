@@ -2,8 +2,10 @@ import type { ComponentPropsWithoutRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
+import remarkBreaks from 'remark-breaks';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
+import { InteractiveCompilerBlock } from './components/InteractiveCompilerBlock';
 
 // Tường minh Type, tuyệt đối không dùng any
 export interface CodeProps extends ComponentPropsWithoutRef<'code'> {
@@ -31,7 +33,7 @@ export function MarkdownRender({
   return (
     <div className={className}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkMath]}
+        remarkPlugins={[remarkGfm, remarkMath, remarkBreaks]}
         rehypePlugins={[rehypeKatex]}
         components={{
           // Gọi hàm omitNode thay vì destructuring, code cực kỳ gọn gàng và không có biến thừa
@@ -70,18 +72,33 @@ export function MarkdownRender({
             />
           ),
           td: (props) => <td className="border border-gray-200 px-4 py-3" {...omitNode(props)} />,
-          // Sửa triệt để thẻ code: Lấy ra className để nối chuỗi (đảm bảo nó được dùng), phần còn lại đưa qua omitNode
+
+          pre: (props) => <pre className="m-0 p-0 bg-transparent" {...omitNode(props)} />,
+
           code: (props: CodeProps) => {
             const { inline, className: customClass, children, ...rest } = props;
 
-            return inline ? (
+            // 2. SENIOR FIX: Nhận diện chính xác Inline vs Block (Bypass lỗi của thư viện)
+            const isBlock =
+              inline === false ||
+              customClass?.includes('language-') ||
+              String(children).includes('\n');
+
+            // 3. Hệ thống Đánh chặn (Interceptor)
+            if (isBlock && customClass?.includes('language-runable')) {
+              return <InteractiveCompilerBlock content={String(children)} />;
+            }
+
+            // Nếu KHÔNG PHẢI là block -> Render Inline nhỏ nhắn xinh xắn
+            return !isBlock ? (
               <code
-                className={`bg-gray-100 text-red-500 px-1.5 py-0.5 rounded text-sm font-mono ${customClass || ''}`.trim()}
+                className={`bg-blue-50/80 text-primary font-extrabold border-[1.2px] shadow-sm px-1.5 py-0.5 rounded text-sm font-mono ${customClass || ''}`.trim()}
                 {...omitNode(rest)}
               >
                 {children}
               </code>
             ) : (
+              // Nếu LÀ block -> Render cục to màu đen
               <code
                 className={`block bg-[#1E1E1E] text-white p-4 rounded-xl my-4 overflow-x-auto text-sm font-mono shadow-sm ${customClass || ''}`.trim()}
                 {...omitNode(rest)}

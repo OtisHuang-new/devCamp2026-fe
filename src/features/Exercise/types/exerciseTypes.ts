@@ -12,10 +12,11 @@ export interface ExerciseDataAPI {
   lesson_id: string;
   title: string;
   topic: string;
-  difficulty: 'Easy' | 'Medium' | 'Hard'; // Khớp với UI của bạn
+  difficulty: 'Easy' | 'Medium' | 'Hard';
   initial_code: string;
   content: string;
   test_cases: TestCase[];
   time_limit: number;
   memory_limit: number;
+  is_project: boolean; // 1. SENIOR FIX: Khai báo field mới
 }

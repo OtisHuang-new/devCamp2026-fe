@@ -1,9 +1,10 @@
 import { useAuthContext_v2 } from '../../shared/context/hooks/useAuthContext_v2';
-import { useNavigate } from 'react-router-dom';
 import { useProfileForm } from './hooks/useProfileForm';
 import { EditableField } from './components/EditableField';
 import { formatDateTime } from '../../shared/utils/dateFormatter';
 import type { UserInfo } from '../../shared/context/types/contextTypes';
+import icon_person from './assets/person.svg';
+import { Return } from '@/shared/components/Return';
 
 const LEVEL_OPTIONS = [
   { value: 1, label: 'Complete Beginner (No prior experience)' },
@@ -19,8 +20,6 @@ interface ProfileContentProps {
 }
 
 function ProfileContent({ user, logoutState }: ProfileContentProps) {
-  const navigate = useNavigate();
-
   const {
     isEditing,
     draftData,
@@ -32,36 +31,19 @@ function ProfileContent({ user, logoutState }: ProfileContentProps) {
 
   return (
     <div className="w-full max-w-4xl mx-auto px-8 pt-4 font-sans">
-      {/* 1. Header: Return link */}
-      <div
-        onClick={function () {
-          navigate(-1);
-        }}
-        className="mb-6"
-      >
-        <button className="flex items-center text-gray-800 hover:text-black font-medium transition-colors">
-          <svg
-            className="w-4 h-4 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"
-            ></path>
-          </svg>
-          Return to progress
-        </button>
-      </div>
+      <Return text="Return to progress" />
 
-      {/* 2. Cover Photo & Avatar */}
+      {/* 2. Cover Photo */}
       <div className="relative mb-[20px]">
         {/* Cover Background */}
-        <div className="w-full h-56 bg-gray-200 rounded-xl"></div>
+        <div className="w-full h-56 bg-gray-200 rounded-xl flex items-start justify-center overflow-hidden">
+          {/* Ảnh được căn giữa tuyệt đối nhờ flex, items-center và justify-center của thẻ cha */}
+          <img
+            src={icon_person}
+            alt="Default Cover"
+            className="w-[280px] h-[280px] object-contain opacity-30 -translate-y-1"
+          />
+        </div>
       </div>
 
       {/* 3. User Basic Info */}
