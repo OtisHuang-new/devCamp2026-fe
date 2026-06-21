@@ -35,21 +35,7 @@ const LessonDetail = () => {
     lesson?.exercise_id,
   );
 
-  const { triggerUpdate } = useUpdateProgress();
-
-  // SỬA LỖI TYPESCRIPT: Tính toán passedCount và total từ mảng results
-  useEffect(() => {
-    if (submitResult && submitResult.results) {
-      const total = submitResult.results.length;
-      const passedCount = submitResult.results.filter((r) => r.status === 'passed').length;
-
-      // Nếu có testcase và Pass 100% thì trigger cập nhật bài học
-      if (total > 0 && passedCount === total) {
-        triggerUpdate();
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [submitResult]);
+  useUpdateProgress(id, history, submitResult);
 
   const leftColumnRef = useRef<HTMLDivElement>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);

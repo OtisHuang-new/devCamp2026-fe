@@ -133,7 +133,12 @@ export function ExerciseDetail() {
 
       {/* CỘT PHẢI: AI Assistant */}
       <div className="w-[35%] h-full">
-        <SidePanel lessonId={exerciseDetail.lesson_id} exerciseId={exerciseDetail._id} />
+        <SidePanel
+          lessonId={exerciseDetail.lesson_id}
+          exerciseId={exerciseDetail._id}
+          // 1. BỔ SUNG: Báo cho SidePanel biết ẩn khu vực Video đi
+          hideVideo={true}
+        />
       </div>
 
       {/* --- CÁC COMPONENT NỔI (ABSOLUTE/FIXED) BÊN NGOÀI LAYOUT CHÍNH --- */}
