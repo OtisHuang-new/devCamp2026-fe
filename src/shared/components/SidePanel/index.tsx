@@ -1,5 +1,6 @@
 // Vị trí: src/shared/components/SidePanel/index.tsx
 import { AIChatbot } from './AIChatbot'; // Import xe mới lắp
+import { getEmbeddableVideoUrl } from '@/shared/utils/videoUtils';
 
 interface SidePanelProps {
   videoUrl?: string;
@@ -8,11 +9,12 @@ interface SidePanelProps {
 }
 
 export default function SidePanel({ videoUrl, lessonId, exerciseId }: SidePanelProps) {
-  const isInvalidVideo = !videoUrl || videoUrl.startsWith('www.demoVid.com');
+  const embeddableUrl = getEmbeddableVideoUrl(videoUrl);
+
+  const isInvalidVideo = !embeddableUrl || embeddableUrl.startsWith('www.demoVid.com');
 
   return (
     <div className="w-full h-full flex flex-col px-2 pt-3 gap-3 bg-primary/10">
-      {/* 2. SỬA KHỐI VIDEO: Luôn render khung tỷ lệ 16:9, chia UI theo cờ isInvalidVideo */}
       <div
         className={`w-full aspect-video rounded-[10px] overflow-hidden shadow-sm shrink-0 flex items-center justify-center ${
           isInvalidVideo ? 'bg-gray-300' : 'bg-black'
@@ -25,7 +27,8 @@ export default function SidePanel({ videoUrl, lessonId, exerciseId }: SidePanelP
         ) : (
           <iframe
             className="w-full h-full"
-            src={videoUrl}
+            // 4. SENIOR FIX: Truyền URL đã được convert vào src
+            src={embeddableUrl}
             title="Lesson Video"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
