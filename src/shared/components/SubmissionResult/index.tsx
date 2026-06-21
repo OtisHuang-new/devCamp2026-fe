@@ -99,7 +99,13 @@ export default function SubmissionResult({
           })}
         </div>
 
-        <AIAnalysisSection isAllPassed={isAllPassed} evaluationData={currentData.AI_evaluation} />
+        <AIAnalysisSection
+          // 1. SENIOR FIX: Dùng key để báo React tự động reset state nội bộ của Component con mỗi khi đổi bài nộp
+          key={currentData._id}
+          isAllPassed={isAllPassed}
+          evaluationData={currentData.AI_evaluation}
+          submissionId={currentData._id}
+        />
       </div>
 
       <div className="flex justify-center mt-8">
