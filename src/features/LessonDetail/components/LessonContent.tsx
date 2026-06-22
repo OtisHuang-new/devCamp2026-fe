@@ -18,7 +18,7 @@ export default function LessonContent({ data }: LessonContentProps) {
       {/* 2. Cập nhật Props (Đổi lessonId thành itemId và thêm type) */}
       <ContextualizeMessage itemId={data._id} type="lesson" />
 
-      <MarkdownRender content={data.content} />
+      <MarkdownRender content={data.content} className="pt-7" />
     </div>
   );
 }

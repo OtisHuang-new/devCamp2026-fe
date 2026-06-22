@@ -24,15 +24,19 @@ export function useRoadmapScroll(mainChaptersLength: number, currentLessonId?: s
     if (!headerRef.current || mainChaptersLength === 0 || !container) return;
 
     setShowScrollTop(container.scrollTop > 50);
-
     const headerBottom = headerRef.current.getBoundingClientRect().bottom;
-    const projectNodes = document.querySelectorAll('[data-project-marker]');
+
+    // 3. SENIOR FIX: Tìm tất cả các vạch phân cách thay vì tìm Project
+    const dividerNodes = document.querySelectorAll('[data-chapter-divider]');
     let currentIndex = 0;
 
-    for (let i = 0; i < projectNodes.length; i++) {
-      const node = projectNodes[i];
+    for (let i = 0; i < dividerNodes.length; i++) {
+      const node = dividerNodes[i];
       const rect = node.getBoundingClientRect();
-      if (headerBottom >= rect.top + rect.height * 0.8) {
+
+      // 4. SENIOR FIX: Điều kiện cuộn + Threshold 20px
+      // Nếu mép dưới của Header chạm gần tới (cách 20px) đỉnh của vạch phân cách, ta kích hoạt đổi Chapter
+      if (headerBottom + 20 >= rect.top) {
         if (i + 1 < mainChaptersLength) currentIndex = i + 1;
       }
     }

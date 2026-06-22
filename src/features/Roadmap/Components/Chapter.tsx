@@ -59,7 +59,10 @@ const Chapter: React.FC<ChapterProps> = ({
   return (
     <div className="flex flex-col w-full relative">
       {!isFirstChapter && (
-        <div className="flex items-center justify-center my-8 gap-4 w-full opacity-60">
+        <div
+          data-chapter-divider
+          className="flex items-center justify-center my-8 gap-4 w-full opacity-60"
+        >
           <hr className="flex-1 border-gray-300 border-[2px] border-solid" />
           <span className="text-gray-500 font-bold text-[16px] tracking-wide uppercase">
             Chapter {chapterNumber - 1}: {chapterTitle}
@@ -67,16 +70,10 @@ const Chapter: React.FC<ChapterProps> = ({
           <hr className="flex-1 border-gray-300 border-[2px] border-solid" />
         </div>
       )}
-
       <div className={`flex flex-col items-center gap-[40px] ${isFirstChapter ? 'mt-8' : 'mt-4'}`}>
         {nodes.map((node) => {
           return (
-            <div
-              key={node.id}
-              id={`roadmap-node-${node.id}`}
-              className={node.translateX}
-              {...(node.type === 'project' ? { 'data-project-marker': chapterTitle } : {})}
-            >
+            <div key={node.id} id={`roadmap-node-${node.id}`} className={node.translateX}>
               {node.type === 'lesson' && (
                 <LessonButton
                   iconPath={star_icon}

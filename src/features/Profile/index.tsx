@@ -3,7 +3,6 @@ import { useProfileForm } from './hooks/useProfileForm';
 import { EditableField } from './components/EditableField';
 import { formatDateTime } from '../../shared/utils/dateFormatter';
 import type { UserInfo } from '../../shared/context/types/contextTypes';
-import icon_person from './assets/person.svg';
 import { Return } from '@/shared/components/Return';
 
 const LEVEL_OPTIONS = [
@@ -12,6 +11,16 @@ const LEVEL_OPTIONS = [
   { value: 3, label: 'Intermediate (Can build small projects)' },
   { value: 4, label: 'Advanced (Professional experience)' },
   { value: 5, label: 'Expert (Mastery in multiple stacks)' },
+];
+
+// 2. SENIOR UX: Khai báo mảng JOB_OPTIONS với thủ thuật chèn icon bằng Text trực tiếp
+const JOB_OPTIONS = [
+  { value: 'Accountant', label: 'Accountant (✨ AI Customized)' },
+  { value: 'Software Engineer', label: 'Software Engineer' },
+  { value: 'Data Analyst', label: 'Data Analyst' },
+  { value: 'Marketing', label: 'Marketing' },
+  { value: 'Student', label: 'Student' },
+  { value: 'Other', label: 'Other' },
 ];
 
 interface ProfileContentProps {
@@ -30,20 +39,12 @@ function ProfileContent({ user, logoutState }: ProfileContentProps) {
   } = useProfileForm(user);
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-8 pt-4 font-sans">
+    <div className="w-full max-w-4xl mx-auto px-3 pt-4 font-sans">
       <Return text="Return to progress" />
 
       {/* 2. Cover Photo */}
-      <div className="relative mb-[20px]">
-        {/* Cover Background */}
-        <div className="w-full h-56 bg-gray-200 rounded-xl flex items-start justify-center overflow-hidden">
-          {/* Ảnh được căn giữa tuyệt đối nhờ flex, items-center và justify-center của thẻ cha */}
-          <img
-            src={icon_person}
-            alt="Default Cover"
-            className="w-[280px] h-[280px] object-contain opacity-30 -translate-y-1"
-          />
-        </div>
+      <div className="relative mb-[20px] text-4xl font-bold text-primary text-center">
+        PROFILE MANAGEMENT
       </div>
 
       {/* 3. User Basic Info */}
@@ -90,9 +91,9 @@ function ProfileContent({ user, logoutState }: ProfileContentProps) {
       </div>
 
       {/* 4. Detail Information Box */}
-      <div className="border-[3px] border-[#0B1A4D] rounded-2xl p-6 relative mb-6 shadow-sm">
+      <div className="border-[3px] border-[#0B1A4D] rounded-2xl p-4 relative mb-6 shadow-sm">
         {/* Box Header */}
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-2 mb-6">
           <h2 className="text-xl font-bold text-[#0B1A4D]">Detail infomation</h2>
           <div className="bg-[#1A2E72] text-white text-[11px] font-semibold px-2.5 py-1 rounded-md flex items-center gap-1.5">
             <svg
@@ -112,14 +113,30 @@ function ProfileContent({ user, logoutState }: ProfileContentProps) {
         </div>
 
         {/* Info Rows */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div className="border border-gray-200 rounded-xl p-4">
             <EditableField
               label="Currently Job"
+              // 3. SENIOR UX: Chuyển Job thành Select Box
+              type="select"
+              options={JOB_OPTIONS}
               value={draftData.information.job}
               isEditing={isEditing}
               onChange={(val) => handleNestedChange('job', val)}
             />
+
+            {/* 4. SENIOR UX: Kỹ thuật phản hồi kép (Dual Feedback). 
+                Kiểm tra real-time: Nếu đang Edit thì nhìn vào draftData, nếu đang View thì nhìn vào user gốc.
+                Nếu là Accountant -> Render ra một cái Banner làm điểm nhấn. */}
+            {(isEditing ? draftData.information.job : user.information.job) === 'Accountant' && (
+              <div className="mt-3 flex items-start gap-3 bg-blue-50/80 border border-blue-200 rounded-lg p-3 animate-fadeIn">
+                <span className="text-xl leading-none select-none">✨</span>
+                <p className="text-[#1E3A8A] text-[13px] font-medium leading-relaxed">
+                  <span className="font-bold">High match:</span> Our AI has highly customized
+                  exercises crafted specifically for Accountants.
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="border border-gray-200 rounded-xl p-4">

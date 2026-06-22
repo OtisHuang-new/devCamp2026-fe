@@ -1,14 +1,17 @@
 // Vị trí: src/shared/components/SubmissionResult/components/AIAnalysisSection.tsx
 import { useState } from 'react';
 import type { AIEvaluation } from '../../../../features/Exercise/types/submitTypes';
-import { LoadingSpinner } from '../../Loading/LoadingSpinner';
 import { evaluatorApi } from '../../../../features/Exercise/api/evaluatorApi';
 import { useAuthContext_v2 } from '../../../context/hooks/useAuthContext_v2';
+import { AIFeatureBox } from '../../AIFeatureBox'; // <-- MỚI
+
+// Import bot mascot (Sửa đường dẫn nếu cần)
+import bot_showing from '../../../../shared/Assets/Mascots/bot_showing.svg';
 
 interface AIAnalysisSectionProps {
   isAllPassed: boolean;
   evaluationData?: AIEvaluation;
-  submissionId: string; // Khai báo prop mới
+  submissionId: string;
 }
 
 export default function AIAnalysisSection({
@@ -18,15 +21,13 @@ export default function AIAnalysisSection({
 }: AIAnalysisSectionProps) {
   const { user } = useAuthContext_v2();
 
-  // 1. STATE QUẢN LÝ NỘI BỘ
   const [localEval, setLocalEval] = useState<AIEvaluation | undefined>(evaluationData);
   const [isEvaluating, setIsEvaluating] = useState<boolean>(false);
 
-  // 3. LOGIC GỌI API MANUALLY (Kiểm soát rõ ràng Promise)
   const handleReload = async () => {
     if (!user?._id || !submissionId) return;
 
-    setIsEvaluating(true); // Chỉ hiện Loading khi bắt đầu chạy Promise
+    setIsEvaluating(true);
     try {
       const response = await evaluatorApi.evaluateSubmission(submissionId, {
         isExercise: true,
@@ -39,58 +40,85 @@ export default function AIAnalysisSection({
     } catch (error) {
       console.error('Failed to reload AI Evaluation:', error);
     } finally {
-      setIsEvaluating(false); // Đóng Loading khi Promise resolve/reject
+      setIsEvaluating(false);
     }
   };
 
-  // --- RENDER LUỒNG 1: ĐANG CHẠY PROMISE ---
-  if (isEvaluating) {
-    return (
-      <div className="pt-6 border-t border-gray-100 flex justify-start mb-6">
-        <LoadingSpinner text="AI is evaluating your code..." iconSize="w-5 h-5" />
-      </div>
-    );
-  }
+  const TITLE = 'AI Analysis';
 
-  // --- RENDER LUỒNG 2: PROMISE ĐÃ CHẠY XONG NHƯNG DATA RỖNG ---
-  if (!localEval) {
-    return (
-      <div className="pt-6 border-t border-gray-100 flex flex-col items-start gap-3 mb-6 animate-fadeIn">
-        <span className="text-sm font-bold text-gray-500">
-          No AI evaluation for this submission.
-        </span>
-        <button
-          onClick={handleReload}
-          className="text-xs font-bold bg-[#1E3A8A] text-white px-4 py-2 rounded-lg hover:bg-[#112255] transition-colors shadow-sm active:scale-95"
-        >
-          Reload for AI evaluation
-        </button>
-      </div>
-    );
-  }
-
-  // --- RENDER LUỒNG 3: CÓ DATA, HIỂN THỊ UI BÌNH THƯỜNG ---
-  const title1 = isAllPassed ? 'Clean Code:' : 'Error destination:';
-  const title2 = isAllPassed ? 'Refactoring:' : 'How to fix:';
-
+  // Để đồng bộ layout ngăn cách với các testcase phía trên, bọc thẻ cha bằng mt-6 pt-6
   return (
-    <div className="grid grid-cols-2 gap-10 pt-4 border-t border-gray-100 animate-fadeIn">
-      <div className="space-y-4">
-        <div>
-          <h4 className="text-sm font-bold text-slate-800 mb-1">{title1}</h4>
-          <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap">
-            {localEval.first_res || 'No detail description.'}
-          </p>
-        </div>
-        {localEval.second_res && (
-          <div>
-            <h4 className="text-sm font-bold text-slate-800 mb-1">{title2}</h4>
-            <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap">
-              {localEval.second_res}
-            </p>
+    <div className="mt-6 pt-6 border-t border-gray-100">
+      {/* RENDER 1: ĐANG CHẠY PROMISE */}
+      {isEvaluating ? (
+        <AIFeatureBox
+          title={TITLE}
+          variant="loading"
+          className="w-fit min-w-[300px]"
+          icon={<img src={bot_showing} alt="AI Bot" className="w-12 h-12 opacity-50 shrink-0" />}
+        >
+          <span className="text-[#1E3A8A] font-medium italic text-[15px] mt-2 block">
+            AI is evaluating your code...
+          </span>
+        </AIFeatureBox>
+      ) : /* RENDER 2: PROMISE CHẠY XONG NHƯNG KO CÓ DATA */
+      !localEval ? (
+        <AIFeatureBox
+          title={TITLE}
+          variant="default"
+          className="w-fit min-w-[300px]"
+          icon={
+            <img src={bot_showing} alt="AI Bot" className="w-12 h-12 opacity-50 shrink-0 mt-1" />
+          }
+        >
+          <div className="flex flex-col items-start gap-3 mt-1">
+            <span className="text-sm font-bold text-gray">
+              No AI evaluation for this submission.
+            </span>
+            <button
+              onClick={handleReload}
+              className="text-xs font-bold bg-[#1E3A8A] text-white px-4 py-2 rounded-lg hover:bg-[#112255] transition-colors shadow-sm active:scale-95"
+            >
+              Reload for AI evaluation
+            </button>
           </div>
-        )}
-      </div>
+        </AIFeatureBox>
+      ) : (
+        /* RENDER 3: CÓ DATA, HIỂN THỊ UI BÌNH THƯỜNG */
+        <AIFeatureBox
+          title={TITLE}
+          variant="default"
+          // 1. SENIOR FIX: Truyền w-[60%] vào chính vỏ bọc.
+          // Kèm theo min-w-[300px] để đảm bảo trên màn hình quá nhỏ nó không bị bóp nghẹt.
+          // Thẻ div mặc định luôn căn trái (left-aligned) nên không cần thêm class căn lề.
+          className="w-[80%] min-w-[300px] "
+          icon={<img src={bot_showing} alt="AI Bot" className="w-12 h-12 shrink-0 mt-1" />}
+        >
+          {/* 2. SENIOR FIX: Xóa cái w-60% sai cú pháp ở đây đi, trả nó về bình thường */}
+          <div className="mt-1">
+            <div className="space-y-4">
+              <div>
+                <h4 className="text-[15px] font-bold text-slate-800 mb-1">
+                  {isAllPassed ? 'Clean Code:' : 'Error destination:'}
+                </h4>
+                <p className="text-[15px] leading-relaxed text-slate-800 font-medium whitespace-pre-wrap">
+                  {localEval.first_res || 'No detail description.'}
+                </p>
+              </div>
+              {localEval.second_res && (
+                <div>
+                  <h4 className="text-[15px] font-bold text-slate-800 mb-1">
+                    {isAllPassed ? 'Refactoring:' : 'How to fix:'}
+                  </h4>
+                  <p className="text-[15px] leading-relaxed text-slate-800 font-medium whitespace-pre-wrap">
+                    {localEval.second_res}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </AIFeatureBox>
+      )}
     </div>
   );
 }
