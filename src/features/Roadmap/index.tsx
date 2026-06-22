@@ -8,9 +8,9 @@ import HeaderInfo from './Components/HeaderInfo';
 import Chapter from './Components/Chapter';
 import SideLessonSection from './Components/SideLessonSection';
 import ScrollToTopButton from '../../shared/components/Buttons/ScrollToTopButton';
-import { prefetchLessonContext } from '../LessonDetail/hooks/useLessonContext';
 import { useRightbarStore } from '../../shared/store/useRightbarStore';
 import { AuthGatekeeper } from '@/shared/components/AuthGatekeeper';
+import { prefetchAIContext } from '@/shared/hooks/useAIContext';
 
 function Roadmap() {
   const navigate = useNavigate();
@@ -49,7 +49,8 @@ function Roadmap() {
 
   useEffect(() => {
     if (user?.current_lesson_id && user?._id) {
-      prefetchLessonContext(user.current_lesson_id, user._id);
+      // 2. ĐỔI TÊN HÀM VÀ BỔ SUNG TYPE 'lesson' ĐỂ PREFETCH
+      prefetchAIContext(user.current_lesson_id, user._id, 'lesson');
     }
   }, [user?.current_lesson_id, user?._id]);
 

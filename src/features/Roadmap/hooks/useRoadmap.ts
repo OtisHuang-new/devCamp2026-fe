@@ -1,16 +1,36 @@
+// Vị trí: src/features/Roadmap/hooks/useRoadmap.ts
 import { useState, useEffect } from 'react';
 import { roadmapApi } from '../api/roadmapApi';
 import type { ChapterDataAPI, TransformedChapter } from '../types/roadmapTypes';
 import type { PathNode } from '../Components/Chapter';
 
 let pendingRoadmapRequest: Promise<ChapterDataAPI[]> | null = null;
+// 5. Khai báo hằng số Cache Key
+const CACHE_KEY = 'roadmap_data_cache';
 
-const fetchRoadmapDeduped = () => {
+// 6. SENIOR FIX: Nâng cấp hàm Core Fetcher kết hợp Cache-First và Deduping Request
+const fetchRoadmapDeduped = async (): Promise<ChapterDataAPI[]> => {
+  // Bước 1: Check Cache (0ms latency). Nếu có thì ép kiểu và trả về ngay.
+  const cachedData = sessionStorage.getItem(CACHE_KEY);
+  if (cachedData) {
+    return JSON.parse(cachedData);
+  }
+
+  // Bước 2: Check Deduping (Nếu API đang gọi dở thì dùng chung Promise)
   if (pendingRoadmapRequest) return pendingRoadmapRequest;
 
-  pendingRoadmapRequest = roadmapApi.getRoadmap().finally(() => {
-    pendingRoadmapRequest = null;
-  });
+  // Bước 3: Tiến hành gọi API thực tế
+  pendingRoadmapRequest = (async () => {
+    try {
+      const response = await roadmapApi.getRoadmap();
+      // Lưu vào sessionStorage để các lần render/reload trang sau được dùng luôn
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify(response));
+      return response;
+    } finally {
+      // Dọn dẹp cờ Deduping sau khi hoàn tất
+      pendingRoadmapRequest = null;
+    }
+  })();
 
   return pendingRoadmapRequest;
 };

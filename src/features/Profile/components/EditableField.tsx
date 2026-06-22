@@ -86,6 +86,20 @@ export const EditableField: React.FC<EditableFieldProps> = ({
     );
   }
 
+  // 1. SENIOR FIX: Bổ sung rẽ nhánh render đích danh thẻ <textarea> để fix lỗi 1 dòng
+  if (type === 'textarea') {
+    return (
+      <div className="flex flex-col gap-1">
+        {label && <span className="font-bold text-gray-900">{label}</span>}
+        <textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className={`${baseInputClass} min-h-[100px] resize-none custom-scrollbar`}
+        />
+      </div>
+    );
+  }
+
   // Mặc định cho input text bình thường
   return (
     <div className="flex flex-col gap-1">

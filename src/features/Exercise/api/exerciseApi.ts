@@ -20,4 +20,13 @@ export const exerciseApi = {
     );
     return response;
   },
+
+  async contextualizeExercise(exerciseId: string, userId: string): Promise<string> {
+    const response = await axiosClient.post<unknown, { context?: string } | string>(
+      `/exercises/${exerciseId}/contextualize`,
+      { user_id: userId },
+    );
+    // Xử lý an toàn: Axios có thể trả về string thẳng, hoặc bọc trong object { context }
+    return typeof response === 'string' ? response : (response.context ?? '');
+  },
 };
