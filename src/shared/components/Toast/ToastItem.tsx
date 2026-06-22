@@ -61,10 +61,31 @@ export function ToastItem({ toast }: ToastItemProps) {
         isExiting ? 'translate-y-4 opacity-0' : 'translate-y-0 opacity-100 animate-slideUp'
       }`}
     >
-      {/* Icon chấm đỏ */}
-      <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#E53E3E]">
-        <span className="text-[12px] font-bold text-white">!</span>
-      </div>
+      {/* 4. SENIOR FIX: Phân nhánh render Icon dựa vào giá trị isWarning */}
+      {toast.isWarning ? (
+        // Icon Warning (Đỏ - Chấm than)
+        <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#E53E3E]">
+          <span className="text-[12px] font-bold text-white">!</span>
+        </div>
+      ) : (
+        // Icon Success (Xanh - Dấu Tick)
+        <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#22C55E]">
+          <svg
+            className="w-3.5 h-3.5 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="3"
+              d="M5 13l4 4L19 7"
+            ></path>
+          </svg>
+        </div>
+      )}
 
       {/* Thông điệp */}
       <p className="flex-1 text-sm font-medium text-white">{toast.text}</p>
