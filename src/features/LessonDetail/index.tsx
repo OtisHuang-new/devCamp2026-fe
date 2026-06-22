@@ -70,13 +70,13 @@ const LessonDetail = () => {
   if (isLoading)
     return (
       <div className="flex justify-center items-center h-screen font-bold text-gray-500">
-        Đang tải bài học...
+        Loading Lesson...
       </div>
     );
   if (!lesson)
     return (
       <div className="flex justify-center items-center h-screen font-bold text-red-500">
-        Không tìm thấy bài học!
+        Found no Lesson, huhu @@
       </div>
     );
 
@@ -122,7 +122,7 @@ const LessonDetail = () => {
 
             {submitError && (
               <div className="w-full text-center py-6 text-red-500 font-bold">
-                Lỗi khi nộp bài: {submitError}
+                Submission Error: {submitError}
               </div>
             )}
             {!isSubmitting && history.length > 0 && (

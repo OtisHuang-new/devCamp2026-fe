@@ -1,5 +1,7 @@
+// Vị trí: src/features/LessonDetail/components/LessonContent.tsx
 import type { LessonDataAPI } from '../types/lessonTypes';
-import ContextualizeMessage from './ContextualizeMessage';
+// 1. Import từ Shared
+import { ContextualizeMessage } from '../../../shared/components/ContextualizeMessage';
 import { MarkdownRender } from '../../../shared/components/MarkdownRender';
 
 interface LessonContentProps {
@@ -13,9 +15,9 @@ export default function LessonContent({ data }: LessonContentProps) {
         Lesson {data.order}: {data.title}
       </h1>
 
-      <ContextualizeMessage lessonId={data._id} />
+      {/* 2. Cập nhật Props (Đổi lessonId thành itemId và thêm type) */}
+      <ContextualizeMessage itemId={data._id} type="lesson" />
 
-      {/* Gọi Component mới, tự động ăn class CSS mặc định đã cấu hình */}
       <MarkdownRender content={data.content} />
     </div>
   );
