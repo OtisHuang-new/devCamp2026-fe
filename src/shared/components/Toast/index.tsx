@@ -17,7 +17,7 @@ export function ToastContainer() {
       `}</style>
 
       {/* Neo vị trí bottom-center, flex-col giúp các toast tự động stack lên nhau */}
-      <div className="fixed bottom-[30px] left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-3 pointer-events-none">
+      <div className="fixed bottom-[30px] left-1/2 -translate-x-1/2 z-[9999] flex flex-col-reverse gap-3 pointer-events-none">
         {toasts.map((toast) => (
           <ToastItem key={toast.id} toast={toast} />
         ))}

@@ -14,7 +14,8 @@ export function AIMessage({ content }: AIMessageProps) {
 
   function handleCopy() {
     navigator.clipboard.writeText(content);
-    addToast('Copied to clipboard successful', 2000);
+    // 5. SENIOR FIX: Truyền tường minh false vào tham số thứ 3 để ép ra Icon Tick xanh
+    addToast('Copied to clipboard successful', 1000, false);
   }
 
   return (

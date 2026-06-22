@@ -4,11 +4,12 @@ export interface ToastMessage {
   id: string;
   text: string;
   duration: number;
+  isWarning?: boolean;
 }
 
 interface ToastStore {
   toasts: ToastMessage[];
-  addToast: (text: string, duration?: number) => void;
+  addToast: (text: string, duration?: number, isWarning?: boolean) => void;
   removeToast: (id: string) => void;
 }
 
@@ -18,10 +19,13 @@ export function useToastStoreBase() {
 
 export const useToastStore = create<ToastStore>((set) => ({
   toasts: [],
-  addToast: (text, duration = 3000) =>
+  addToast: (text, duration = 3000, isWarning = false) =>
     set((state) => ({
       // Đẩy toast mới vào mảng với ID duy nhất
-      toasts: [...state.toasts, { id: `${Date.now()}-${Math.random()}`, text, duration }],
+      toasts: [
+        ...state.toasts,
+        { id: `${Date.now()}-${Math.random()}`, text, duration, isWarning },
+      ],
     })),
   removeToast: (id) =>
     set((state) => ({

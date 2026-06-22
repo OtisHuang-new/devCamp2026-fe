@@ -7,16 +7,12 @@ interface HeaderInfoProps {
 }
 
 const HeaderInfo = forwardRef<HTMLDivElement, HeaderInfoProps>(
-  ({ chapterTitle, lessonTitle, onBackClick }, ref) => {
+  ({ chapterTitle, lessonTitle }, ref) => {
     return (
       <div ref={ref} className="sticky top-3 z-20 w-full py-2">
         <div className="bg-primary text-white p-5 rounded-2xl shadow-lg max-w-2xl">
-          <div
-            onClick={onBackClick}
-            className="flex items-center gap-2 text-sm mb-1 cursor-pointer hover:underline w-fit opacity-90"
-          >
-            <span>←</span>
-            <span>Back to chapter view</span>
+          <div className="flex items-center gap-2 text-sm mb-1 hover:underline w-fit opacity-90">
+            <span>Chapter Infomation</span>
           </div>
 
           <h2 className="text-lg font-bold tracking-wide">
