@@ -13,6 +13,7 @@ import { ExerciseList } from './features/Exercise';
 import { ExerciseDetail } from './features/ExerciseDetail';
 import { GlobalAudioPlayer } from './shared/components/GlobalAudioPlayer';
 import { ToastContainer } from './shared/components/Toast';
+import { ResetPassword } from './features/auth/ResetPassword';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route element={<PublicRoute />}>
           <Route path="/landing" element={<PageLanding />} />
           <Route path="/survey" element={<SurveyPage />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
         </Route>
 
         <Route element={<ProtectedRoute />}>

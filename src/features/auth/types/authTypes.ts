@@ -25,3 +25,16 @@ export interface AuthResponse {
 export interface LogoutResponse {
   message: string;
 }
+// 1. THÊM MỚI: Các type dành cho Forgot & Reset Password
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  password: string;
+  confirmPassword: string;
+}
+
+export interface MessageResponse {
+  message: string;
+}
