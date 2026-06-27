@@ -3,7 +3,7 @@ import { useAuth } from './hooks/useAuth';
 import { useState, useEffect } from 'react';
 import { useAuthContext_v2 } from '../../shared/context/hooks/useAuthContext_v2';
 import CloseButton from '../../shared/components/Buttons/CloseButton';
-
+import { PasswordInput } from './components/PasswordInput';
 import { useOverlayClose } from '@/shared/hooks/useOverlayClose';
 
 interface RegisterProps {
@@ -102,20 +102,14 @@ function Register({ isOpen, onClose, onSwitchToLogin }: RegisterProps) {
               />
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-extrabold text-[#1E3A8A]">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="At least 8 character..."
-                className="w-full border border-gray-300 px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1E3A8A] placeholder:text-gray-400 placeholder:text-xs"
-                required
-                minLength={8}
-              />
-            </div>
-
-            {/* ĐÃ XÓA KHỐI TYPE AGAIN PASSWORD Ở ĐÂY */}
+            <PasswordInput
+              label="Password"
+              value={password}
+              onChange={setPassword}
+              placeholder="At least 8 character..."
+              required={true}
+              minLength={8}
+            />
 
             <div className="min-h-[20px]">
               <span className="text-xs font-bold text-red-500">{validationError || error}</span>

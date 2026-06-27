@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import background from './Assets/backGround.jpg';
 import { useResetPassword } from './hooks/useResetPassword';
+import { PasswordInput } from './components/PasswordInput';
 
 export function ResetPassword() {
   const { token } = useParams<{ token: string }>();
@@ -32,31 +33,25 @@ export function ResetPassword() {
           <h2 className="text-3xl font-extrabold text-[#1E3A8A] mb-8">Creat new password</h2>
 
           <form onSubmit={onSubmit} className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-extrabold text-[#1E3A8A]">New password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter new password (min 8 characters)"
-                className="w-full border border-gray-300 px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1E3A8A] placeholder:text-gray-400"
-                required
-                minLength={8}
-              />
-            </div>
+            {/* 2. SENIOR FIX: Thay thế field New Password */}
+            <PasswordInput
+              label="New password"
+              value={password}
+              onChange={setPassword}
+              placeholder="Enter new password (min 8 characters)"
+              required={true}
+              minLength={8}
+            />
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-extrabold text-[#1E3A8A]">Confirm your password</label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Type your password again"
-                className="w-full border border-gray-300 px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1E3A8A] placeholder:text-gray-400"
-                required
-                minLength={8}
-              />
-            </div>
+            {/* 3. SENIOR FIX: Thay thế field Confirm Password */}
+            <PasswordInput
+              label="Confirm your password"
+              value={confirmPassword}
+              onChange={setConfirmPassword}
+              placeholder="Type your password again"
+              required={true}
+              minLength={8}
+            />
 
             <div className="min-h-[20px] -mt-1">
               {error && <span className="text-xs font-bold text-red-500">{error}</span>}

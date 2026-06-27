@@ -6,6 +6,7 @@ import background from './Assets/backGround.jpg';
 import { useAuthContext_v2 } from '../../shared/context/hooks/useAuthContext_v2';
 import CloseButton from '../../shared/components/Buttons/CloseButton';
 import { useOverlayClose } from '@/shared/hooks/useOverlayClose';
+import { PasswordInput } from './components/PasswordInput';
 
 interface LoginProps {
   isOpen: boolean;
@@ -157,17 +158,13 @@ function LoginForm({ onClose, onSwitchToRegister }: Omit<LoginProps, 'isOpen'>) 
                   />
                 </div>
 
-                <div className="flex flex-col gap-1.5 relative">
-                  <label className="text-sm font-extrabold text-[#1E3A8A]">Password</label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="At least 8 character..."
-                    className="w-full border border-gray-300 px-4 py-2.5 rounded-lg text-sm focus:outline-none focus:border-[#1E3A8A] placeholder:text-gray-400 placeholder:text-xs"
-                    required
-                  />
-                </div>
+                <PasswordInput
+                  label="Password"
+                  value={password}
+                  onChange={setPassword}
+                  placeholder="At least 8 character..."
+                  required={true}
+                />
 
                 <div className="flex justify-between items-center -mt-1">
                   <span className="text-xs font-bold text-red-500">{loginError}</span>
