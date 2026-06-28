@@ -141,7 +141,7 @@ function LoginForm({ onClose, onSwitchToRegister }: Omit<LoginProps, 'isOpen'>) 
                   onClick={onSwitchToRegister}
                   className="text-[#1E3A8A] font-bold underline cursor-pointer hover:opacity-80"
                 >
-                  Resgister here
+                  Register here
                 </span>
               </p>
 
