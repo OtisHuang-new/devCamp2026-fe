@@ -6,6 +6,9 @@ import type {
   RegisterRequest,
   AuthResponse,
   LogoutResponse,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
+  MessageResponse,
 } from '../types/authTypes';
 
 export const authApi = {
@@ -20,5 +23,17 @@ export const authApi = {
   // 2. THÊM HÀM LOGOUT MỚI
   logout: (): Promise<LogoutResponse> => {
     return axiosClient.post<LogoutResponse, LogoutResponse>('/auth/logout');
+  },
+
+  forgotPassword: (data: ForgotPasswordRequest): Promise<MessageResponse> => {
+    return axiosClient.post<MessageResponse, MessageResponse>('/auth/forgot-password', data);
+  },
+
+  // 3. THÊM MỚI: API Reset Password (Có Path Variable)
+  resetPassword: (token: string, data: ResetPasswordRequest): Promise<MessageResponse> => {
+    return axiosClient.patch<MessageResponse, MessageResponse>(
+      `/auth/reset-password/${token}`,
+      data,
+    );
   },
 };

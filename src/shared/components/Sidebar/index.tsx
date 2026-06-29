@@ -1,3 +1,5 @@
+// Vị trí: src/features/Sidebar/index.tsx
+
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import NameBrandPrime from '../../Assets/Brand/NameBrandPrime';
@@ -13,6 +15,15 @@ export default function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // 1. SENIOR FIX: Logic điều hướng (Pure logic, không side-effect vì chạy trong event handler)
+  function handleBrandClick() {
+    if (location.pathname === '/roadmap') {
+      window.location.reload(); // Đang ở nhà -> F5 tải lại
+    } else {
+      navigate('/roadmap'); // Đang ở chỗ khác -> Điều hướng mượt về nhà
+    }
+  }
+
   const mainNavItems: MainNavItems[] = [
     { id: 'Learning', label: 'Learning', icon: icon_learning, path: '/roadmap' },
     { id: 'Exercise', label: 'Exercise', icon: icon_exercise, path: '/exercises' },
@@ -23,7 +34,8 @@ export default function Sidebar() {
       <NameBrandPrime
         logoSrc={logo_dark}
         brandName="Cận Code Team"
-        className="mb-20 px-6" // Tăng margin bottom cho thoáng
+        className="mb-20 px-6"
+        onClick={handleBrandClick} // 2. SENIOR FIX: Truyền hàm click vào đây
       />
 
       <nav className="flex flex-col gap-3 px-4">

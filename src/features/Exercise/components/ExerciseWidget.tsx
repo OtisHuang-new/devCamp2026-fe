@@ -4,6 +4,7 @@ import { useExercise } from '../hooks/useExercise';
 import { MarkdownRender } from '../../../shared/components/MarkdownRender';
 import { useSyncEditorStore } from '../hooks/useSyncEditorStore';
 import { TestCaseList } from './TestCaseList';
+import { ShowAnswerButton } from '@/shared/components/Buttons/ShowAnswerButton';
 
 interface ExerciseWidgetProps {
   exerciseId: string;
@@ -26,9 +27,17 @@ function ExerciseWidget({ exerciseId }: ExerciseWidgetProps) {
 
   return (
     <div className="w-full animate-fadeIn">
-      <h2 className="text-4xl font-bold text-[#1E3A8A] mb-6">
-        {exercise.is_project ? 'Project' : 'Exercise'}
-      </h2>
+      {/* 2. SENIOR FIX: Bọc flex justify-between để căn lề 2 bên (Space-between) */}
+      <div className="flex justify-between items-center mb-6 w-full">
+        <h2 className="text-4xl font-bold text-[#1E3A8A]">
+          {exercise.is_project ? 'Project' : 'Exercise'}
+        </h2>
+
+        {/* 3. Render nút nếu API có trả về key_code */}
+        {exercise.key_code && (
+          <ShowAnswerButton keyCode={exercise.key_code} toastPosition="bottom-left" />
+        )}
+      </div>
 
       <div className="bg-[#F8F9FA] rounded-2xl py-8 px-4 border border-gray-100 shadow-sm">
         <div className="flex flex-col gap-3 mb-6">

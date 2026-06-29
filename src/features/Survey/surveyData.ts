@@ -46,7 +46,7 @@ export const surveyQuestions: QuestionData[] = [
   {
     id: 'q3_time',
     progress: 0.8, // 80%
-    botText: 'Almost done! How much free time can you dedicate to learning each week?',
+    botText: 'Almost done! How much free time can you spend to learning code each week?',
     layout: 'grid-nx1',
     options: [
       { id: 'time_1', text: 'Less than 2 hours/week' },

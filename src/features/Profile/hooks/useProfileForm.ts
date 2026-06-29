@@ -3,14 +3,15 @@ import type { UserInfo } from '../../../shared/context/types/contextTypes';
 import type { UpdateProfileRequest } from '../types/apiTypes';
 import { updateProfileApi } from '../api/updateProfileApi';
 import { useAuthContext_v2 } from '../../../shared/context/hooks/useAuthContext_v2';
+import { useToastStore } from '@/shared/store/useToastStore';
 
 export function useProfileForm(initialUser: UserInfo) {
   const [isEditing, setIsEditing] = useState(false);
   const [draftData, setDraftData] = useState<UserInfo>(initialUser);
   const [isSaving, setIsSaving] = useState(false);
   const { updateUser } = useAuthContext_v2();
-  // để lưu lại giá trị của initialUser ở lần render trước
   const [prevInitialUser, setPrevInitialUser] = useState<UserInfo>(initialUser);
+  const addToast = useToastStore((state) => state.addToast);
 
   // 2. SO SÁNH TRỰC TIẾP TRONG LÚC RENDER (Không dùng Effect)
   if (initialUser !== prevInitialUser) {
@@ -59,8 +60,13 @@ export function useProfileForm(initialUser: UserInfo) {
 
       updateUser(respond);
       setIsEditing(false);
+
+      // 3. SENIOR UX: Bắn thông báo Toast thành công với timeout 3 giây
+      addToast('Updated profile successfully !', 3000, false);
     } catch (error) {
       console.log('thằng useProfileForm.ts lỗi nè bro:', error);
+      // Bạn cũng có thể bắt Toast lỗi ở đây nếu muốn (Optional)
+      // addToast('Failed to update profile. Please try again!', 3000, true);
     } finally {
       setIsSaving(false);
     }

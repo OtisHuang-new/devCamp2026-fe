@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useExerciseDetail } from './hooks/useExerciseDetail';
 import { ExerciseContent } from './components/ExerciseContent';
@@ -17,18 +17,17 @@ import { LoadingSpinner } from '@/shared/components/Loading/LoadingSpinner';
 import { TextSelectionPopover } from '@/shared/components/TextSelectionPopover';
 
 import { Return } from '@/shared/components/Return';
+import { useEditorStore } from '@/shared/store/useEditorStore';
 
 export function ExerciseDetail() {
   const navigate = useNavigate();
   const { exerciseDetail, isLoading } = useExerciseDetail();
 
   useSyncEditorStore(exerciseDetail);
+  const isEditorOpen = useEditorStore((state) => state.isOpen);
+  const setIsEditorOpen = useEditorStore((state) => state.setIsOpen);
+  const toggleEditorOpen = useEditorStore((state) => state.toggleOpen);
 
-  // 1. STATE BẬT/TẮT EDITOR
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
-
-  // 2. HOOK XỬ LÝ NỘP BÀI
-  // Dùng toán tử optional chaining (?) vì lúc đầu exerciseDetail có thể null
   const { submitCode, isSubmitting, error: submitError } = useSubmitCode(exerciseDetail?._id);
 
   const { history, selectedIndex, setSelectedIndex, fetchHistory } = useSubmissionHistory(
@@ -40,7 +39,7 @@ export function ExerciseDetail() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === '`') {
         e.preventDefault();
-        setIsEditorOpen((prev) => !prev);
+        toggleEditorOpen(); // Sử dụng hàm toggle từ Store
       }
       if (e.key === 'Escape') {
         setIsEditorOpen(false);
@@ -49,7 +48,7 @@ export function ExerciseDetail() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [setIsEditorOpen, toggleEditorOpen]);
 
   // 3. SỬA HÀM NÀY:
   const handleSubmit = async (code: string) => {

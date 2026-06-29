@@ -19,4 +19,5 @@ export interface ExerciseDataAPI {
   time_limit: number;
   memory_limit: number;
   is_project: boolean; // 1. SENIOR FIX: Khai báo field mới
+  key_code?: string;
 }
