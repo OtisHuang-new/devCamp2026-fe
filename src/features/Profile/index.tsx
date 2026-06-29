@@ -64,12 +64,18 @@ function ProfileContent({ user, logoutState }: ProfileContentProps) {
         <div className="flex flex-col items-end">
           <button
             onClick={handleButtonClick}
-            className="flex items-center gap-2 border-2 border-[#1A2E72] text-[#1A2E72] font-medium px-5 py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
+            className={`flex items-center gap-2 border font-medium px-5 py-1.5 rounded-lg transition-colors ${
+              isEditing
+                ? isChanged
+                  ? 'bg-[#1A2E72] border-[#1A2E72] text-white hover:opacity-90 shadow-md' // State: SAVE
+                  : 'bg-blue-200 text-[#1A2E72] hover:bg-blue-300' // State: CANCEL
+                : 'bg-transparent border-[#1A2E72] text-[#1A2E72] hover:bg-blue-50' // State: EDIT (Default)
+            }`}
           >
             <svg
               className="w-4 h-4"
               fill="none"
-              stroke="currentColor"
+              stroke="currentColor" // Kế thừa tự động từ text-white hoặc text-[#1A2E72]
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >

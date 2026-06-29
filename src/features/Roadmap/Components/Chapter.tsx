@@ -3,9 +3,9 @@ import LessonButton from './LessonButton';
 import { useNavigate } from 'react-router-dom';
 import star_icon from '../Assets/star_icon_white.svg';
 import cup_icon from '../Assets/cup_icon_white.svg';
-import treasure_icon from '../Assets/treasure_icon_prime.svg';
+import type { ThemeColor } from '../types/roadmapTypes';
 
-export type NodeType = 'lesson' | 'treasure' | 'project';
+export type NodeType = 'lesson' | 'project';
 export type NodeStatus = 'completed' | 'current' | 'locked'; // BỔ SUNG DÒNG NÀY
 
 export interface PathNode {
@@ -14,6 +14,11 @@ export interface PathNode {
   translateX: string; // VD: 'translate-x-10', '-translate-x-12' (tailwind class)
   title?: string; // BỔ SUNG DÒNG NÀY
   status?: NodeStatus; // BỔ SUNG DÒNG NÀY
+  mascot?: {
+    src: string;
+    position: 'left' | 'right';
+    size: number;
+  };
 }
 
 interface ChapterProps {
@@ -21,16 +26,9 @@ interface ChapterProps {
   chapterTitle: string;
   isFirstChapter?: boolean;
   nodes: PathNode[];
-}
-
-interface ChapterProps {
-  chapterNumber: number;
-  chapterTitle: string;
-  isFirstChapter?: boolean;
-  nodes: PathNode[];
-  // --- 2. BỔ SUNG 2 DÒNG NÀY ---
   isAuthenticated: boolean;
   onRequireAuth: () => void;
+  theme: ThemeColor;
 }
 
 const Chapter: React.FC<ChapterProps> = ({
@@ -40,6 +38,7 @@ const Chapter: React.FC<ChapterProps> = ({
   nodes,
   isAuthenticated, // Nhận prop
   onRequireAuth, // Nhận prop
+  theme,
 }) => {
   const navigate = useNavigate(); // BỔ SUNG 2: Khởi tạo navigate
 
@@ -73,51 +72,53 @@ const Chapter: React.FC<ChapterProps> = ({
       <div className={`flex flex-col items-center gap-[40px] ${isFirstChapter ? 'mt-8' : 'mt-4'}`}>
         {nodes.map((node) => {
           return (
-            <div key={node.id} id={`roadmap-node-${node.id}`} className={node.translateX}>
-              {node.type === 'lesson' && (
-                <LessonButton
-                  iconPath={star_icon}
-                  title={node.title}
-                  status={node.status}
-                  // 2. SENIOR FIX: Truyền thêm node.type
-                  onClick={() => handleNodeClick(node.id, node.type)}
+            // 2. SENIOR FIX: Bọc relative và thêm hiệu ứng chuyển động mượt cho container
+            <div
+              key={node.id}
+              id={`roadmap-node-${node.id}`}
+              className={`relative flex justify-center items-center transition-transform duration-300 ${node.translateX}`}
+            >
+              {node.mascot && node.mascot.position === 'left' && (
+                <img
+                  src={node.mascot.src}
+                  alt="Mascot"
+                  // Bổ sung thuộc tính style, xóa sizeClass khỏi className
+                  style={{ width: node.mascot.size, height: node.mascot.size }}
+                  className="absolute right-full mr-32 top-1/2 -translate-y-1/2 object-contain pointer-events-none select-none z-0"
                 />
               )}
 
-              {node.type === 'treasure' && (
-                <div className="">
-                  {node.status === 'current' ? (
-                    <img
-                      src={treasure_icon}
-                      alt="Treasure"
-                      className="w-[160px] cursor-pointer hover:scale-110 transition-transform"
-                    />
-                  ) : (
-                    <div
-                      className={`w-[160px] aspect-[4/3] ${node.status === 'completed' ? 'bg-[#6D7EAE]' : 'bg-[#898989]'}`}
-                      style={{
-                        WebkitMaskImage: `url(${treasure_icon})`,
-                        WebkitMaskSize: 'contain',
-                        WebkitMaskPosition: 'center',
-                        WebkitMaskRepeat: 'no-repeat',
-                        maskImage: `url(${treasure_icon})`,
-                        maskSize: 'contain',
-                        maskPosition: 'center',
-                        maskRepeat: 'no-repeat',
-                      }}
-                    />
-                  )}
-                </div>
-              )}
+              {/* Nút bấm Lesson/Project luôn nổi lên trên (z-10) */}
+              <div className="relative z-10">
+                {node.type === 'lesson' && (
+                  <LessonButton
+                    iconPath={star_icon}
+                    title={node.title}
+                    status={node.status}
+                    onClick={() => handleNodeClick(node.id, node.type)}
+                    theme={theme}
+                  />
+                )}
 
-              {node.type === 'project' && (
-                <LessonButton
-                  iconPath={cup_icon}
-                  largerIcon={true}
-                  title={node.title}
-                  status={node.status}
-                  // 2. SENIOR FIX: Truyền thêm node.type
-                  onClick={() => handleNodeClick(node.id, node.type)}
+                {node.type === 'project' && (
+                  <LessonButton
+                    iconPath={cup_icon}
+                    largerIcon={true}
+                    title={node.title}
+                    status={node.status}
+                    onClick={() => handleNodeClick(node.id, node.type)}
+                    theme={theme}
+                  />
+                )}
+              </div>
+
+              {node.mascot && node.mascot.position === 'right' && (
+                <img
+                  src={node.mascot.src}
+                  alt="Mascot"
+                  // Bổ sung thuộc tính style, xóa sizeClass khỏi className
+                  style={{ width: node.mascot.size, height: node.mascot.size }}
+                  className="absolute left-full ml-32 top-1/2 -translate-y-1/2 object-contain pointer-events-none select-none z-0"
                 />
               )}
             </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import finish_icon from '../Assets/finish_lesson_icon.svg'; // BỔ SUNG IMPORT
+import type { ThemeColor } from '../types/roadmapTypes';
 
 interface LessonButtonProps {
   iconPath: string;
@@ -7,6 +8,7 @@ interface LessonButtonProps {
   largerIcon?: boolean; // Thêm prop này để phóng to icon nếu cần
   title?: string; // BỔ SUNG THÊM DÒNG NÀY
   status?: 'completed' | 'current' | 'locked'; // BỔ SUNG THÊM DÒNG NÀY
+  theme?: ThemeColor;
 }
 
 const LessonButton: React.FC<LessonButtonProps> = ({
@@ -15,11 +17,14 @@ const LessonButton: React.FC<LessonButtonProps> = ({
   largerIcon = false,
   title,
   status = 'locked',
+  theme,
 }) => {
   const isCompleted = status === 'completed';
   const isLocked = status === 'locked';
-  const bgClass = isCompleted ? 'bg-[#6D7EAE]' : isLocked ? 'bg-[#898989]' : 'bg-primary';
-  const shadowClass = isCompleted ? 'bg-[#374262]' : isLocked ? 'bg-[#6D6B6D]' : 'bg-[#051338]';
+
+  const bgClass = isLocked ? 'bg-[#898989]' : theme?.bg || 'bg-primary';
+  const shadowClass = isLocked ? 'bg-[#6D6B6D]' : theme?.shadow || 'bg-[#051338]';
+
   const displayIcon = isCompleted && !largerIcon ? finish_icon : iconPath;
 
   const handleClick = () => {

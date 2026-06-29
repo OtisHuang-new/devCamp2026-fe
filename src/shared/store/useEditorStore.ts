@@ -1,3 +1,4 @@
+// Vị trí: src/shared/store/useEditorStore.ts
 import { create } from 'zustand';
 
 export interface EditorTestCase {
@@ -6,6 +7,11 @@ export interface EditorTestCase {
 }
 
 interface EditorStore {
+  // --- 1. MỚI: Quản lý trạng thái đóng/mở Editor Toàn cầu ---
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  toggleOpen: () => void;
+
   initialCode: string;
   setInitialCode: (code: string) => void;
   publicTestCases: EditorTestCase[];
@@ -13,6 +19,11 @@ interface EditorStore {
 }
 
 export const useEditorStore = create<EditorStore>((set) => ({
+  // --- 2. MỚI: Khởi tạo state ---
+  isOpen: false,
+  setIsOpen: (isOpen) => set({ isOpen }),
+  toggleOpen: () => set((state) => ({ isOpen: !state.isOpen })),
+
   initialCode: '# Bro, you can write you code here :like :) ',
   setInitialCode: (code) => set({ initialCode: code }),
 

@@ -1,3 +1,4 @@
+// Vị trí: src/shared/components/Toast/index.tsx
 import { useToastStore } from '../../store/useToastStore';
 import { ToastItem } from './ToastItem';
 
@@ -6,9 +7,12 @@ export function ToastContainer() {
 
   if (toasts.length === 0) return null;
 
+  // 1. SENIOR FIX: Tách 2 luồng render độc lập dựa theo position
+  const centerToasts = toasts.filter((t) => t.position === 'bottom-center' || !t.position);
+  const leftToasts = toasts.filter((t) => t.position === 'bottom-left');
+
   return (
     <>
-      {/* Inject Keyframes chuẩn không cần sửa file tailwind.config */}
       <style>{`
         @keyframes toast-shrink {
           from { transform: scaleX(1); }
@@ -16,12 +20,23 @@ export function ToastContainer() {
         }
       `}</style>
 
-      {/* Neo vị trí bottom-center, flex-col giúp các toast tự động stack lên nhau */}
-      <div className="fixed bottom-[30px] left-1/2 -translate-x-1/2 z-[9999] flex flex-col-reverse gap-3 pointer-events-none">
-        {toasts.map((toast) => (
-          <ToastItem key={toast.id} toast={toast} />
-        ))}
-      </div>
+      {/* VÙNG 1: BOTTOM CENTER (Mặc định cho các Toast cũ) */}
+      {centerToasts.length > 0 && (
+        <div className="fixed bottom-[30px] left-1/2 -translate-x-1/2 z-[9999] flex flex-col-reverse gap-3 pointer-events-none">
+          {centerToasts.map((toast) => (
+            <ToastItem key={toast.id} toast={toast} />
+          ))}
+        </div>
+      )}
+
+      {/* VÙNG 2: BOTTOM LEFT (MỚI: Nằm gọn góc trái, tránh che Editor) */}
+      {leftToasts.length > 0 && (
+        <div className="fixed bottom-[30px] left-[30px] z-[9999] flex flex-col-reverse gap-3 pointer-events-none">
+          {leftToasts.map((toast) => (
+            <ToastItem key={toast.id} toast={toast} />
+          ))}
+        </div>
+      )}
     </>
   );
 }

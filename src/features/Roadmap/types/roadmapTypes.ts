@@ -19,9 +19,15 @@ export interface ChapterDataAPI {
   project_detail: ProjectData;
 }
 
+export interface ThemeColor {
+  bg: string;
+  shadow: string;
+}
+
 export interface TransformedChapter {
   id: string;
   chapterNumber: number;
   title: string;
   nodes: PathNode[];
+  theme: ThemeColor;
 }

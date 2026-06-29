@@ -57,7 +57,7 @@ export function ToastItem({ toast }: ToastItemProps) {
         startTimer();
       }}
       onClick={handleClose}
-      className={`pointer-events-auto relative flex items-center gap-3 overflow-hidden rounded-lg bg-[#1a1a1a] px-4 py-3 min-w-[320px] max-w-md shadow-[0_8px_30px_rgb(0,0,0,0.12)] cursor-pointer transition-all duration-300 ease-in-out ${
+      className={`pointer-events-auto relative border-t border-l border-r  border-white flex items-center gap-3 overflow-hidden rounded-lg bg-[#1a1a1a] px-4 py-3 min-w-[320px] max-w-md shadow-[0_8px_30px_rgb(0,0,0,0.12)] cursor-pointer transition-all duration-300 ease-in-out ${
         isExiting ? 'translate-y-4 opacity-0' : 'translate-y-0 opacity-100 animate-slideUp'
       }`}
     >

@@ -80,7 +80,7 @@ function Roadmap() {
 
   return (
     // Thẻ main tự tạo thanh cuộn nội bộ để giữ lại cơ chế bắt sự kiện onScroll
-    <main className="w-full relative pb-[200px]">
+    <main className="w-full relative pb-[550px]">
       {/* Khung giới hạn hiển thị: Căn giữa, không giãn quá max-w-5xl */}
       <div className="w-full max-w-5xl mx-auto">
         <HeaderInfo
@@ -92,6 +92,8 @@ function Roadmap() {
           }
           lessonTitle=""
           onBackClick={() => console.log('Back clicked')}
+          // 1. TRUYỀN MỚI: Lấy theme của chapter đang Active
+          theme={mainChapters[activeChapterIndex]?.theme}
         />
 
         <div className="mt-8 flex flex-col gap-4 relative w-full max-w-2xl">
@@ -104,6 +106,8 @@ function Roadmap() {
               nodes={chapter.nodes}
               isAuthenticated={!!user}
               onRequireAuth={openRegister}
+              // 2. TRUYỀN MỚI: Truyền Theme xuống từng Chapter
+              theme={chapter.theme}
             />
           ))}
         </div>

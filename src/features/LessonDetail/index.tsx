@@ -18,12 +18,17 @@ import { Return } from '@/shared/components/Return';
 
 import { LoadingSpinner } from '@/shared/components/Loading/LoadingSpinner';
 import { TextSelectionPopover } from '../../shared/components/TextSelectionPopover';
+import { useEditorStore } from '@/shared/store/useEditorStore';
 
 const LessonDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { lesson, isLoading } = useLesson(id);
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
   const navigate = useNavigate();
+
+  const isEditorOpen = useEditorStore((state) => state.isOpen);
+  const setIsEditorOpen = useEditorStore((state) => state.setIsOpen);
+  const toggleEditorOpen = useEditorStore((state) => state.toggleOpen);
+
   const {
     submitCode,
     isSubmitting,
@@ -53,7 +58,8 @@ const LessonDetail = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === '`') {
         e.preventDefault();
-        setIsEditorOpen((prev) => !prev);
+        // 3. Sử dụng hàm toggle an toàn từ Store thay vì (prev) => !prev
+        toggleEditorOpen();
       }
       if (e.key === 'Escape') {
         setIsEditorOpen(false);
@@ -65,7 +71,7 @@ const LessonDetail = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [setIsEditorOpen, toggleEditorOpen]);
 
   if (isLoading)
     return (
