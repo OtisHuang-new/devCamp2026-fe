@@ -27,7 +27,7 @@ export function ShowAnswerButton({
   return (
     <button
       onClick={handleShowAnswer}
-      className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 active:scale-95 transition-all text-white font-bold px-4 py-2 rounded-lg shadow-sm"
+      className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 active:scale-95 transition-all text-white border border-black/15 font-bold px-4 py-2 rounded-lg shadow-sm mt-5"
       title="Show Answer Key"
     >
       <img
@@ -35,7 +35,7 @@ export function ShowAnswerButton({
         alt="Answer Icon"
         className="w-5 h-5 brightness-0 invert object-contain"
       />
-      <span className="text-sm">Show answer</span>
+      <span className="text-sm">Solution</span>
     </button>
   );
 }

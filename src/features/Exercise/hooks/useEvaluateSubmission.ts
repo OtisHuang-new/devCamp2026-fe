@@ -19,10 +19,7 @@ function setCache(submissionId: string, data: EvaluateResponse) {
 }
 
 // --- 2. HÀM LÕI (CORE FETCHER) ---
-async function fetchAndCacheEvaluation(
-  submissionId: string,
-  userId: string,
-): Promise<EvaluateResponse | null> {
+async function fetchAndCacheEvaluation(submissionId: string): Promise<EvaluateResponse | null> {
   const cachedData = getCache(submissionId);
   if (cachedData) return cachedData; // Có cache -> Trả về ngay
 
@@ -32,10 +29,8 @@ async function fetchAndCacheEvaluation(
 
   const requestPromise = (async () => {
     try {
-      const response = await evaluatorApi.evaluateSubmission(submissionId, {
-        isExercise: true,
-        userId: userId,
-      });
+      // 2. Gọi API sạch không có data body
+      const response = await evaluatorApi.evaluateSubmission(submissionId);
       if (response) {
         setCache(submissionId, response);
         return response;
@@ -85,7 +80,7 @@ export function useEvaluateSubmission(submissionId: string | undefined) {
       setError(null);
 
       try {
-        const data = await fetchAndCacheEvaluation(submissionId!, userId!);
+        const data = await fetchAndCacheEvaluation(submissionId!);
         if (isMounted && data) {
           setEvaluationData(data);
         }

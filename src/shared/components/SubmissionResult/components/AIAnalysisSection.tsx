@@ -29,10 +29,8 @@ export default function AIAnalysisSection({
 
     setIsEvaluating(true);
     try {
-      const response = await evaluatorApi.evaluateSubmission(submissionId, {
-        isExercise: true,
-        userId: user._id,
-      });
+      // 1. SENIOR FIX: Tháo bỏ tham số payload
+      const response = await evaluatorApi.evaluateSubmission(submissionId);
 
       if (response && response.AI_evaluation) {
         setLocalEval(response.AI_evaluation);

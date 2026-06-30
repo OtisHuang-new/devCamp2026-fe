@@ -34,6 +34,7 @@ const LessonDetail = () => {
     isSubmitting,
     submitResult,
     error: submitError,
+    justSubmittedId,
   } = useSubmitCode(lesson?.exercise_id);
 
   const { history, selectedIndex, setSelectedIndex, fetchHistory } = useSubmissionHistory(
@@ -119,7 +120,7 @@ const LessonDetail = () => {
             {isSubmitting && (
               <div className="w-full py-10">
                 <LoadingSpinner
-                  text="Đang chấm điểm testcases..."
+                  text="Evaluating your submission..."
                   iconSize="w-8 h-8"
                   textColor="text-gray-500"
                 />
@@ -137,6 +138,7 @@ const LessonDetail = () => {
                 selectedIndex={selectedIndex}
                 onSelectIndex={setSelectedIndex}
                 onActionClick={() => navigate('/roadmap')}
+                latestSubmitId={justSubmittedId}
               />
             )}
           </div>

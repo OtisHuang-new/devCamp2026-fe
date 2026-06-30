@@ -28,7 +28,12 @@ export function ExerciseDetail() {
   const setIsEditorOpen = useEditorStore((state) => state.setIsOpen);
   const toggleEditorOpen = useEditorStore((state) => state.toggleOpen);
 
-  const { submitCode, isSubmitting, error: submitError } = useSubmitCode(exerciseDetail?._id);
+  const {
+    submitCode,
+    isSubmitting,
+    error: submitError,
+    justSubmittedId,
+  } = useSubmitCode(exerciseDetail?._id);
 
   const { history, selectedIndex, setSelectedIndex, fetchHistory } = useSubmissionHistory(
     exerciseDetail?._id,
@@ -67,7 +72,7 @@ export function ExerciseDetail() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen font-bold text-gray-500 bg-gray-50">
-        Đang tải bài tập...
+        Loanding exercise...
       </div>
     );
   }
@@ -75,7 +80,7 @@ export function ExerciseDetail() {
   if (!exerciseDetail) {
     return (
       <div className="flex justify-center items-center h-screen font-bold text-red-500 bg-gray-50">
-        Không tìm thấy bài tập hoặc bài tập không tồn tại!
+        Cant find exercise!
       </div>
     );
   }
@@ -125,6 +130,7 @@ export function ExerciseDetail() {
               selectedIndex={selectedIndex}
               onSelectIndex={setSelectedIndex}
               onActionClick={() => navigate('/exercises')}
+              latestSubmitId={justSubmittedId}
             />
           )}
         </div>

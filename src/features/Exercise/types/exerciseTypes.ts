@@ -2,6 +2,7 @@
 export interface TestCase {
   input: string;
   expected_output: string;
+  output?: string;
   is_hidden: boolean;
 }
 
