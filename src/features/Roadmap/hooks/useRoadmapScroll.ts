@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { smoothScrollTo } from '@/shared/utils/scrollUtils';
 
 export function useRoadmapScroll(mainChaptersLength: number, currentLessonId?: string | null) {
   const [activeChapterIndex, setActiveChapterIndex] = useState(0);
@@ -61,7 +62,9 @@ export function useRoadmapScroll(mainChaptersLength: number, currentLessonId?: s
   // 4. Hàm cuộn lên đầu trang
   const scrollToTop = useCallback(() => {
     const container = document.getElementById('main-scroll-container');
-    container?.scrollTo({ top: 0, behavior: 'smooth' });
+    if (container) {
+      smoothScrollTo(container, 0, 300); // 2. SỬ DỤNG ENGINE (Trượt 800ms)
+    }
   }, []);
 
   return { headerRef, activeChapterIndex, showScrollTop, scrollToTop };

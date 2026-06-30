@@ -13,7 +13,7 @@ import ScrollToTopButton from '../../shared/components/Buttons/ScrollToTopButton
 import SubmissionResult from '../../shared/components/SubmissionResult';
 import { useNavigate } from 'react-router-dom';
 import { useUpdateProgress } from './hooks/useUpdateProgress';
-
+import { smoothScrollTo } from '@/shared/utils/scrollUtils';
 import { Return } from '@/shared/components/Return';
 
 import { LoadingSpinner } from '@/shared/components/Loading/LoadingSpinner';
@@ -51,8 +51,12 @@ const LessonDetail = () => {
       setShowScrollTop(leftColumnRef.current.scrollTop > 50);
     }
   };
+
   const scrollToTop = () => {
-    leftColumnRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    if (leftColumnRef.current) {
+      // 2. SỬ DỤNG ENGINE (Thay cho .scrollTo của trình duyệt)
+      smoothScrollTo(leftColumnRef.current, 0, 300);
+    }
   };
 
   useEffect(() => {
