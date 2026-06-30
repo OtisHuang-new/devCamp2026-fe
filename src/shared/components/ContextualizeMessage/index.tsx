@@ -3,6 +3,7 @@ import { useAuthContext_v2 } from '../../context/hooks/useAuthContext_v2';
 import { useAIContext } from '../../hooks/useAIContext';
 import type { ContextType } from '../../hooks/useAIContext';
 import { AIFeatureBox } from '../AIFeatureBox'; // <-- MỚI: Import vỏ bọc AI
+import { MarkdownRender } from '../MarkdownRender';
 
 import bot_showing from '../../Assets/Mascots/bot_showing.svg';
 import bot_wrong from '../../Assets/Mascots/bot_wrong.svg';
@@ -54,7 +55,10 @@ export function ContextualizeMessage({ itemId, type }: ContextualizeMessageProps
       variant="default"
       icon={<img src={bot_showing} alt="AI Bot" className="w-12 h-12 shrink-0 mt-1" />}
     >
-      <p className="text-slate-700 leading-relaxed font-medium text-[15px]">{context}</p>
+      <MarkdownRender
+        content={context}
+        className="text-slate-700 leading-relaxed font-medium text-[15px]"
+      />
     </AIFeatureBox>
   );
 }
