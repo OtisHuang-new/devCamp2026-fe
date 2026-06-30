@@ -34,10 +34,12 @@ export const scrollToElement = (
   duration: number = 1000,
 ) => {
   const scrollContainer = element.closest('.overflow-y-auto') as HTMLElement;
+  const blockPosition: ScrollLogicalPosition =
+    position === 'top' ? 'start' : position === 'bottom' ? 'end' : 'center';
 
   if (!scrollContainer) {
     // Fallback an toàn nếu cấu trúc DOM không có class overflow-y-auto
-    element.scrollIntoView({ behavior: 'smooth', block: position === 'top' ? 'start' : position });
+    element.scrollIntoView({ behavior: 'smooth', block: blockPosition });
     return;
   }
 

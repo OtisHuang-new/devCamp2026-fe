@@ -48,7 +48,7 @@ export const SubmissionAction = forwardRef<HTMLButtonElement, SubmissionActionPr
             onClick={onActionClick}
             className={`relative z-10 ${
               isAllPassed ? 'bg-[#22C55E] hover:bg-[#16a34a]' : 'bg-yellow-500 hover:bg-yellow-600'
-            } text-white font-bold py-2.5 px-8 rounded-xl transition-all shadow-md`}
+            } text-white font-bold py-2.5 px-8 rounded-xl transition-all shadow-md text-2xl`}
           >
             {isAllPassed ? 'Finish lesson' : 'Exit lesson'}
           </button>
