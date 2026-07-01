@@ -4,7 +4,6 @@ import { useExercise } from '../hooks/useExercise';
 import { MarkdownRender } from '../../../shared/components/MarkdownRender';
 import { useSyncEditorStore } from '../hooks/useSyncEditorStore';
 import { TestCaseList } from './TestCaseList';
-import { ShowAnswerButton } from '@/shared/components/Buttons/ShowAnswerButton';
 
 interface ExerciseWidgetProps {
   exerciseId: string;
@@ -58,10 +57,6 @@ function ExerciseWidget({ exerciseId }: ExerciseWidgetProps) {
         />
 
         <TestCaseList testCases={exercise.test_cases} />
-
-        {exercise.key_code && (
-          <ShowAnswerButton keyCode={exercise.key_code} toastPosition="bottom-left" />
-        )}
       </div>
     </div>
   );

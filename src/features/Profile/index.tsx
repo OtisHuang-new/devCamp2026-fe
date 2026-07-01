@@ -15,7 +15,7 @@ const LEVEL_OPTIONS = [
 
 // 2. SENIOR UX: Khai báo mảng JOB_OPTIONS với thủ thuật chèn icon bằng Text trực tiếp
 const JOB_OPTIONS = [
-  { value: 'Accountant', label: 'Accountant (✨ AI Customized)' },
+  { value: 'Accountant', label: 'Finance/Accountant (✨ AI Customized)' },
   { value: 'Software Engineer', label: 'Software Engineer' },
   { value: 'Data Analyst', label: 'Data Analyst' },
   { value: 'Marketing', label: 'Marketing' },

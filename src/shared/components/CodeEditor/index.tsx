@@ -11,6 +11,12 @@ import TestResultView from './components/TestResultView';
 import type { EditorTestCase } from '../../store/useEditorStore';
 import { runApi } from '../../../features/Exercise/api/runApi';
 import type { TestResultProps } from './components/TestResultView';
+
+import { useToastStore } from '../../store/useToastStore';
+
+import { ResetButton } from './components/Buttons/ResetButton';
+import { ShowAnswerButton } from './components/Buttons/ShowAnswerButton';
+
 interface CodeEditorProps {
   exerciseId: string; // Thêm dòng này
   onClose: () => void;
@@ -19,7 +25,23 @@ interface CodeEditorProps {
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }) => {
   const initialCode = useEditorStore((state) => state.initialCode);
+  const keyCode = useEditorStore((state) => state.keyCode); // 2. Lấy keyCode từ Store
+
+  const addToast = useToastStore((state) => state.addToast); // 3. Lấy hàm tạo Toast
+
   const [code, setCode] = useState(initialCode);
+
+  const handleResetCode = () => {
+    setCode(initialCode);
+    addToast('Reset initial code successfully!', 3000, false, 'top-center');
+  };
+
+  const handleShowAnswer = () => {
+    if (keyCode) {
+      setCode(keyCode);
+      addToast('Loaded solution successfully!', 3000, false, 'top-center');
+    }
+  };
 
   const [prevInitialCode, setPrevInitialCode] = useState(initialCode);
   if (initialCode !== prevInitialCode) {
@@ -164,6 +186,12 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }
                 style={{ textAlign: 'left' }}
               />
             </div>
+
+            <div className="flex gap-3 items-center">
+              <ResetButton onClick={handleResetCode} />
+              {keyCode && <ShowAnswerButton onClick={handleShowAnswer} />}
+            </div>
+
             <div className="flex justify-end gap-3 mt-2">
               <button
                 onClick={handleRun}
@@ -176,6 +204,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }
               >
                 {isRunning ? 'Running...' : 'Run'}
               </button>
+
               <button
                 // 3. SỬA LOGIC: Đóng form TRƯỚC, gọi API SAU
                 onClick={() => {

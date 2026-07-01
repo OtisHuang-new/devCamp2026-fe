@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type ToastPosition = 'bottom-center' | 'bottom-left';
+export type ToastPosition = 'bottom-center' | 'bottom-left' | 'top-center';
 
 export interface ToastMessage {
   id: string;

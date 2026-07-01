@@ -7,13 +7,17 @@ export interface EditorTestCase {
 }
 
 interface EditorStore {
-  // --- 1. MỚI: Quản lý trạng thái đóng/mở Editor Toàn cầu ---
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   toggleOpen: () => void;
 
   initialCode: string;
   setInitialCode: (code: string) => void;
+
+  // 1. SENIOR FIX: Bổ sung keyCode vào Store
+  keyCode?: string;
+  setKeyCode: (code?: string) => void;
+
   publicTestCases: EditorTestCase[];
   setPublicTestCases: (cases: EditorTestCase[]) => void;
 }
@@ -23,6 +27,9 @@ export const useEditorStore = create<EditorStore>((set) => ({
   isOpen: false,
   setIsOpen: (isOpen) => set({ isOpen }),
   toggleOpen: () => set((state) => ({ isOpen: !state.isOpen })),
+
+  keyCode: undefined,
+  setKeyCode: (code) => set({ keyCode: code }),
 
   initialCode: '# Bro, you can write you code here :like :) ',
   setInitialCode: (code) => set({ initialCode: code }),
