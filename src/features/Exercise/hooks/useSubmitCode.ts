@@ -14,6 +14,8 @@ export function useSubmitCode(exerciseId?: string) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [justSubmittedId, setJustSubmittedId] = useState<string | null>(null);
+
   // 2. SỬA: Thay SubmitResponse bằng PostSubmitResponse
   const [submitResult, setSubmitResult] = useState<PostSubmitResponse | null>(() => {
     if (!cacheKey) return null;
@@ -61,10 +63,8 @@ export function useSubmitCode(exerciseId?: string) {
       // HÀNH ĐỘNG 2: Gọi AI đánh giá (Graceful Degradation - Lỗi thì bỏ qua)
       try {
         // Truyền response._id (chính là submissionId) vào API AI
-        await evaluatorApi.evaluateSubmission(response._id, {
-          isExercise: true,
-          userId: user._id, // User ID đã được check tồn tại ở đầu hàm
-        });
+        // 1. SENIOR FIX: Xóa toàn bộ payload { isExercise, userId } đi
+        await evaluatorApi.evaluateSubmission(response._id);
       } catch (aiError: unknown) {
         // Chỉ Log ra console, KHÔNG throw lỗi để luồng nộp bài vẫn đi tiếp
         console.warn(
@@ -78,6 +78,7 @@ export function useSubmitCode(exerciseId?: string) {
       }
 
       setSubmitResult(response);
+      setJustSubmittedId(response._id);
     } catch (err: unknown) {
       // Chỉ những lỗi nghiêm trọng của HÀNH ĐỘNG 1 mới rớt xuống đây
       setError(err instanceof Error ? err.message : 'Failed to submit code');
@@ -86,5 +87,5 @@ export function useSubmitCode(exerciseId?: string) {
     }
   }
 
-  return { submitCode, isSubmitting, submitResult, error };
+  return { submitCode, isSubmitting, submitResult, error, justSubmittedId };
 }

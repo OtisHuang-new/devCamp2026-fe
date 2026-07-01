@@ -1,3 +1,4 @@
+// C:\Users\Admin\Desktop\devCamp2026\devCamp2026-fe\src\shared\components\Buttons\ScrollToTopButton\index.tsx
 import React from 'react';
 
 interface ScrollToTopButtonProps {

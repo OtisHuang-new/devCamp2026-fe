@@ -1,10 +1,5 @@
 // Vị trí: src/features/Exercise/types/evaluatorTypes.ts
 
-export interface EvaluatePayload {
-  isExercise: boolean;
-  userId: string;
-}
-
 export interface EvaluateScore {
   syntax: number;
   logic: number;

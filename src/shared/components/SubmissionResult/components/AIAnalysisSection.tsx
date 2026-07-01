@@ -4,6 +4,7 @@ import type { AIEvaluation } from '../../../../features/Exercise/types/submitTyp
 import { evaluatorApi } from '../../../../features/Exercise/api/evaluatorApi';
 import { useAuthContext_v2 } from '../../../context/hooks/useAuthContext_v2';
 import { AIFeatureBox } from '../../AIFeatureBox'; // <-- MỚI
+import { MarkdownRender } from '../../MarkdownRender';
 
 // Import bot mascot (Sửa đường dẫn nếu cần)
 import bot_showing from '../../../../shared/Assets/Mascots/bot_showing.svg';
@@ -29,10 +30,8 @@ export default function AIAnalysisSection({
 
     setIsEvaluating(true);
     try {
-      const response = await evaluatorApi.evaluateSubmission(submissionId, {
-        isExercise: true,
-        userId: user._id,
-      });
+      // 1. SENIOR FIX: Tháo bỏ tham số payload
+      const response = await evaluatorApi.evaluateSubmission(submissionId);
 
       if (response && response.AI_evaluation) {
         setLocalEval(response.AI_evaluation);
@@ -101,18 +100,20 @@ export default function AIAnalysisSection({
                 <h4 className="text-[15px] font-bold text-slate-800 mb-1">
                   {isAllPassed ? 'Clean Code:' : 'Error destination:'}
                 </h4>
-                <p className="text-[15px] leading-relaxed text-slate-800 font-medium whitespace-pre-wrap">
-                  {localEval.first_res || 'No detail description.'}
-                </p>
+                <MarkdownRender
+                  content={localEval.first_res || 'No detail description.'}
+                  className="text-[15px] leading-relaxed text-slate-800 font-medium"
+                />
               </div>
               {localEval.second_res && (
                 <div>
                   <h4 className="text-[15px] font-bold text-slate-800 mb-1">
                     {isAllPassed ? 'Refactoring:' : 'How to fix:'}
                   </h4>
-                  <p className="text-[15px] leading-relaxed text-slate-800 font-medium whitespace-pre-wrap">
-                    {localEval.second_res}
-                  </p>
+                  <MarkdownRender
+                    content={localEval.second_res}
+                    className="text-[15px] leading-relaxed text-slate-800 font-medium"
+                  />
                 </div>
               )}
             </div>

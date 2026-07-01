@@ -1,6 +1,5 @@
 import type { ExerciseDataAPI } from '@/features/Exercise/types/exerciseTypes';
 import { MarkdownRender } from '../../../shared/components/MarkdownRender'; // Đường dẫn giống hệt bên LessonContent
-import { ShowAnswerButton } from '@/shared/components/Buttons/ShowAnswerButton';
 
 interface ExerciseContentProps {
   data: ExerciseDataAPI;
@@ -29,9 +28,6 @@ export function ExerciseContent({ data }: ExerciseContentProps) {
             {data.difficulty}
           </span>
         </div>
-
-        {/* 3. Nút Answer nằm bên phải */}
-        {data.key_code && <ShowAnswerButton keyCode={data.key_code} toastPosition="bottom-left" />}
       </div>
 
       {/* KHỐI NỘI DUNG (MARKDOWN) */}

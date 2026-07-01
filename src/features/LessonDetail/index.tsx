@@ -7,13 +7,13 @@ import { useSubmissionHistory } from '../Exercise/hooks/useSubmissionHistory';
 import SidePanel from '../../shared/components/SidePanel';
 import LessonContent from './components/LessonContent';
 import ExerciseWidget from '../Exercise/components/ExerciseWidget';
-import CodeToggleButton from '../../shared/components/Buttons/CodeToggleButton';
+import CodeToggleButton from '../../shared/components/CodeEditor/components/Buttons/CodeToggleButton';
 import CodeEditor from '../../shared/components/CodeEditor';
 import ScrollToTopButton from '../../shared/components/Buttons/ScrollToTopButton';
 import SubmissionResult from '../../shared/components/SubmissionResult';
 import { useNavigate } from 'react-router-dom';
 import { useUpdateProgress } from './hooks/useUpdateProgress';
-
+import { smoothScrollTo } from '@/shared/utils/scrollUtils';
 import { Return } from '@/shared/components/Return';
 
 import { LoadingSpinner } from '@/shared/components/Loading/LoadingSpinner';
@@ -34,6 +34,7 @@ const LessonDetail = () => {
     isSubmitting,
     submitResult,
     error: submitError,
+    justSubmittedId,
   } = useSubmitCode(lesson?.exercise_id);
 
   const { history, selectedIndex, setSelectedIndex, fetchHistory } = useSubmissionHistory(
@@ -43,15 +44,33 @@ const LessonDetail = () => {
   useUpdateProgress(id, history, submitResult);
 
   const leftColumnRef = useRef<HTMLDivElement>(null);
+  const exerciseContainerRef = useRef<HTMLDivElement>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [isExerciseBottomReached, setIsExerciseBottomReached] = useState(false); // 2. Bổ sung State
 
   const handleScroll = () => {
     if (leftColumnRef.current) {
       setShowScrollTop(leftColumnRef.current.scrollTop > 50);
+
+      // 3. SENIOR FIX: Toán học giao điểm (Intersection Math)
+      if (exerciseContainerRef.current) {
+        const rect = exerciseContainerRef.current.getBoundingClientRect();
+        // Nút Toggle cao 44px, dính chặt đáy -> Rìa trên của nó = Chiều cao màn hình - 44px
+        // Nếu Rìa dưới của Exercise <= Rìa trên của Nút -> Đã cuộn qua
+        if (rect.bottom <= window.innerHeight - 44) {
+          setIsExerciseBottomReached(true);
+        } else {
+          setIsExerciseBottomReached(false);
+        }
+      }
     }
   };
+
   const scrollToTop = () => {
-    leftColumnRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    if (leftColumnRef.current) {
+      // 2. SỬ DỤNG ENGINE (Thay cho .scrollTo của trình duyệt)
+      smoothScrollTo(leftColumnRef.current, 0, 300);
+    }
   };
 
   useEffect(() => {
@@ -104,7 +123,7 @@ const LessonDetail = () => {
         <div
           ref={leftColumnRef}
           onScroll={handleScroll}
-          className="w-full h-full overflow-y-auto flex flex-col scroll-smooth pb-[100px]"
+          className="w-full h-full overflow-y-auto flex flex-col scroll-smooth pb-[600px]"
         >
           <div className="pt-6 px-10">
             <Return text="Return to progress" />
@@ -114,12 +133,16 @@ const LessonDetail = () => {
             <LessonContent data={lesson} />
             <hr className="border-gray-100 my-1" />
 
-            {lesson.exercise_id && <ExerciseWidget exerciseId={lesson.exercise_id} />}
+            {lesson.exercise_id && (
+              <div ref={exerciseContainerRef}>
+                <ExerciseWidget exerciseId={lesson.exercise_id} />
+              </div>
+            )}
 
             {isSubmitting && (
               <div className="w-full py-10">
                 <LoadingSpinner
-                  text="Đang chấm điểm testcases..."
+                  text="Evaluating your submission..."
                   iconSize="w-8 h-8"
                   textColor="text-gray-500"
                 />
@@ -137,6 +160,7 @@ const LessonDetail = () => {
                 selectedIndex={selectedIndex}
                 onSelectIndex={setSelectedIndex}
                 onActionClick={() => navigate('/roadmap')}
+                latestSubmitId={justSubmittedId}
               />
             )}
           </div>
@@ -156,7 +180,11 @@ const LessonDetail = () => {
       </div>
 
       {!isEditorOpen && (
-        <CodeToggleButton isOpen={isEditorOpen} onToggle={() => setIsEditorOpen(true)} />
+        <CodeToggleButton
+          isOpen={isEditorOpen}
+          onToggle={() => setIsEditorOpen(true)}
+          showHintBubble={history.length === 0 && isExerciseBottomReached}
+        />
       )}
 
       <div className={isEditorOpen ? 'block' : 'hidden'}>

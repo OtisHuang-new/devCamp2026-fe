@@ -1,15 +1,20 @@
 // Vị trí: src/shared/components/SubmissionResult/index.tsx
+import { useEffect, useRef, useState } from 'react';
 import AIAnalysisSection from './components/AIAnalysisSection';
 import TestCaseResultItem from './components/TestCaseResultItem';
 import type { SubmissionHistoryItem } from '../../../features/Exercise/types/submitTypes';
 import { useEditorStore } from '../../store/useEditorStore';
-import { formatDateTime } from '../../utils/dateFormatter';
+// 1. IMPORT CÔNG CỤ VÀ COMPONENT ĐÃ TÁCH
+import { scrollToElement } from '../../utils/scrollUtils';
+import { SubmissionHeader } from './components/SubmissionHeader';
+import { SubmissionAction } from './components/SubmissionAction';
 
 interface SubmissionResultProps {
   history: SubmissionHistoryItem[];
   selectedIndex: number;
   onSelectIndex: (index: number) => void;
   onActionClick?: () => void;
+  latestSubmitId?: string | null;
 }
 
 export default function SubmissionResult({
@@ -17,19 +22,74 @@ export default function SubmissionResult({
   selectedIndex,
   onSelectIndex,
   onActionClick,
+  latestSubmitId,
 }: SubmissionResultProps) {
   const publicTestCases = useEditorStore((state) => state.publicTestCases);
-
-  // Lấy dữ liệu của Version đang được chọn
   const currentData = history[selectedIndex];
+
+  const [showHighlight, setShowHighlight] = useState(false);
+  const [prevDataId, setPrevDataId] = useState<string | null>(null);
+
+  // 2. KHAI BÁO MỐC TỌA ĐỘ VÀ CỜ HIỆU (Chặn scroll trùng)
+  const headerRef = useRef<HTMLDivElement>(null);
+  const actionBtnRef = useRef<HTMLButtonElement>(null);
+  const lastScrolledId = useRef<string | null>(null);
+
+  if (currentData && currentData._id !== prevDataId) {
+    setPrevDataId(currentData._id);
+
+    const total = currentData.results.length;
+    const passedCount = currentData.results.filter((r) => r.status === 'passed').length;
+    const isPassAll = passedCount === total;
+
+    if (isPassAll && currentData._id === latestSubmitId) {
+      setShowHighlight(true);
+    } else {
+      setShowHighlight(false);
+    }
+  }
+
+  // 3. LOGIC CUỘN TRANG PHÂN NHÁNH
+  useEffect(() => {
+    // Nếu không phải là submit mới nhất, bỏ qua
+    if (!currentData || currentData._id !== latestSubmitId) return;
+    // Chặn hiện tượng cuộn lại nhiều lần khi user bấm chọn lịch sử cũ rồi đổi lại lịch sử mới
+    if (lastScrolledId.current === latestSubmitId) return;
+
+    lastScrolledId.current = latestSubmitId; // Đánh dấu đã cuộn
+
+    const total = currentData.results.length;
+    const passedCount = currentData.results.filter((r) => r.status === 'passed').length;
+    const isPassAll = passedCount === total;
+
+    let scrollTimer: ReturnType<typeof setTimeout>;
+    let highlightTimer: ReturnType<typeof setTimeout>;
+
+    if (isPassAll) {
+      // TRƯỜNG HỢP 1: Pass All -> Cuộn vào giữa Nút Submit
+      scrollTimer = setTimeout(() => {
+        if (actionBtnRef.current) scrollToElement(actionBtnRef.current, 'center', 600);
+      }, 50);
+
+      highlightTimer = setTimeout(() => setShowHighlight(false), 6000);
+    } else {
+      // TRƯỜNG HỢP 2: Sai 1 phần -> Cuộn lên đầu dòng chữ "Submission result"
+      scrollTimer = setTimeout(() => {
+        if (headerRef.current) scrollToElement(headerRef.current, 'top', 600);
+      }, 50);
+    }
+
+    return () => {
+      clearTimeout(scrollTimer);
+      clearTimeout(highlightTimer);
+    };
+  }, [currentData, latestSubmitId]);
 
   if (!currentData) return null;
 
   const publicResults = currentData.results.slice(0, publicTestCases.length);
   const passedCount = currentData.results.filter((r) => r.status === 'passed').length;
-  const total = currentData.results.length;
-
-  const isAllPassed = passedCount === total;
+  const isAllPassed = passedCount === currentData.results.length;
   const isPublicPassed = publicResults.every((r) => r.status === 'passed');
 
   let statusText = '';
@@ -38,45 +98,29 @@ export default function SubmissionResult({
 
   if (isAllPassed) {
     statusText = 'Pass all testcases';
-    statusColor = 'text-[#22C55E]'; // Xanh lá
+    statusColor = 'text-[#22C55E]';
     borderColor = 'border-[#22C55E]';
   } else if (isPublicPassed) {
     statusText = 'Fail some hidden test cases';
-    statusColor = 'text-yellow-500'; // Vàng
+    statusColor = 'text-yellow-500';
     borderColor = 'border-yellow-500';
   } else {
     statusText = 'Fail public test case';
-    statusColor = 'text-red-500'; // Đỏ
+    statusColor = 'text-red-500';
     borderColor = 'border-red-500';
   }
 
   return (
     <div className="w-full space-y-4 animate-fadeIn mb-10">
-      {/* KHU VỰC 1: DROPDOWN CHỌN VERSION */}
-      {/* 1. SỬA: Đổi items-center thành items-end để căn mọi thứ xuống đáy */}
-      <div className="flex items-end justify-between">
-        {/* 2. SỬA: Thêm mb-1.5 (margin-bottom khoảng 6px) để đường chân chữ cân bằng hoàn hảo với chữ bên trong Dropdown */}
-        <p className="text-sm font-medium">
-          Submission result: <span className={`${statusColor} font-bold`}>{statusText}</span>
-        </p>
+      <SubmissionHeader
+        ref={headerRef}
+        statusText={statusText}
+        statusColor={statusColor}
+        history={history}
+        selectedIndex={selectedIndex}
+        onSelectIndex={onSelectIndex}
+      />
 
-        <div className="flex flex-col items-end gap-1.5">
-          <label className="text-xs font-bold text-slate-500">Choose your version:</label>
-          <select
-            value={selectedIndex}
-            onChange={(e) => onSelectIndex(Number(e.target.value))}
-            className="bg-gray-100 border border-gray-300 text-sm font-bold text-slate-700 rounded-lg px-3 py-1.5 outline-none cursor-pointer focus:ring-2 focus:ring-[#1E3A8A]"
-          >
-            {history.map((item, index) => (
-              <option key={item._id} value={index}>
-                {formatDateTime(item.createdAt)}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {/* KHU VỰC 2: HIỂN THỊ KẾT QUẢ */}
       <div
         className={`border-2 ${borderColor} rounded-2xl py-6 px-4 bg-white shadow-sm space-y-6 transition-colors duration-300`}
       >
@@ -84,7 +128,6 @@ export default function SubmissionResult({
           {publicResults.map((result, index) => {
             const originalCase = publicTestCases[index];
             if (!originalCase) return null;
-
             return (
               <TestCaseResultItem
                 key={index}
@@ -100,7 +143,6 @@ export default function SubmissionResult({
         </div>
 
         <AIAnalysisSection
-          // 1. SENIOR FIX: Dùng key để báo React tự động reset state nội bộ của Component con mỗi khi đổi bài nộp
           key={currentData._id}
           isAllPassed={isAllPassed}
           evaluationData={currentData.AI_evaluation}
@@ -108,14 +150,12 @@ export default function SubmissionResult({
         />
       </div>
 
-      <div className="flex justify-center mt-8">
-        <button
-          onClick={onActionClick}
-          className={`${isAllPassed ? 'bg-[#22C55E] hover:bg-[#16a34a]' : 'bg-yellow-500 hover:bg-yellow-600'} text-white font-bold py-2.5 px-8 rounded-xl transition-all shadow-md`}
-        >
-          {isAllPassed ? 'Finish lesson' : 'Exit lesson'}
-        </button>
-      </div>
+      <SubmissionAction
+        ref={actionBtnRef}
+        isAllPassed={isAllPassed}
+        showHighlight={showHighlight}
+        onActionClick={onActionClick}
+      />
     </div>
   );
 }

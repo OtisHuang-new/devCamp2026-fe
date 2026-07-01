@@ -19,15 +19,7 @@ function Body({ onOpenLogin }: BodyProps) {
           </div>
         </div>
 
-        <div className="flex flex-row gap-[200px] justify-center">
-          <div className="flex flex-col gap-2">
-            <span className="text-white font-medium text-[20px]">Easy to understand</span>
-            <span className="text-white font-medium text-[20px]">
-              Road map design for non-tech user
-            </span>
-            <span className="text-white font-medium text-[20px]">Solution for all repeat task</span>
-            <span className="text-white font-medium text-[20px]">Made for office people</span>
-          </div>
+        <div className="flex flex-row justify-center">
           <div className="flex flex-col gap-3">
             <Button onOpenLogin={onOpenLogin} />
           </div>

@@ -22,7 +22,7 @@ export const surveyQuestions: QuestionData[] = [
     botText: 'Okey before starting, first question! What is your Job?',
     layout: 'grid-nx2',
     options: [
-      { id: 'job_1', text: 'Accountant' },
+      { id: 'job_1', text: 'Finance / Accountant' },
       { id: 'job_2', text: 'Marketing' },
       { id: 'job_3', text: 'Software Engineer' },
       { id: 'job_4', text: 'Designer' },

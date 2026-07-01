@@ -1,5 +1,5 @@
 import React from 'react';
-import CodeToggleButton from '../Buttons/CodeToggleButton';
+import CodeToggleButton from './components/Buttons/CodeToggleButton';
 import { useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
@@ -11,6 +11,14 @@ import TestResultView from './components/TestResultView';
 import type { EditorTestCase } from '../../store/useEditorStore';
 import { runApi } from '../../../features/Exercise/api/runApi';
 import type { TestResultProps } from './components/TestResultView';
+
+import { useToastStore } from '../../store/useToastStore';
+
+import { ResetButton } from './components/Buttons/ResetButton';
+import { ShowAnswerButton } from './components/Buttons/ShowAnswerButton';
+import { RunButton } from './components/Buttons/RunButton';
+import { SubmitButton } from './components/Buttons/SubmitButton';
+
 interface CodeEditorProps {
   exerciseId: string; // Thêm dòng này
   onClose: () => void;
@@ -19,7 +27,23 @@ interface CodeEditorProps {
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }) => {
   const initialCode = useEditorStore((state) => state.initialCode);
+  const keyCode = useEditorStore((state) => state.keyCode); // 2. Lấy keyCode từ Store
+
+  const addToast = useToastStore((state) => state.addToast); // 3. Lấy hàm tạo Toast
+
   const [code, setCode] = useState(initialCode);
+
+  const handleResetCode = () => {
+    setCode(initialCode);
+    addToast('Reset initial code successfully!', 1300, false, 'top-center');
+  };
+
+  const handleShowAnswer = () => {
+    if (keyCode) {
+      setCode(keyCode);
+      addToast('Loaded solution successfully!', 1300, false, 'top-center');
+    }
+  };
 
   const [prevInitialCode, setPrevInitialCode] = useState(initialCode);
   if (initialCode !== prevInitialCode) {
@@ -164,28 +188,25 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }
                 style={{ textAlign: 'left' }}
               />
             </div>
-            <div className="flex justify-end gap-3 mt-2">
-              <button
-                onClick={handleRun}
-                disabled={isRunning}
-                className={`px-4 py-1 rounded-md font-bold text-sm transition-all ${
-                  isRunning
-                    ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
-                    : 'bg-gray-200 text-gray-800 hover:bg-white'
-                }`}
-              >
-                {isRunning ? 'Running...' : 'Run'}
-              </button>
-              <button
-                // 3. SỬA LOGIC: Đóng form TRƯỚC, gọi API SAU
-                onClick={() => {
-                  onClose(); // Đóng Editor ngay tắp lự
-                  onSubmit(code); // Kích hoạt luồng API ngầm
-                }}
-                className="bg-[#22C55E] text-white px-4 py-1 rounded-md font-bold text-sm hover:bg-[#16a34a] transition-all"
-              >
-                Submit
-              </button>
+
+            <div className="flex justify-between items-center w-full mt-2">
+              {/* CỤM BÊN TRÁI */}
+              <div className="flex gap-3 items-center">
+                <ResetButton onClick={handleResetCode} />
+                {keyCode && <ShowAnswerButton onClick={handleShowAnswer} />}
+              </div>
+
+              {/* CỤM BÊN PHẢI */}
+              <div className="flex gap-3 items-center">
+                <RunButton onClick={handleRun} isRunning={isRunning} />
+
+                <SubmitButton
+                  onClick={() => {
+                    onClose();
+                    onSubmit(code);
+                  }}
+                />
+              </div>
             </div>
           </div>
 

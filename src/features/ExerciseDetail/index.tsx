@@ -6,7 +6,7 @@ import { ExerciseContent } from './components/ExerciseContent';
 import SidePanel from '../../shared/components/SidePanel';
 import CodeEditor from '../../shared/components/CodeEditor';
 import SubmissionResult from '../../shared/components/SubmissionResult';
-import CodeToggleButton from '../../shared/components/Buttons/CodeToggleButton';
+import CodeToggleButton from '../../shared/components/CodeEditor/components/Buttons/CodeToggleButton';
 
 import { useSubmitCode } from '@/features/Exercise/hooks/useSubmitCode';
 import { useSubmissionHistory } from '@/features/Exercise/hooks/useSubmissionHistory';
@@ -28,7 +28,12 @@ export function ExerciseDetail() {
   const setIsEditorOpen = useEditorStore((state) => state.setIsOpen);
   const toggleEditorOpen = useEditorStore((state) => state.toggleOpen);
 
-  const { submitCode, isSubmitting, error: submitError } = useSubmitCode(exerciseDetail?._id);
+  const {
+    submitCode,
+    isSubmitting,
+    error: submitError,
+    justSubmittedId,
+  } = useSubmitCode(exerciseDetail?._id);
 
   const { history, selectedIndex, setSelectedIndex, fetchHistory } = useSubmissionHistory(
     exerciseDetail?._id,
@@ -67,7 +72,7 @@ export function ExerciseDetail() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen font-bold text-gray-500 bg-gray-50">
-        Đang tải bài tập...
+        Loanding exercise...
       </div>
     );
   }
@@ -75,7 +80,7 @@ export function ExerciseDetail() {
   if (!exerciseDetail) {
     return (
       <div className="flex justify-center items-center h-screen font-bold text-red-500 bg-gray-50">
-        Không tìm thấy bài tập hoặc bài tập không tồn tại!
+        Cant find exercise!
       </div>
     );
   }
@@ -125,6 +130,7 @@ export function ExerciseDetail() {
               selectedIndex={selectedIndex}
               onSelectIndex={setSelectedIndex}
               onActionClick={() => navigate('/exercises')}
+              latestSubmitId={justSubmittedId}
             />
           )}
         </div>
@@ -142,9 +148,13 @@ export function ExerciseDetail() {
 
       {/* --- CÁC COMPONENT NỔI (ABSOLUTE/FIXED) BÊN NGOÀI LAYOUT CHÍNH --- */}
 
-      {/* Nút bật/tắt Editor (Góc dưới cùng) */}
       {!isEditorOpen && (
-        <CodeToggleButton isOpen={isEditorOpen} onToggle={() => setIsEditorOpen(true)} />
+        <CodeToggleButton
+          isOpen={isEditorOpen}
+          onToggle={() => setIsEditorOpen(true)}
+          // 1. SENIOR FIX: Chỉ cần không có lịch sử nộp là kích hoạt ngay
+          showHintBubble={history.length === 0}
+        />
       )}
 
       {/* Bảng Code Editor (Chỉ hiện khi isEditorOpen === true) */}

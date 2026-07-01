@@ -8,6 +8,14 @@ export const exerciseApi = {
     const response = await axiosClient.get<ExerciseDataAPI, ExerciseDataAPI>(`/exercises/${id}`, {
       params: { user_id: userId },
     });
+
+    if (response && response.test_cases) {
+      response.test_cases = response.test_cases.map((tc) => ({
+        ...tc,
+        expected_output: tc.expected_output || tc.output || '',
+      }));
+    }
+
     return response;
   },
 

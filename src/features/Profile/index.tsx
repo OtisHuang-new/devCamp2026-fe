@@ -15,7 +15,7 @@ const LEVEL_OPTIONS = [
 
 // 2. SENIOR UX: Khai báo mảng JOB_OPTIONS với thủ thuật chèn icon bằng Text trực tiếp
 const JOB_OPTIONS = [
-  { value: 'Accountant', label: 'Accountant (✨ AI Customized)' },
+  { value: 'Accountant', label: 'Finance/Accountant (✨ AI Customized)' },
   { value: 'Software Engineer', label: 'Software Engineer' },
   { value: 'Data Analyst', label: 'Data Analyst' },
   { value: 'Marketing', label: 'Marketing' },
@@ -86,7 +86,7 @@ function ProfileContent({ user, logoutState }: ProfileContentProps) {
                 d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
               ></path>
             </svg>
-            {isEditing ? (isChanged ? 'save' : 'cancel') : 'edit'}
+            {isEditing ? (isChanged ? 'Save' : 'Cancle') : 'Edit'}
           </button>
 
           <div className="text-right mt-3 text-gray-400">
@@ -131,9 +131,6 @@ function ProfileContent({ user, logoutState }: ProfileContentProps) {
               onChange={(val) => handleNestedChange('job', val)}
             />
 
-            {/* 4. SENIOR UX: Kỹ thuật phản hồi kép (Dual Feedback). 
-                Kiểm tra real-time: Nếu đang Edit thì nhìn vào draftData, nếu đang View thì nhìn vào user gốc.
-                Nếu là Accountant -> Render ra một cái Banner làm điểm nhấn. */}
             {(isEditing ? draftData.information.job : user.information.job) === 'Accountant' && (
               <div className="mt-3 flex items-start gap-3 bg-blue-50/80 border border-blue-200 rounded-lg p-3 animate-fadeIn">
                 <span className="text-xl leading-none select-none">✨</span>
