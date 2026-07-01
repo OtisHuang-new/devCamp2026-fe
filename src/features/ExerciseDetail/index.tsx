@@ -6,7 +6,7 @@ import { ExerciseContent } from './components/ExerciseContent';
 import SidePanel from '../../shared/components/SidePanel';
 import CodeEditor from '../../shared/components/CodeEditor';
 import SubmissionResult from '../../shared/components/SubmissionResult';
-import CodeToggleButton from '../../shared/components/Buttons/CodeToggleButton';
+import CodeToggleButton from '../../shared/components/CodeEditor/components/Buttons/CodeToggleButton';
 
 import { useSubmitCode } from '@/features/Exercise/hooks/useSubmitCode';
 import { useSubmissionHistory } from '@/features/Exercise/hooks/useSubmissionHistory';
@@ -148,9 +148,13 @@ export function ExerciseDetail() {
 
       {/* --- CÁC COMPONENT NỔI (ABSOLUTE/FIXED) BÊN NGOÀI LAYOUT CHÍNH --- */}
 
-      {/* Nút bật/tắt Editor (Góc dưới cùng) */}
       {!isEditorOpen && (
-        <CodeToggleButton isOpen={isEditorOpen} onToggle={() => setIsEditorOpen(true)} />
+        <CodeToggleButton
+          isOpen={isEditorOpen}
+          onToggle={() => setIsEditorOpen(true)}
+          // 1. SENIOR FIX: Chỉ cần không có lịch sử nộp là kích hoạt ngay
+          showHintBubble={history.length === 0}
+        />
       )}
 
       {/* Bảng Code Editor (Chỉ hiện khi isEditorOpen === true) */}
