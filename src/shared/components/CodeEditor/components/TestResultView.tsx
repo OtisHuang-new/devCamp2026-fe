@@ -44,7 +44,7 @@ const TestResultView: React.FC<TestResultProps> = ({
 
       {error ? (
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-bold text-red-400">Runtime Error</label>
+          <label className="text-xs font-bold text-red-400">Error</label>
           <div className="w-full bg-[#2A2A2A] text-red-400 font-mono text-sm p-3 rounded-lg min-h-[40px] whitespace-pre-wrap">
             {error}
           </div>

@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useExerciseDetail } from './hooks/useExerciseDetail';
 import { ExerciseContent } from './components/ExerciseContent';
 
@@ -18,9 +18,13 @@ import { TextSelectionPopover } from '@/shared/components/TextSelectionPopover';
 
 import { Return } from '@/shared/components/Return';
 import { useEditorStore } from '@/shared/store/useEditorStore';
+import { NavigationFooter } from '@/shared/components/NavigationFooter';
+
+import { getNextStepInfo } from '@/shared/utils/navigationUtils';
 
 export function ExerciseDetail() {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
   const { exerciseDetail, isLoading } = useExerciseDetail();
 
   useSyncEditorStore(exerciseDetail);
@@ -38,6 +42,66 @@ export function ExerciseDetail() {
   const { history, selectedIndex, setSelectedIndex, fetchHistory } = useSubmissionHistory(
     exerciseDetail?._id,
   );
+
+  const hasPassed = history.some((item) => item.status === 'accepted');
+  const footerRef = useRef<HTMLDivElement>(null);
+  const loadingRef = useRef<HTMLDivElement>(null); // <-- THÊM DÒNG NÀY
+
+  const leftColumnRef = useRef<HTMLDivElement>(null);
+
+  const handleExit = () => navigate('/exercises');
+  const handleNext = () => {
+    if (!exerciseDetail) return;
+
+    // QUAN TRỌNG:
+    // Nếu là Project -> ID nằm ở exerciseDetail._id
+    // Nếu là Bài Tập Thường -> Nó là vệ tinh của bài lý thuyết, nên cái Node Cha trong Roadmap chính là lesson_id
+    const currentRoadmapNodeId = exerciseDetail.is_project
+      ? exerciseDetail._id
+      : exerciseDetail.lesson_id;
+
+    const nextStep = getNextStepInfo(currentRoadmapNodeId);
+
+    if (nextStep) {
+      if (nextStep.type === 'project') {
+        navigate(`/exercises/${nextStep.id}`);
+      } else {
+        navigate(`/lessons/${nextStep.id}`);
+      }
+    } else {
+      navigate('/roadmap');
+    }
+  };
+
+  useEffect(() => {
+    const container = leftColumnRef.current;
+    if (!container) return;
+
+    container.style.scrollBehavior = 'auto';
+    container.scrollTop = 0;
+
+    const restoreTimer = setTimeout(() => {
+      container.style.scrollBehavior = '';
+    }, 50);
+
+    return () => clearTimeout(restoreTimer);
+  }, [id]);
+
+  useEffect(() => {
+    const container = leftColumnRef.current;
+    const loader = loadingRef.current;
+
+    // Nếu vừa bấm Submit, Lập tức Teleport tới cọc mốc Loading Spinner
+    if (isSubmitting && container && loader) {
+      container.style.scrollBehavior = 'auto'; // Tắt mượt
+      loader.scrollIntoView({ behavior: 'auto', block: 'center' }); // Teleport giữa màn hình
+
+      const restoreTimer = setTimeout(() => {
+        container.style.scrollBehavior = ''; // Bật mượt trở lại
+      }, 50);
+      return () => clearTimeout(restoreTimer);
+    }
+  }, [isSubmitting]);
 
   // 3. EFFECT: Phím tắt đóng/mở Editor (Giống hệt LessonDetail)
   useEffect(() => {
@@ -89,10 +153,13 @@ export function ExerciseDetail() {
   return (
     <div className="flex h-screen w-full bg-white overflow-hidden relative">
       {/* CỘT TRÁI: Nội dung có thể cuộn */}
-      <div className="flex-1 h-full overflow-y-auto flex flex-col scroll-smooth pb-[100px] border-r border-gray-100">
+      <div
+        ref={leftColumnRef}
+        className="flex-1 h-full overflow-y-auto flex flex-col scroll-smooth pb-[100px] border-r border-gray-100"
+      >
         {/* Nút Back */}
         <div className="pt-6 px-10">
-          <Return text="Return to exercises" />
+          <Return text="Return to exercises" to="/exercises" />
         </div>
 
         <div className="px-10 py-4 flex flex-col gap-3">
@@ -124,14 +191,36 @@ export function ExerciseDetail() {
           )}
 
           {/* 4. SỬA ĐOẠN NÀY: Dùng history.length > 0 thay vì submitResult */}
-          {!isSubmitting && history.length > 0 && (
+          {!isSubmitting && history.length > 0 ? (
             <SubmissionResult
               history={history}
               selectedIndex={selectedIndex}
               onSelectIndex={setSelectedIndex}
-              onActionClick={() => navigate('/exercises')}
               latestSubmitId={justSubmittedId}
-            />
+              footerRef={footerRef}
+            >
+              {/* Dùng Function để đón biến showHighlight do SubmissionResult ném xuống */}
+              {(showHighlight) => (
+                <NavigationFooter
+                  ref={footerRef}
+                  onExit={handleExit}
+                  onNext={handleNext}
+                  isPassed={hasPassed}
+                  showHighlight={showHighlight}
+                  className="mt-0"
+                />
+              )}
+            </SubmissionResult>
+          ) : (
+            /* TH2: Nếu CHƯA NỘP BÀI BAO GIỜ -> Nút điều hướng nằm trơ trọi dưới cùng */
+            !isSubmitting && (
+              <NavigationFooter
+                ref={footerRef}
+                onExit={handleExit}
+                onNext={handleNext}
+                isPassed={hasPassed}
+              />
+            )
           )}
         </div>
       </div>

@@ -17,7 +17,7 @@ export function AIFeatureBox({
   className = 'w-full', // 2. Mặc định là w-full để các file cũ không bị ảnh hưởng
 }: AIFeatureBoxProps) {
   // 1. Phân nhánh style màu nền dựa vào variant (chuẩn hóa màu sắc AI)
-  let containerClass = `flex flex-col gap-2 rounded-xl p-4 transition-all ${className} `;
+  let containerClass = `flex flex-col gap-2 rounded-lg px-4 pt-4 pb-2 transition-all ${className} `;
 
   if (variant === 'loading') {
     containerClass += 'bg-blue-50/50 border border-blue-100 animate-pulse';
@@ -31,8 +31,8 @@ export function AIFeatureBox({
     <div className={containerClass}>
       {/* Khối Tiêu đề cố định */}
       <div className="flex flex-row justify-between">
-        <h3 className="text-[#1E3A8A] font-bold text-lg mb-1">{title}</h3>
-        <h2 className="text-gray-400">Cận is AI and can make mistake</h2>
+        <h2 className="text-[#1E3A8A] font-bold text-xl mb-1">{title}</h2>
+        <h3 className="text-gray-400 text-sm">Cận is AI and can make mistake</h3>
       </div>
 
       <div className="flex items-start gap-4 w-full">

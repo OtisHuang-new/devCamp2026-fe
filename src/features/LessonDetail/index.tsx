@@ -19,6 +19,9 @@ import { Return } from '@/shared/components/Return';
 import { LoadingSpinner } from '@/shared/components/Loading/LoadingSpinner';
 import { TextSelectionPopover } from '../../shared/components/TextSelectionPopover';
 import { useEditorStore } from '@/shared/store/useEditorStore';
+import { NavigationFooter } from '@/shared/components/NavigationFooter';
+
+import { getNextStepInfo } from '@/shared/utils/navigationUtils';
 
 const LessonDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -48,6 +51,29 @@ const LessonDetail = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isExerciseBottomReached, setIsExerciseBottomReached] = useState(false); // 2. Bổ sung State
 
+  const hasPassed = history.some((item) => item.status === 'accepted');
+  const footerRef = useRef<HTMLDivElement>(null);
+  const loadingRef = useRef<HTMLDivElement>(null); // <-- THÊM DÒNG NÀY
+
+  const handleExit = () => navigate('/roadmap');
+  const handleNext = () => {
+    if (!lesson) return;
+
+    // Ném ID bài hiện tại vào cỗ máy tính toán
+    const nextStep = getNextStepInfo(lesson._id);
+
+    if (nextStep) {
+      if (nextStep.type === 'project') {
+        navigate(`/exercises/${nextStep.id}`);
+      } else {
+        navigate(`/lessons/${nextStep.id}`);
+      }
+    } else {
+      // Graceful degradation: Nếu là bài cuối cùng hoặc lỡ bị lỗi cache, dội về màn Roadmap cho an toàn
+      navigate('/roadmap');
+    }
+  };
+
   const handleScroll = () => {
     if (leftColumnRef.current) {
       setShowScrollTop(leftColumnRef.current.scrollTop > 50);
@@ -68,10 +94,43 @@ const LessonDetail = () => {
 
   const scrollToTop = () => {
     if (leftColumnRef.current) {
-      // 2. SỬ DỤNG ENGINE (Thay cho .scrollTo của trình duyệt)
       smoothScrollTo(leftColumnRef.current, 0, 300);
     }
   };
+
+  useEffect(() => {
+    const container = leftColumnRef.current;
+    if (!container) return;
+
+    // A. Tạm thời phế võ công 'scroll-smooth' của Tailwind bằng Inline Style
+    container.style.scrollBehavior = 'auto';
+
+    // B. Teleport tức thời lên tọa độ 0
+    container.scrollTop = 0;
+
+    // C. Bật lại tính năng cuộn mượt sau khi đã dịch chuyển xong (50ms là mức an toàn cho Frame DOM)
+    const restoreTimer = setTimeout(() => {
+      container.style.scrollBehavior = '';
+    }, 50);
+
+    return () => clearTimeout(restoreTimer);
+  }, [id]); // Chạy Effect này mỗi khi URL ID thay đổi
+
+  useEffect(() => {
+    const container = leftColumnRef.current;
+    const loader = loadingRef.current;
+
+    // Nếu vừa bấm Submit, Lập tức Teleport tới cọc mốc Loading Spinner
+    if (isSubmitting && container && loader) {
+      container.style.scrollBehavior = 'auto'; // Tắt mượt
+      loader.scrollIntoView({ behavior: 'auto', block: 'center' }); // Teleport giữa màn hình
+
+      const restoreTimer = setTimeout(() => {
+        container.style.scrollBehavior = ''; // Bật mượt trở lại
+      }, 50);
+      return () => clearTimeout(restoreTimer);
+    }
+  }, [isSubmitting]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -126,7 +185,7 @@ const LessonDetail = () => {
           className="w-full h-full overflow-y-auto flex flex-col scroll-smooth pb-[600px]"
         >
           <div className="pt-6 px-10">
-            <Return text="Return to progress" />
+            <Return text="Exit Home" to="/roadmap" />
           </div>
 
           <div className="px-10 py-4 flex flex-col gap-4">
@@ -140,7 +199,7 @@ const LessonDetail = () => {
             )}
 
             {isSubmitting && (
-              <div className="w-full py-10">
+              <div ref={loadingRef} className="w-full py-10">
                 <LoadingSpinner
                   text="Evaluating your submission..."
                   iconSize="w-8 h-8"
@@ -154,14 +213,52 @@ const LessonDetail = () => {
                 Submission Error: {submitError}
               </div>
             )}
-            {!isSubmitting && history.length > 0 && (
+
+            {lesson.exercise_id && !isSubmitting && history.length > 0 ? (
               <SubmissionResult
                 history={history}
                 selectedIndex={selectedIndex}
                 onSelectIndex={setSelectedIndex}
-                onActionClick={() => navigate('/roadmap')}
                 latestSubmitId={justSubmittedId}
-              />
+                footerRef={footerRef}
+              >
+                {/* Dùng Function để đón biến showHighlight do SubmissionResult ném xuống */}
+                {(showHighlight) => (
+                  <NavigationFooter
+                    ref={footerRef}
+                    onExit={handleExit}
+                    onNext={handleNext}
+                    isPassed={hasPassed}
+                    showHighlight={showHighlight}
+                    className="mt-0"
+                  />
+                )}
+              </SubmissionResult>
+            ) : (
+              lesson.exercise_id &&
+              !isSubmitting && (
+                <NavigationFooter
+                  ref={footerRef}
+                  onExit={handleExit}
+                  onNext={handleNext}
+                  isPassed={hasPassed}
+                />
+              )
+            )}
+
+            {/* 2. SENIOR FIX: VIDEO ĐƯỢC DỜI XUỐNG DƯỚI CÙNG LÀM TÀI LIỆU THAM KHẢO */}
+            {lesson.video_url && (
+              <div className="w-full mt-16 flex flex-col items-center">
+                <div className="w-full max-w-3xl aspect-video rounded-2xl overflow-hidden shadow-lg border border-gray-200">
+                  <iframe
+                    className="w-full h-full"
+                    // 3. SENIOR FIX: Tự động chuyển đổi URL sang định dạng Embed (/preview) của Google Drive
+                    src={lesson.video_url.replace(/\/view.*$/, '/preview')}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+              </div>
             )}
           </div>
         </div>
@@ -172,11 +269,7 @@ const LessonDetail = () => {
       </div>
 
       <div className="w-[35%] h-full">
-        <SidePanel
-          videoUrl={lesson.video_url}
-          lessonId={lesson._id}
-          exerciseId={lesson.exercise_id}
-        />
+        <SidePanel lessonId={lesson._id} exerciseId={lesson.exercise_id} hideVideo={true} />
       </div>
 
       {!isEditorOpen && (

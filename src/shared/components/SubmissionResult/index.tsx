@@ -1,28 +1,28 @@
 // Vị trí: src/shared/components/SubmissionResult/index.tsx
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import AIAnalysisSection from './components/AIAnalysisSection';
 import TestCaseResultItem from './components/TestCaseResultItem';
 import type { SubmissionHistoryItem } from '../../../features/Exercise/types/submitTypes';
 import { useEditorStore } from '../../store/useEditorStore';
-// 1. IMPORT CÔNG CỤ VÀ COMPONENT ĐÃ TÁCH
 import { scrollToElement } from '../../utils/scrollUtils';
 import { SubmissionHeader } from './components/SubmissionHeader';
-import { SubmissionAction } from './components/SubmissionAction';
 
 interface SubmissionResultProps {
   history: SubmissionHistoryItem[];
   selectedIndex: number;
   onSelectIndex: (index: number) => void;
-  onActionClick?: () => void;
   latestSubmitId?: string | null;
+  children?: (showHighlight: boolean) => ReactNode; // 2. SENIOR FIX: Dùng Render Props Pattern
+  footerRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function SubmissionResult({
   history,
   selectedIndex,
   onSelectIndex,
-  onActionClick,
   latestSubmitId,
+  children,
+  footerRef,
 }: SubmissionResultProps) {
   const publicTestCases = useEditorStore((state) => state.publicTestCases);
   const currentData = history[selectedIndex];
@@ -32,7 +32,6 @@ export default function SubmissionResult({
 
   // 2. KHAI BÁO MỐC TỌA ĐỘ VÀ CỜ HIỆU (Chặn scroll trùng)
   const headerRef = useRef<HTMLDivElement>(null);
-  const actionBtnRef = useRef<HTMLButtonElement>(null);
   const lastScrolledId = useRef<string | null>(null);
 
   if (currentData && currentData._id !== prevDataId) {
@@ -51,12 +50,9 @@ export default function SubmissionResult({
 
   // 3. LOGIC CUỘN TRANG PHÂN NHÁNH
   useEffect(() => {
-    // Nếu không phải là submit mới nhất, bỏ qua
     if (!currentData || currentData._id !== latestSubmitId) return;
-    // Chặn hiện tượng cuộn lại nhiều lần khi user bấm chọn lịch sử cũ rồi đổi lại lịch sử mới
     if (lastScrolledId.current === latestSubmitId) return;
-
-    lastScrolledId.current = latestSubmitId; // Đánh dấu đã cuộn
+    lastScrolledId.current = latestSubmitId;
 
     const total = currentData.results.length;
     const passedCount = currentData.results.filter((r) => r.status === 'passed').length;
@@ -66,14 +62,14 @@ export default function SubmissionResult({
     let highlightTimer: ReturnType<typeof setTimeout>;
 
     if (isPassAll) {
-      // TRƯỜNG HỢP 1: Pass All -> Cuộn vào giữa Nút Submit
+      // Pass All: Cuộn xuống Footer
       scrollTimer = setTimeout(() => {
-        if (actionBtnRef.current) scrollToElement(actionBtnRef.current, 'center', 600);
+        if (footerRef && footerRef.current) scrollToElement(footerRef.current, 'center', 600);
       }, 50);
-
-      highlightTimer = setTimeout(() => setShowHighlight(false), 6000);
+      // 3. SENIOR FIX: Sửa thành 4000ms (4 giây)
+      highlightTimer = setTimeout(() => setShowHighlight(false), 4000);
     } else {
-      // TRƯỜNG HỢP 2: Sai 1 phần -> Cuộn lên đầu dòng chữ "Submission result"
+      // Fail: Cuộn lên đầu Submission Result
       scrollTimer = setTimeout(() => {
         if (headerRef.current) scrollToElement(headerRef.current, 'top', 600);
       }, 50);
@@ -83,7 +79,7 @@ export default function SubmissionResult({
       clearTimeout(scrollTimer);
       clearTimeout(highlightTimer);
     };
-  }, [currentData, latestSubmitId]);
+  }, [currentData, latestSubmitId, footerRef]);
 
   if (!currentData) return null;
 
@@ -122,7 +118,7 @@ export default function SubmissionResult({
       />
 
       <div
-        className={`border-2 ${borderColor} rounded-2xl py-6 px-4 bg-white shadow-sm space-y-6 transition-colors duration-300`}
+        className={`border-2 ${borderColor} rounded-2xl py-5 px-4 bg-white shadow-sm space-y-6 transition-colors duration-300`}
       >
         <div className="max-h-[450px] overflow-y-auto custom-scrollbar pr-2 space-y-6">
           {publicResults.map((result, index) => {
@@ -149,13 +145,8 @@ export default function SubmissionResult({
           submissionId={currentData._id}
         />
       </div>
-
-      <SubmissionAction
-        ref={actionBtnRef}
-        isAllPassed={isAllPassed}
-        showHighlight={showHighlight}
-        onActionClick={onActionClick}
-      />
+      {/* SENIOR FIX: Bổ sung dòng này để render NavigationFooter và truyền cờ showHighlight xuống cho nó */}
+      {children ? children(showHighlight) : null}
     </div>
   );
 }

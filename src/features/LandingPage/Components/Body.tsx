@@ -11,7 +11,7 @@ function Body({ onOpenLogin }: BodyProps) {
       <div className="pt-20 w-full flex flex-col gap-[50px]">
         <div className="flex flex-col items-center">
           <span className="text-white text-6xl font-bold drop-shadow-[0_0_2px_rgba(255,255,255,0.6)]">
-            Learning Code with Personalize
+            Learning Python with Personalized AI
           </span>
           <div className="flex flex-row gap-2">
             <img src={gemini} className="w-6" alt="gemini icon" />
