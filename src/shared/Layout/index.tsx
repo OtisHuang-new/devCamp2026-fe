@@ -11,6 +11,10 @@ import { StreakWidget } from './components/StreakWidget';
 import { TextSelectionPopover } from '../components/TextSelectionPopover';
 import { useEffect } from 'react';
 
+import { OnboardingTour } from '../components/OnboardingTour';
+import { useOnboardingStore } from '../store/useOnboardingStore';
+import { ROADMAP_TOUR_STEPS } from '../../shared/utils/onboardingConstants';
+
 interface CustomLocationState {
   autoOpenSignup?: boolean;
 }
@@ -32,6 +36,8 @@ export function Layout() {
 
   const rightbarContent = useRightbarStore((state) => state.content);
 
+  const startTour = useOnboardingStore((state) => state.startTour);
+
   useEffect(() => {
     const state = location.state as CustomLocationState | null;
 
@@ -46,7 +52,7 @@ export function Layout() {
   return (
     <div className="flex w-full h-screen overflow-hidden">
       {/* CỘT 1: TRÁI (Sidebar cố định) */}
-      <div className="h-full z-20 shrink-0">
+      <div id="onboarding-sidebar-section" className="h-full z-20 shrink-0">
         <Sidebar />
       </div>
 
@@ -88,11 +94,22 @@ export function Layout() {
 
           {/* SENIOR UPDATE: Gắn cứng Streak Widget ở Layout (Chỉ hiện khi đã đăng nhập) */}
           {user && (
-            <div className="w-full animate-slideUp">
-              <StreakWidget
-                currentStreak={user.current_streak || 0}
-                lastActiveAt={user.lastActiveAt} // <-- MỚI: Truyền xuống
-              />
+            <div className="w-full animate-slideUp flex flex-col gap-4">
+              {/* Đánh dấu ID cho Step 2 của Onboarding */}
+              <div id="roadmap-streak-widget-section">
+                <StreakWidget
+                  currentStreak={user.current_streak || 0}
+                  lastActiveAt={user.lastActiveAt}
+                />
+              </div>
+
+              {/* Nút Kích hoạt Tour thủ công */}
+              <button
+                onClick={() => startTour(ROADMAP_TOUR_STEPS)}
+                className="w-full py-2.5 bg-white text-[#1E3A8A] font-extrabold rounded-xl border-2 border-[#1E3A8A] hover:bg-blue-50 transition-colors shadow-sm active:scale-95"
+              >
+                Start Tour
+              </button>
             </div>
           )}
 
@@ -105,6 +122,7 @@ export function Layout() {
       <Login isOpen={isLoginOpen} onClose={closeLogin} onSwitchToRegister={switchToRegister} />
       <Register isOpen={isRegisterOpen} onClose={closeRegister} onSwitchToLogin={switchToLogin} />
       <TextSelectionPopover />
+      <OnboardingTour />
     </div>
   );
 }

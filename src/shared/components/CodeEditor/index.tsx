@@ -19,6 +19,8 @@ import { ShowAnswerButton } from './components/Buttons/ShowAnswerButton';
 import { RunButton } from './components/Buttons/RunButton';
 import { SubmitButton } from './components/Buttons/SubmitButton';
 
+import { ResetTestcasesButton } from './components/Buttons/ResetTestcasesButton'; // <-- THÊM DÒNG NÀY
+
 interface CodeEditorProps {
   exerciseId: string; // Thêm dòng này
   onClose: () => void;
@@ -170,7 +172,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }
   };
   return (
     <div className="fixed inset-0 z-[90] bg-black/10 animate-fadeIn pointer-events-none">
-      <div className="fixed bottom-5 left-5 right-5 h-[50vh] rounded-lg bg-[#121212] flex flex-col p-4 pt-8 shadow-2xl animate-slideUp pointer-events-auto">
+      <div className="fixed bottom-1 left-2 right-2 h-[50vh] rounded-lg bg-[#121212] flex flex-col p-4 pt-8 shadow-2xl animate-slideUp pointer-events-auto">
         <div className="absolute top-1.5 left-5">
           <CodeToggleButton isOpen={true} onToggle={onClose} isInsideEditor={true} />
         </div>
@@ -198,8 +200,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }
 
               {/* CỤM BÊN PHẢI */}
               <div className="flex gap-3 items-center">
-                <RunButton onClick={handleRun} isRunning={isRunning} />
-
                 <SubmitButton
                   onClick={() => {
                     onClose();
@@ -211,31 +211,31 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }
           </div>
 
           <div className="w-[45%] bg-[#1E1E1E] rounded-xl border border-gray-800 flex flex-col overflow-hidden relative">
-            <div className="flex gap-6 px-4 pt-3 bg-[#1A1A1A] border-b border-gray-800">
+            <div className="flex gap-6 px-4 pt-1.5 bg-[#1A1A1A] border-b border-gray-800">
               <button
                 onClick={() => setActiveMainTab('testcase')}
                 className={`pb-2 text-sm font-bold transition-colors ${
                   activeMainTab === 'testcase'
-                    ? 'text-white border-b-2 border-[#22C55E]'
+                    ? 'text-gray-300 border-b-2 border-blue-400'
                     : 'text-gray-500 hover:text-gray-300'
                 }`}
               >
-                <span className="text-[#22C55E] mr-1">☑</span> Testcase
+                <span className="text-blue-400 mr-1">☑</span> Testcase
               </button>
               <button
                 onClick={() => setActiveMainTab('result')}
                 className={`pb-2 text-sm font-bold transition-colors ${
                   activeMainTab === 'result'
-                    ? 'text-white border-b-2 border-[#22C55E]'
+                    ? 'text-gray-300 border-b-2 border-blue-400'
                     : 'text-gray-500 hover:text-gray-300'
                 }`}
               >
-                <span className="text-[#22C55E] mr-1">&gt;_</span> Test Result
+                <span className="text-blue-400 mr-1">&gt;_</span> Test Result
               </button>
             </div>
 
             {localTestCases.length > 0 && (
-              <div className="px-4 pt-4">
+              <div className="px-3 pt-2">
                 <TestCaseNav
                   casesCount={localTestCases.length}
                   activeIndex={activeCaseIndex}
@@ -280,30 +280,25 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }
               )}
             </div>
 
-            {isModified && activeMainTab === 'testcase' && (
-              <div className="absolute bottom-4 left-4 z-10 animate-slideUp">
-                <button
-                  onClick={handleReset}
-                  className="bg-yellow-500 hover:bg-yellow-400 text-black px-3 py-1.5 rounded-md text-sm font-bold shadow-lg transition-colors flex items-center gap-1.5"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                    ></path>
-                  </svg>
-                  Reset Testcases
-                </button>
+            <div className="absolute bottom-4 left-4 right-4 z-10 flex justify-between items-center pointer-events-none">
+              {/* 1. CẬP NHẬT: Ẩn nút Run khi không ở tab testcase */}
+              <div className="pointer-events-auto">
+                {activeMainTab === 'testcase' && (
+                  <div className="animate-fadeIn">
+                    <RunButton onClick={handleRun} isRunning={isRunning} />
+                  </div>
+                )}
               </div>
-            )}
+
+              {/* Bên phải: Nút Reset (Giữ nguyên) */}
+              <div className="pointer-events-auto">
+                {isModified && activeMainTab === 'testcase' && (
+                  <div className="animate-slideUp">
+                    <ResetTestcasesButton onClick={handleReset} />
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

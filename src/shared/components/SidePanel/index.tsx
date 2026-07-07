@@ -7,6 +7,7 @@ interface SidePanelProps {
   lessonId?: string;
   exerciseId?: string;
   hideVideo?: boolean;
+  isEditorOpen?: boolean;
 }
 
 export default function SidePanel({

@@ -14,6 +14,10 @@ interface CacheChapter {
   project_detail?: CacheProject;
 }
 
+interface CacheExercise {
+  _id: string;
+}
+
 export interface NextStepInfo {
   id: string;
   type: 'lesson' | 'project';
@@ -56,6 +60,29 @@ export function getNextStepInfo(currentNodeId: string | undefined): NextStepInfo
     return null;
   } catch (error: unknown) {
     console.error('Failed to parse roadmap cache', error);
+    return null;
+  }
+}
+
+export function getNextExerciseInfo(currentExerciseId: string | undefined): string | null {
+  if (!currentExerciseId) return null;
+
+  const cachedData = sessionStorage.getItem('exercise_list_cache');
+  if (!cachedData) return null;
+
+  try {
+    const exerciseList = JSON.parse(cachedData) as CacheExercise[];
+    const currentIndex = exerciseList.findIndex((ex) => ex._id === currentExerciseId);
+
+    // Nếu tìm thấy vị trí hiện tại và vẫn chưa chạm đáy danh sách
+    if (currentIndex !== -1 && currentIndex < exerciseList.length - 1) {
+      return exerciseList[currentIndex + 1]._id;
+    }
+
+    // Đã là bài tập cuối cùng trong danh sách lọc
+    return null;
+  } catch (error: unknown) {
+    console.error('Failed to parse exercise list cache', error);
     return null;
   }
 }

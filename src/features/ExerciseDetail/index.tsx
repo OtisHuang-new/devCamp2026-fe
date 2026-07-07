@@ -20,7 +20,7 @@ import { Return } from '@/shared/components/Return';
 import { useEditorStore } from '@/shared/store/useEditorStore';
 import { NavigationFooter } from '@/shared/components/NavigationFooter';
 
-import { getNextStepInfo } from '@/shared/utils/navigationUtils';
+import { getNextExerciseInfo } from '@/shared/utils/navigationUtils';
 
 export function ExerciseDetail() {
   const navigate = useNavigate();
@@ -50,26 +50,19 @@ export function ExerciseDetail() {
   const leftColumnRef = useRef<HTMLDivElement>(null);
 
   const handleExit = () => navigate('/exercises');
+
   const handleNext = () => {
     if (!exerciseDetail) return;
 
-    // QUAN TRỌNG:
-    // Nếu là Project -> ID nằm ở exerciseDetail._id
-    // Nếu là Bài Tập Thường -> Nó là vệ tinh của bài lý thuyết, nên cái Node Cha trong Roadmap chính là lesson_id
-    const currentRoadmapNodeId = exerciseDetail.is_project
-      ? exerciseDetail._id
-      : exerciseDetail.lesson_id;
+    // Tính toán ID bài tiếp theo dựa trên Cache
+    const nextId = getNextExerciseInfo(exerciseDetail._id);
 
-    const nextStep = getNextStepInfo(currentRoadmapNodeId);
-
-    if (nextStep) {
-      if (nextStep.type === 'project') {
-        navigate(`/exercises/${nextStep.id}`);
-      } else {
-        navigate(`/lessons/${nextStep.id}`);
-      }
+    if (nextId) {
+      // Nhảy sang bài tiếp theo
+      navigate(`/exercises/${nextId}`);
     } else {
-      navigate('/roadmap');
+      // Nếu là bài cuối cùng, dội ngược ra màn hình danh sách
+      navigate('/exercises');
     }
   };
 
@@ -171,8 +164,6 @@ export function ExerciseDetail() {
             </div>
           )}
 
-          <hr className="border-gray-100 my-1" />
-
           {/* THAY THẾ CHỖ NÀY */}
           {isSubmitting && (
             <div className="w-full py-10">
@@ -232,6 +223,7 @@ export function ExerciseDetail() {
           exerciseId={exerciseDetail._id}
           // 1. BỔ SUNG: Báo cho SidePanel biết ẩn khu vực Video đi
           hideVideo={true}
+          isEditorOpen={isEditorOpen}
         />
       </div>
 

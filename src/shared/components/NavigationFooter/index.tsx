@@ -24,7 +24,7 @@ export const NavigationFooter = forwardRef<HTMLDivElement, NavigationFooterProps
     return (
       <div
         ref={ref}
-        className={`flex justify-between items-center gap-4 mt-8 border-t pt-7 px-4 ${className}`}
+        className={`flex justify-between items-center gap-4 mt-3 border-t pt-7 px-4 ${className}`}
       >
         {/* Nút Home */}
         <button

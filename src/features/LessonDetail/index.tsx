@@ -269,7 +269,13 @@ const LessonDetail = () => {
       </div>
 
       <div className="w-[35%] h-full">
-        <SidePanel lessonId={lesson._id} exerciseId={lesson.exercise_id} hideVideo={true} />
+        <SidePanel
+          lessonId={lesson._id}
+          exerciseId={lesson.exercise_id}
+          hideVideo={true}
+          // 1. SENIOR UPDATE: Truyền tín hiệu Code Editor đang mở vào
+          isEditorOpen={isEditorOpen}
+        />
       </div>
 
       {!isEditorOpen && (

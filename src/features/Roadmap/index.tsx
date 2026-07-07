@@ -12,6 +12,9 @@ import { useRightbarStore } from '../../shared/store/useRightbarStore';
 import { AuthGatekeeper } from '@/shared/components/AuthGatekeeper';
 import { prefetchAIContext } from '@/shared/hooks/useAIContext';
 
+import { useOnboardingStore } from '@/shared/store/useOnboardingStore';
+import { ROADMAP_TOUR_STEPS } from '@/shared/utils/onboardingConstants';
+
 function Roadmap() {
   const navigate = useNavigate();
   const { user, isLoading: isAuthLoading } = useAuthContext_v2();
@@ -30,6 +33,19 @@ function Roadmap() {
   );
 
   const setRightbarContent = useRightbarStore((state) => state.setContent);
+
+  const startTour = useOnboardingStore((state) => state.startTour);
+
+  useEffect(() => {
+    const hasSeenTour = localStorage.getItem('has_seen_roadmap_tour');
+    if (!hasSeenTour && user) {
+      const timer = setTimeout(() => {
+        startTour(ROADMAP_TOUR_STEPS);
+        localStorage.setItem('has_seen_roadmap_tour', 'true');
+      }, 500); // Đợi 500ms cho DOM Render mượt mà
+      return () => clearTimeout(timer);
+    }
+  }, [user, startTour]);
 
   useEffect(() => {
     // 3. SỬA: Nếu chưa đăng nhập thì dọn sạch Rightbar (chỉ để lại nút login)
@@ -83,33 +99,35 @@ function Roadmap() {
     <main className="w-full relative pb-[550px]">
       {/* Khung giới hạn hiển thị: Căn giữa, không giãn quá max-w-5xl */}
       <div className="w-full max-w-5xl mx-auto">
-        <HeaderInfo
-          ref={headerRef}
-          chapterTitle={
-            mainChapters[activeChapterIndex]
-              ? `Chapter ${activeChapterIndex + 1}: ${mainChapters[activeChapterIndex].title}`
-              : ''
-          }
-          lessonTitle=""
-          onBackClick={() => console.log('Back clicked')}
-          // 1. TRUYỀN MỚI: Lấy theme của chapter đang Active
-          theme={mainChapters[activeChapterIndex]?.theme}
-        />
+        <div id="roadmap-main-learning-section">
+          <HeaderInfo
+            ref={headerRef}
+            chapterTitle={
+              mainChapters[activeChapterIndex]
+                ? `Chapter ${activeChapterIndex + 1}: ${mainChapters[activeChapterIndex].title}`
+                : ''
+            }
+            lessonTitle=""
+            onBackClick={() => console.log('Back clicked')}
+            // 1. TRUYỀN MỚI: Lấy theme của chapter đang Active
+            theme={mainChapters[activeChapterIndex]?.theme}
+          />
 
-        <div className="mt-8 flex flex-col gap-4 relative w-full max-w-2xl">
-          {mainChapters.map((chapter, index) => (
-            <Chapter
-              key={chapter.id}
-              chapterNumber={chapter.chapterNumber}
-              chapterTitle={chapter.title}
-              isFirstChapter={index === 0}
-              nodes={chapter.nodes}
-              isAuthenticated={!!user}
-              onRequireAuth={openRegister}
-              // 2. TRUYỀN MỚI: Truyền Theme xuống từng Chapter
-              theme={chapter.theme}
-            />
-          ))}
+          <div className="mt-8 flex flex-col gap-4 relative w-full max-w-2xl">
+            {mainChapters.map((chapter, index) => (
+              <Chapter
+                key={chapter.id}
+                chapterNumber={chapter.chapterNumber}
+                chapterTitle={chapter.title}
+                isFirstChapter={index === 0}
+                nodes={chapter.nodes}
+                isAuthenticated={!!user}
+                onRequireAuth={openRegister}
+                // 2. TRUYỀN MỚI: Truyền Theme xuống từng Chapter
+                theme={chapter.theme}
+              />
+            ))}
+          </div>
         </div>
 
         <div className="sticky bottom-10 w-full max-w-2xl flex justify-end pointer-events-none z-50">
