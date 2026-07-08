@@ -96,6 +96,7 @@ const CodeToggleButton: React.FC<CodeToggleButtonProps> = ({
 
       <button
         onClick={onToggle}
+        id="tour-code-toggle-btn"
         className={`group transition-all duration-300 flex items-start overflow-visible
                   /* Nếu ở ngoài: fixed góc trái, có shadow. Nếu ở trong: relative, không shadow */
                   ${

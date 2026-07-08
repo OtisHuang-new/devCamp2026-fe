@@ -37,14 +37,25 @@ function Roadmap() {
   const startTour = useOnboardingStore((state) => state.startTour);
 
   useEffect(() => {
-    const hasSeenTour = localStorage.getItem('has_seen_roadmap_tour');
-    if (!hasSeenTour && user) {
-      const timer = setTimeout(() => {
-        startTour(ROADMAP_TOUR_STEPS);
-        localStorage.setItem('has_seen_roadmap_tour', 'true');
-      }, 500); // Đợi 500ms cho DOM Render mượt mà
-      return () => clearTimeout(timer);
-    }
+    // Đảm bảo User đã load xong
+    if (!user) return;
+
+    const tourKey = 'has_seen_roadmap_tour';
+    if (localStorage.getItem(tourKey)) return;
+
+    const timer = setTimeout(() => {
+      // Bảo mật kép bên trong Timer
+      if (!localStorage.getItem(tourKey)) {
+        const { isActive } = useOnboardingStore.getState();
+
+        if (!isActive) {
+          startTour(ROADMAP_TOUR_STEPS);
+          localStorage.setItem(tourKey, 'true');
+        }
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, [user, startTour]);
 
   useEffect(() => {

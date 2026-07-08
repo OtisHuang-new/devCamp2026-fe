@@ -15,7 +15,7 @@ export function RunButton({ onClick, isRunning }: RunButtonProps) {
       className={`flex items-center justify-center gap-1.5 pr-4 pl-2.5 py-1.5 rounded-md font-bold text-sm transition-all ${
         isRunning
           ? 'bg-gray-300 text-gray-700 cursor-not-allowed'
-          : 'bg-gray-500 text-gray-800 hover:bg-gray-300 shadow-sm'
+          : 'bg-gray-400 text-gray-800 hover:bg-gray-300 shadow-sm'
       }`}
     >
       {/* 2. CẬP NHẬT: Thêm thẻ img chứa icon. Trạng thái Running thì ẩn icon đi cho gọn */}

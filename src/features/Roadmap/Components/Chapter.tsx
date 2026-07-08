@@ -70,7 +70,7 @@ const Chapter: React.FC<ChapterProps> = ({
         </div>
       )}
       <div className={`flex flex-col items-center gap-[40px] ${isFirstChapter ? 'mt-8' : 'mt-4'}`}>
-        {nodes.map((node) => {
+        {nodes.map((node, index) => {
           return (
             // 2. SENIOR FIX: Bọc relative và thêm hiệu ứng chuyển động mượt cho container
             <div
@@ -89,7 +89,14 @@ const Chapter: React.FC<ChapterProps> = ({
               )}
 
               {/* Nút bấm Lesson/Project luôn nổi lên trên (z-10) */}
-              <div className="relative z-10">
+              <div
+                className="relative z-10"
+                id={
+                  isFirstChapter && index === 0 && node.type === 'lesson'
+                    ? 'tour-roadmap-first-lesson'
+                    : undefined
+                }
+              >
                 {node.type === 'lesson' && (
                   <LessonButton
                     iconPath={star_icon}

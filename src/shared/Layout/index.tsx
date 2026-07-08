@@ -38,6 +38,14 @@ export function Layout() {
 
   const startTour = useOnboardingStore((state) => state.startTour);
 
+  const handleStartRoadmapTour = () => {
+    localStorage.removeItem('has_seen_roadmap_tour');
+    localStorage.removeItem('has_seen_lesson_top_tour');
+    localStorage.removeItem('has_seen_exercise_widget_tour');
+    localStorage.removeItem('has_seen_analysis_tour');
+    startTour(ROADMAP_TOUR_STEPS);
+  };
+
   useEffect(() => {
     const state = location.state as CustomLocationState | null;
 
@@ -105,10 +113,11 @@ export function Layout() {
 
               {/* Nút Kích hoạt Tour thủ công */}
               <button
-                onClick={() => startTour(ROADMAP_TOUR_STEPS)}
+                // 2. CẬP NHẬT: Gắn hàm Reset vào đây
+                onClick={handleStartRoadmapTour}
                 className="w-full py-2.5 bg-white text-[#1E3A8A] font-extrabold rounded-xl border-2 border-[#1E3A8A] hover:bg-blue-50 transition-colors shadow-sm active:scale-95"
               >
-                Start Tour
+                Start Tour (Reset All)
               </button>
             </div>
           )}

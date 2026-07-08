@@ -23,6 +23,11 @@ import { NavigationFooter } from '@/shared/components/NavigationFooter';
 
 import { getNextStepInfo } from '@/shared/utils/navigationUtils';
 
+import { useOnboardingStore } from '@/shared/store/useOnboardingStore';
+import { LESSON_TOP_TOUR } from '@/shared/utils/onboardingConstants';
+
+import { OnboardingTour } from '../../shared/components/OnboardingTour';
+
 const LessonDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { lesson, isLoading } = useLesson(id);
@@ -48,6 +53,10 @@ const LessonDetail = () => {
 
   const leftColumnRef = useRef<HTMLDivElement>(null);
   const exerciseContainerRef = useRef<HTMLDivElement>(null);
+
+  const resultContainerRef = useRef<HTMLDivElement>(null);
+  const prevIsSubmitting = useRef(isSubmitting);
+
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isExerciseBottomReached, setIsExerciseBottomReached] = useState(false); // 2. Bổ sung State
 
@@ -151,6 +160,83 @@ const LessonDetail = () => {
     };
   }, [setIsEditorOpen, toggleEditorOpen]);
 
+  const startTour = useOnboardingStore((state) => state.startTour);
+
+  useEffect(() => {
+    // 1. Đợi data sẵn sàng
+    if (isLoading || !lesson) return;
+
+    const tourKey = 'has_seen_lesson_top_tour';
+
+    // 2. Chặn ngay nếu đã xem (Kiểm tra vòng ngoài: Lần sau vào lại sẽ return luôn ở đây)
+    if (localStorage.getItem(tourKey)) return;
+
+    // 3. SENIOR FIX: BẬT KHIÊN KHÓA CUỘN TRONG 500ms
+    // Chặn user cuộn trang làm lệch tọa độ trước khi Tooltip kịp xuất hiện
+    const preventDefault = (e: Event) => e.preventDefault();
+    const preventScrollKeys = (e: Event) => {
+      const keyboardEvent = e as KeyboardEvent;
+      if (
+        ['Space', 'ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End'].includes(
+          keyboardEvent.code,
+        )
+      ) {
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener('wheel', preventDefault, { passive: false });
+    window.addEventListener('touchmove', preventDefault, { passive: false });
+    window.addEventListener('keydown', preventScrollKeys, { passive: false });
+
+    // 4. SENIOR FIX: Khởi tạo timer, KHÔNG set localStorage ở đây
+    const timer = setTimeout(() => {
+      // Tháo khiên ngay lập tức khi 500ms kết thúc
+      window.removeEventListener('wheel', preventDefault);
+      window.removeEventListener('touchmove', preventDefault);
+      window.removeEventListener('keydown', preventScrollKeys);
+
+      // 5. BẢO MẬT KÉP: Kiểm tra lại trước khi bóp cò (Đề phòng Strict Mode)
+      if (!localStorage.getItem(tourKey)) {
+        // Anti-hijack: Check xem có Tour nào khác đang chạy không
+        const { isActive } = useOnboardingStore.getState();
+        if (!isActive) {
+          startTour(LESSON_TOP_TOUR);
+
+          // 6. Chỉ đánh dấu ĐÃ XEM khi Tour THỰC SỰ ĐƯỢC BẬT
+          localStorage.setItem(tourKey, 'true');
+        }
+      }
+    }, 500);
+
+    // 7. Dọn dẹp: Strict Mode unmount sẽ hủy timer và tháo khiên an toàn tuyệt đối
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('wheel', preventDefault);
+      window.removeEventListener('touchmove', preventDefault);
+      window.removeEventListener('keydown', preventScrollKeys);
+    };
+  }, [isLoading, lesson, startTour]);
+
+  useEffect(() => {
+    const container = leftColumnRef.current;
+    const resultEl = resultContainerRef.current;
+
+    // Nếu vừa chuyển từ Đang chấm (true) -> Chấm xong (false) VÀ có kết quả
+    if (prevIsSubmitting.current === true && isSubmitting === false && history.length > 0) {
+      if (container && resultEl) {
+        const timer = setTimeout(() => {
+          // Trượt đến tọa độ mép trên của Khu vực Kết quả (trừ hao 20px cho đẹp)
+          const targetPos = resultEl.offsetTop - 20;
+          smoothScrollTo(container, targetPos, 600);
+        }, 100); // Đợi 100ms để DOM vẽ xong thẻ SubmissionResult
+
+        return () => clearTimeout(timer);
+      }
+    }
+    prevIsSubmitting.current = isSubmitting;
+  }, [isSubmitting, history.length]);
+
   if (isLoading)
     return (
       <div className="flex justify-center items-center h-screen font-bold text-gray-500">
@@ -182,7 +268,7 @@ const LessonDetail = () => {
         <div
           ref={leftColumnRef}
           onScroll={handleScroll}
-          className="w-full h-full overflow-y-auto flex flex-col scroll-smooth pb-[600px]"
+          className="w-full h-full overflow-y-auto flex flex-col scroll-smooth pb-[300px]"
         >
           <div className="pt-6 px-10">
             <Return text="Exit Home" to="/roadmap" />
@@ -215,25 +301,27 @@ const LessonDetail = () => {
             )}
 
             {lesson.exercise_id && !isSubmitting && history.length > 0 ? (
-              <SubmissionResult
-                history={history}
-                selectedIndex={selectedIndex}
-                onSelectIndex={setSelectedIndex}
-                latestSubmitId={justSubmittedId}
-                footerRef={footerRef}
-              >
-                {/* Dùng Function để đón biến showHighlight do SubmissionResult ném xuống */}
-                {(showHighlight) => (
-                  <NavigationFooter
-                    ref={footerRef}
-                    onExit={handleExit}
-                    onNext={handleNext}
-                    isPassed={hasPassed}
-                    showHighlight={showHighlight}
-                    className="mt-0"
-                  />
-                )}
-              </SubmissionResult>
+              // 6. CẬP NHẬT: Bọc thẻ div có chứa Ref để làm mỏ neo cuộn trang
+              <div ref={resultContainerRef}>
+                <SubmissionResult
+                  history={history}
+                  selectedIndex={selectedIndex}
+                  onSelectIndex={setSelectedIndex}
+                  latestSubmitId={justSubmittedId}
+                  footerRef={footerRef}
+                >
+                  {(showHighlight) => (
+                    <NavigationFooter
+                      ref={footerRef}
+                      onExit={handleExit}
+                      onNext={handleNext}
+                      isPassed={hasPassed}
+                      showHighlight={showHighlight}
+                      className="mt-0"
+                    />
+                  )}
+                </SubmissionResult>
+              </div>
             ) : (
               lesson.exercise_id &&
               !isSubmitting && (
@@ -295,6 +383,7 @@ const LessonDetail = () => {
       </div>
 
       <TextSelectionPopover />
+      <OnboardingTour />
     </div>
   );
 };

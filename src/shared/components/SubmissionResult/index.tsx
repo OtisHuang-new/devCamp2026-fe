@@ -7,6 +7,9 @@ import { useEditorStore } from '../../store/useEditorStore';
 import { scrollToElement } from '../../utils/scrollUtils';
 import { SubmissionHeader } from './components/SubmissionHeader';
 
+import { useOnboardingStore } from '@/shared/store/useOnboardingStore';
+import { getAnalysisTourSteps } from '@/shared/utils/onboardingConstants';
+
 interface SubmissionResultProps {
   history: SubmissionHistoryItem[];
   selectedIndex: number;
@@ -33,6 +36,8 @@ export default function SubmissionResult({
   // 2. KHAI BÁO MỐC TỌA ĐỘ VÀ CỜ HIỆU (Chặn scroll trùng)
   const headerRef = useRef<HTMLDivElement>(null);
   const lastScrolledId = useRef<string | null>(null);
+
+  const aiAnalysisRef = useRef<HTMLDivElement>(null);
 
   if (currentData && currentData._id !== prevDataId) {
     setPrevDataId(currentData._id);
@@ -81,16 +86,63 @@ export default function SubmissionResult({
     };
   }, [currentData, latestSubmitId, footerRef]);
 
-  if (!currentData) return null;
-
   const publicResults = currentData.results.slice(0, publicTestCases.length);
+  const isPublicPassed = publicResults.every((r) => r.status === 'passed');
   const passedCount = currentData.results.filter((r) => r.status === 'passed').length;
   const isAllPassed = passedCount === currentData.results.length;
-  const isPublicPassed = publicResults.every((r) => r.status === 'passed');
 
   let statusText = '';
   let statusColor = '';
   let borderColor = '';
+  const startTour = useOnboardingStore((state) => state.startTour);
+
+  useEffect(() => {
+    const isFirstSubmission = history.length === 1;
+    if (!isFirstSubmission) return;
+
+    const tourKey = 'has_seen_analysis_tour';
+    const hasSeen = localStorage.getItem(tourKey);
+    if (hasSeen) return;
+
+    let timerId: ReturnType<typeof setTimeout>;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting) {
+          timerId = setTimeout(() => {
+            // BẢO MẬT KÉP
+            const hasSeenNow = localStorage.getItem(tourKey);
+            if (hasSeenNow) {
+              observer.disconnect();
+              return;
+            }
+
+            const { isActive } = useOnboardingStore.getState();
+            if (!isActive) {
+              startTour(getAnalysisTourSteps(isAllPassed));
+              localStorage.setItem(tourKey, 'true');
+              observer.disconnect(); // Đã đục lỗ xong thì phá hủy!
+            }
+          }, 1500);
+        } else {
+          clearTimeout(timerId);
+        }
+      },
+      { root: null, threshold: 0.2 },
+    );
+
+    if (aiAnalysisRef.current) {
+      observer.observe(aiAnalysisRef.current);
+    }
+
+    return () => {
+      clearTimeout(timerId);
+      observer.disconnect();
+    };
+  }, [history.length, isAllPassed, startTour]);
+
+  if (!currentData) return null;
 
   if (isAllPassed) {
     statusText = 'Pass all testcases';
@@ -138,12 +190,14 @@ export default function SubmissionResult({
           })}
         </div>
 
-        <AIAnalysisSection
-          key={currentData._id}
-          isAllPassed={isAllPassed}
-          evaluationData={currentData.AI_evaluation}
-          submissionId={currentData._id}
-        />
+        <div id="tour-ai-analysis" ref={aiAnalysisRef} className="w-fit">
+          <AIAnalysisSection
+            key={currentData._id}
+            isAllPassed={isAllPassed}
+            evaluationData={currentData.AI_evaluation}
+            submissionId={currentData._id}
+          />
+        </div>
       </div>
       {/* SENIOR FIX: Bổ sung dòng này để render NavigationFooter và truyền cờ showHighlight xuống cho nó */}
       {children ? children(showHighlight) : null}

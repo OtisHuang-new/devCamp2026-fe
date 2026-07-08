@@ -4,6 +4,25 @@ import { create } from 'zustand';
 export interface TourStep {
   targetId: string;
   content: string;
+  interactable?: boolean;
+  videoUrl?: string;
+  positionHint?:
+    | 'top-right'
+    | 'bottom-center'
+    | 'left-top'
+    | 'right-center'
+    | 'right-top'
+    | 'corner-top-right'
+    | 'auto';
+  requireSmoothScroll?: boolean;
+  disableScroll?: boolean;
+  highlightShape?: 'rect' | 'circle';
+
+  // 1. SENIOR FIX: Bổ sung API Tịnh tiến & Co giãn lỗ đục (Tính bằng Pixel)
+  offsetX?: number; // Dịch chuyển sang trái/phải
+  offsetY?: number; // Dịch chuyển lên/xuống
+  expandW?: number; // Mở rộng/Thu hẹp chiều ngang
+  expandH?: number; // Mở rộng/Thu hẹp chiều dọc
 }
 
 interface OnboardingStore {
