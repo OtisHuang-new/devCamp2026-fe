@@ -108,6 +108,12 @@ const LessonDetail = () => {
   };
 
   useEffect(() => {
+    return () => {
+      sessionStorage.setItem('exited_from_lesson', 'true');
+    };
+  }, []);
+
+  useEffect(() => {
     const container = leftColumnRef.current;
     if (!container) return;
 

@@ -40,7 +40,7 @@ const Chapter: React.FC<ChapterProps> = ({
   onRequireAuth, // Nhận prop
   theme,
 }) => {
-  const navigate = useNavigate(); // BỔ SUNG 2: Khởi tạo navigate
+  const navigate = useNavigate();
 
   const handleNodeClick = (nodeId: string | number, nodeType: NodeType) => {
     if (!isAuthenticated) {

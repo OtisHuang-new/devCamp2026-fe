@@ -14,6 +14,9 @@ interface EditorStore {
   initialCode: string;
   setInitialCode: (code: string) => void;
 
+  originalCode: string;
+  setOriginalCode: (code: string) => void;
+
   // 1. SENIOR FIX: Bổ sung keyCode vào Store
   keyCode?: string;
   setKeyCode: (code?: string) => void;
@@ -33,6 +36,9 @@ export const useEditorStore = create<EditorStore>((set) => ({
 
   initialCode: '# Bro, you can write you code here :like :) ',
   setInitialCode: (code) => set({ initialCode: code }),
+
+  originalCode: '# Bro, you can write you code here :like :) ',
+  setOriginalCode: (code) => set({ originalCode: code }),
 
   publicTestCases: [],
   setPublicTestCases: (cases) => set({ publicTestCases: cases }),

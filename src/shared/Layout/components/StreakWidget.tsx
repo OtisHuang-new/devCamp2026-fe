@@ -24,7 +24,9 @@ export function StreakWidget({ currentStreak, lastActiveAt }: StreakWidgetProps)
         <div className="flex flex-col gap-2 max-w-[75%] mt-1">
           <h3 className="text-3xl font-extrabold text-[#F58C14]">{currentStreak} Days Streak</h3>
           <p className="text-[#F58C14] font-bold text-[15px] leading-snug">
-            You are having the longest streak ever!
+            {currentStreak === 0
+              ? 'Complete any lesson today to start your learning streak!'
+              : 'You are having the longest streak ever!'}
           </p>
         </div>
 
