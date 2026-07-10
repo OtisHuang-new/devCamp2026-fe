@@ -1,6 +1,6 @@
 import React from 'react';
 import CodeToggleButton from './components/Buttons/CodeToggleButton';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { oneDark } from '@codemirror/theme-one-dark';
@@ -29,14 +29,18 @@ interface CodeEditorProps {
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }) => {
   const initialCode = useEditorStore((state) => state.initialCode);
-
   const originalCode = useEditorStore((state) => state.originalCode);
-
   const keyCode = useEditorStore((state) => state.keyCode); // 2. Lấy keyCode từ Store
+
+  const setCurrentCode = useEditorStore((state) => state.setCurrentCode);
 
   const addToast = useToastStore((state) => state.addToast); // 3. Lấy hàm tạo Toast
 
   const [code, setCode] = useState(initialCode);
+
+  useEffect(() => {
+    setCurrentCode(code);
+  }, [code, setCurrentCode]);
 
   const handleResetCode = () => {
     setCode(originalCode);

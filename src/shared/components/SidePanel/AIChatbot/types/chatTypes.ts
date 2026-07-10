@@ -14,7 +14,7 @@ export interface Post_ConversationRequest {
   lesson_id: string;
   exercise_id: string;
   question: string;
-  src_code: string;
+  src_code: string; // đang tryền initial code chứ không phải code hiện tại của user
 }
 
 export interface Post_ConversationRespond {

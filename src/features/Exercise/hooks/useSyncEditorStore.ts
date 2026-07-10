@@ -8,14 +8,16 @@ export function useSyncEditorStore(exercise: ExerciseDataAPI | null | undefined)
   const setOriginalCode = useEditorStore((state) => state.setOriginalCode);
   const setPublicTestCases = useEditorStore((state) => state.setPublicTestCases);
   const setKeyCode = useEditorStore((state) => state.setKeyCode); // 1. Lấy hàm từ store
+  const setCurrentCode = useEditorStore((state) => state.setCurrentCode);
 
   useEffect(() => {
     if (exercise) {
       if (exercise.initial_code) {
         setInitialCode(exercise.initial_code);
-
-        // 4. SENIOR FIX: Cất bản gốc của bài tập vào Két sắt ngay lần đầu tải
         setOriginalCode(exercise.initial_code);
+
+        // 4. SENIOR FIX: Bơm code gốc vào làm vốn ban đầu cho Current Code
+        setCurrentCode(exercise.initial_code);
       }
 
       setKeyCode(exercise.key_code);
@@ -25,5 +27,6 @@ export function useSyncEditorStore(exercise: ExerciseDataAPI | null | undefined)
     } else {
       setKeyCode(undefined);
     }
-  }, [exercise, setInitialCode, setOriginalCode, setPublicTestCases, setKeyCode]);
+     
+  }, [exercise, setInitialCode, setOriginalCode, setCurrentCode, setPublicTestCases, setKeyCode]);
 }

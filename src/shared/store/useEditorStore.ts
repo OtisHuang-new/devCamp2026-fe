@@ -23,6 +23,9 @@ interface EditorStore {
 
   publicTestCases: EditorTestCase[];
   setPublicTestCases: (cases: EditorTestCase[]) => void;
+
+  currentCode: string;
+  setCurrentCode: (code: string) => void;
 }
 
 export const useEditorStore = create<EditorStore>((set) => ({
@@ -42,4 +45,7 @@ export const useEditorStore = create<EditorStore>((set) => ({
 
   publicTestCases: [],
   setPublicTestCases: (cases) => set({ publicTestCases: cases }),
+
+  currentCode: '',
+  setCurrentCode: (code) => set({ currentCode: code }),
 }));
