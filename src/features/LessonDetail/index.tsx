@@ -250,7 +250,7 @@ const LessonDetail = () => {
   if (isLoading)
     return (
       <div className="flex justify-center items-center h-screen font-bold text-gray-500">
-        Loading Lesson...
+        <LoadingSpinner text="Loading lesson..." iconSize="w-10 h-10" />
       </div>
     );
   if (!lesson)
@@ -296,11 +296,7 @@ const LessonDetail = () => {
 
             {isSubmitting && (
               <div ref={loadingRef} className="w-full py-10">
-                <LoadingSpinner
-                  text="Evaluating your submission..."
-                  iconSize="w-8 h-8"
-                  textColor="text-gray-500"
-                />
+                <LoadingSpinner text="Evaluating your submission..." iconSize="w-8 h-8" />
               </div>
             )}
 

@@ -6,6 +6,7 @@ import { useExerciseList } from './hooks/useExerciseList';
 import { useAuthContext_v2 } from '@/shared/context/hooks/useAuthContext_v2';
 import { Return } from '@/shared/components/Return';
 import { AuthGatekeeper } from '@/shared/components/AuthGatekeeper';
+import { LoadingSpinner } from '@/shared/components/Loading/LoadingSpinner';
 
 export function ExerciseList() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -81,8 +82,8 @@ export function ExerciseList() {
       <div className="flex flex-col rounded-xl overflow-hidden">
         {/* SENIOR FIX: Chỉ hiển thị chữ Loading ở danh sách, không làm chết bộ lọc */}
         {isLoading ? (
-          <div className="text-center py-10 text-gray-500 font-medium animate-pulse">
-            Loading data...
+          <div className="flex justify-center items-center pt-10">
+            <LoadingSpinner text="Loading data..." iconSize="w-8 h-8"></LoadingSpinner>
           </div>
         ) : Array.isArray(exercises) && exercises.length > 0 ? (
           exercises.map((exercise) => <ExerciseListRow key={exercise._id} data={exercise} />)
