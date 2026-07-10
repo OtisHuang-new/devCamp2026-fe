@@ -172,7 +172,7 @@ function LoginForm({ onClose, onSwitchToRegister }: Omit<LoginProps, 'isOpen'>) 
                     onClick={() => setIsForgotMode(true)}
                     className="text-sm font-bold text-[#1E3A8A] underline cursor-pointer hover:opacity-80 ml-auto"
                   >
-                    Forget your password?
+                    Forgot your password?
                   </span>
                 </div>
 

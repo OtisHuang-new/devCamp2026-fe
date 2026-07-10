@@ -67,7 +67,7 @@ function Register({ isOpen, onClose, onSwitchToLogin }: RegisterProps) {
         <div className="w-3/5 h-full flex flex-col justify-center px-16 bg-white">
           <h2 className="text-3xl font-extrabold text-[#1E3A8A] mb-1">Create new account</h2>
           <p className="text-gray-600 text-sm mb-6 font-medium">
-            You have account before?{' '}
+            Already have an account?{' '}
             <span
               onClick={onSwitchToLogin}
               className="text-[#1E3A8A] font-bold underline cursor-pointer hover:opacity-80"

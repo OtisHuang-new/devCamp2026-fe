@@ -19,7 +19,7 @@ function Button({ onOpenLogin }: ButtonProps) {
         onClick={onOpenLogin}
         className="bg-primary border text-xl border-white/40 px-28 py-3 text-white flex justify-center items-center drop-shadow-[0_0_2px_#ffffff] rounded-[4px] font-medium transition-all hover:bg-[#081A4F] active:scale-95"
       >
-        I Already have an account
+        I already have an account
       </button>
     </div>
   );

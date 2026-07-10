@@ -90,7 +90,7 @@ function SurveyPage() {
   };
 
   const handleMaybeLater = () => {
-    alert('This feature is still in developing process, you have to create account to use');
+    alert('This feature is still in development process, you have to create account to use');
   };
   // ----------------------------------------
 
