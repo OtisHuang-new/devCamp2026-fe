@@ -27,6 +27,5 @@ export function useSyncEditorStore(exercise: ExerciseDataAPI | null | undefined)
     } else {
       setKeyCode(undefined);
     }
-     
   }, [exercise, setInitialCode, setOriginalCode, setCurrentCode, setPublicTestCases, setKeyCode]);
 }
