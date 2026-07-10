@@ -145,11 +145,7 @@ function Roadmap() {
   if (isFromLesson && (isAuthLoading || isRefreshingAuth || isLoading)) {
     return (
       <div className="fixed inset-0 z-[9999] bg-white flex flex-col justify-center items-center">
-        <LoadingSpinner
-          text="Loading Roadmap..."
-          iconSize="w-12 h-12"
-          textColor="text-[#1E3A8A] text-lg"
-        />
+        <LoadingSpinner text="Loading Roadmap..." iconSize="w-10 h-10" />
       </div>
     );
   }

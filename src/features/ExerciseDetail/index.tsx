@@ -132,8 +132,8 @@ export function ExerciseDetail() {
   // --- XỬ LÝ GIAO DIỆN LOADING & ERROR ---
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen font-bold text-gray-500 bg-gray-50">
-        Loanding exercise...
+      <div className="flex justify-center items-center h-screen bg-gray-50">
+        <LoadingSpinner iconSize="w-10 h-10" text="Loanding exercise..."></LoadingSpinner>
       </div>
     );
   }
@@ -171,17 +171,13 @@ export function ExerciseDetail() {
           {/* THAY THẾ CHỖ NÀY */}
           {isSubmitting && (
             <div className="w-full py-10">
-              <LoadingSpinner
-                text="Đang chấm điểm testcases..."
-                iconSize="w-8 h-8"
-                textColor="text-gray-500"
-              />
+              <LoadingSpinner text="Evaluating your submission..." iconSize="w-8 h-8" />
             </div>
           )}
 
           {submitError && (
             <div className="w-full text-center py-6 text-red-500 font-bold">
-              Lỗi khi nộp bài: {submitError}
+              Error when submitting: {submitError}
             </div>
           )}
 

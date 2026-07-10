@@ -14,6 +14,7 @@ import { useEffect } from 'react';
 import { OnboardingTour } from '../components/OnboardingTour';
 import { useOnboardingStore } from '../store/useOnboardingStore';
 import { ROADMAP_TOUR_STEPS } from '../../shared/utils/onboardingConstants';
+import iconHelp from './assets/live_help.svg';
 
 interface CustomLocationState {
   autoOpenSignup?: boolean;
@@ -115,9 +116,12 @@ export function Layout() {
               <button
                 // 2. CẬP NHẬT: Gắn hàm Reset vào đây
                 onClick={handleStartRoadmapTour}
-                className="w-full py-2.5 bg-white text-[#1E3A8A] font-extrabold rounded-xl border-2 border-[#1E3A8A] hover:bg-blue-50 transition-colors shadow-sm active:scale-95"
+                // 3. SENIOR FIX: Bổ sung flex, items-center, justify-center và gap-2 để căn giữa icon và chữ
+                className="w-full flex items-center justify-center gap-2 py-2.5 bg-white text-[#1E3A8A] font-extrabold rounded-xl border-2 border-[#1E3A8A] hover:bg-blue-50 transition-colors shadow-sm active:scale-95"
               >
-                Start Tour (Reset All)
+                {/* 4. SENIOR FIX: Thêm thẻ img chứa icon */}
+                <img src={iconHelp} alt="Help" className="w-5 h-5 object-contain" />
+                <span>Start Tutorial</span>
               </button>
             </div>
           )}

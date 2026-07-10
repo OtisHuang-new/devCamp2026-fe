@@ -9,12 +9,12 @@ interface LoadingSpinnerProps {
 export function LoadingSpinner({
   text = 'Loading...',
   iconSize = 'w-5 h-5',
-  textColor = 'text-slate-700',
+  textColor = 'text-[#1E3A8A]/70',
 }: LoadingSpinnerProps) {
   return (
     <div className="flex items-center gap-2.5 animate-pulse justify-center">
       <svg
-        className={`animate-spin ${iconSize} text-primary`}
+        className={`animate-spin ${iconSize} text-primary/85`}
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
