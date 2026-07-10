@@ -29,6 +29,9 @@ interface CodeEditorProps {
 
 const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }) => {
   const initialCode = useEditorStore((state) => state.initialCode);
+
+  const originalCode = useEditorStore((state) => state.originalCode);
+
   const keyCode = useEditorStore((state) => state.keyCode); // 2. Lấy keyCode từ Store
 
   const addToast = useToastStore((state) => state.addToast); // 3. Lấy hàm tạo Toast
@@ -36,7 +39,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }
   const [code, setCode] = useState(initialCode);
 
   const handleResetCode = () => {
-    setCode(initialCode);
+    setCode(originalCode);
     addToast('Reset initial code successfully!', 1300, false, 'top-center');
   };
 

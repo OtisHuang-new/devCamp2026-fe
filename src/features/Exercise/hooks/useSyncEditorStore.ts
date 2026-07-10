@@ -5,6 +5,7 @@ import type { ExerciseDataAPI } from '../types/exerciseTypes';
 
 export function useSyncEditorStore(exercise: ExerciseDataAPI | null | undefined) {
   const setInitialCode = useEditorStore((state) => state.setInitialCode);
+  const setOriginalCode = useEditorStore((state) => state.setOriginalCode);
   const setPublicTestCases = useEditorStore((state) => state.setPublicTestCases);
   const setKeyCode = useEditorStore((state) => state.setKeyCode); // 1. Lấy hàm từ store
 
@@ -12,16 +13,17 @@ export function useSyncEditorStore(exercise: ExerciseDataAPI | null | undefined)
     if (exercise) {
       if (exercise.initial_code) {
         setInitialCode(exercise.initial_code);
+
+        // 4. SENIOR FIX: Cất bản gốc của bài tập vào Két sắt ngay lần đầu tải
+        setOriginalCode(exercise.initial_code);
       }
 
-      // 2. SENIOR FIX: Cập nhật keyCode vào Store
       setKeyCode(exercise.key_code);
 
       const visibleCases = exercise.test_cases.filter((tc) => !tc.is_hidden);
       setPublicTestCases(visibleCases);
     } else {
-      // Dọn dẹp an toàn nếu không có exercise
       setKeyCode(undefined);
     }
-  }, [exercise, setInitialCode, setPublicTestCases, setKeyCode]);
+  }, [exercise, setInitialCode, setOriginalCode, setPublicTestCases, setKeyCode]);
 }
