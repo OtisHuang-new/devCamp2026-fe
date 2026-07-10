@@ -32,7 +32,7 @@ export function AIFeatureBox({
       {/* Khối Tiêu đề cố định */}
       <div className="flex flex-row justify-between">
         <h2 className="text-[#1E3A8A] font-bold text-xl mb-1">{title}</h2>
-        <h3 className="text-gray-400 text-sm">Cận is AI and can make mistake</h3>
+        <h3 className="text-gray-400 text-sm">Cận is AI and can make mistakes</h3>
       </div>
 
       <div className="flex items-start gap-4 w-full">

@@ -113,7 +113,7 @@ const CodeToggleButton: React.FC<CodeToggleButtonProps> = ({
         <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-[300ms] pointer-events-none whitespace-nowrap bg-[#1E1E1E] text-gray-300 text-xs px-3 py-2.5 rounded-lg shadow-xl border border-gray-700 flex items-center gap-1.5 z-[110]">
           <div className="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-2 bg-[#1E1E1E] border-l border-b border-gray-700 rotate-45"></div>
 
-          <span>Short cut :</span>
+          <span>Shortcut :</span>
           <span className="bg-gray-800 text-white px-1.5 py-0.5 rounded font-mono font-bold shadow-sm">
             Ctrl + `
           </span>

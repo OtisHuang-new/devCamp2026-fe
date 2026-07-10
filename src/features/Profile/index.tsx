@@ -100,7 +100,7 @@ function ProfileContent({ user, logoutState }: ProfileContentProps) {
       <div className="border-[3px] border-[#0B1A4D] rounded-2xl p-4 relative mb-6 shadow-sm">
         {/* Box Header */}
         <div className="flex items-center gap-2 mb-6">
-          <h2 className="text-xl font-bold text-[#0B1A4D]">Detail information</h2>
+          <h2 className="text-xl font-bold text-[#0B1A4D]">Detailed information</h2>
           <div className="bg-[#1A2E72] text-white text-[11px] font-semibold px-2.5 py-1 rounded-md flex items-center gap-1.5">
             <svg
               className="w-3.5 h-3.5"

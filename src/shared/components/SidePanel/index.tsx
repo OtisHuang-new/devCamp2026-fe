@@ -53,7 +53,7 @@ export default function SidePanel({
       >
         <div className="flex flex-row justify-between border-b border-gray-100 bg-white px-2 shadow-[0px_5px_10px_3px_rgba(255,255,255,1)] z-10">
           <h3 className="font-bold text-[#1E3A8A] pb-2">AI Assistant</h3>
-          <h2 className="text-gray-400 text-[14px] pr-2">Cận is AI and can make mistake</h2>
+          <h2 className="text-gray-400 text-[14px] pr-2">Cận is AI and can make mistakes</h2>
         </div>
 
         {/* SENIOR UPDATE: Ép kiểu boolean bằng 2 dấu !!. Nếu có videoUrl => true, không có => false */}

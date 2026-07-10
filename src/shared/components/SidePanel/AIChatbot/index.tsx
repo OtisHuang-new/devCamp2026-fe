@@ -87,7 +87,7 @@ export function AIChatbot({ lessonId = '', exerciseId = '', isCompact = false }:
               <img src={bot_like} alt="AI Mascot" className="w-8 h-8" />
             </div>
             <p className="text-gray-400 italic text-sm px-6">
-              If you have any question, just ask me, I can help!
+              If you have any questions, just ask me, I can help!
             </p>
           </div>
         )}
