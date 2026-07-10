@@ -55,7 +55,7 @@ export function AIChatbot({ lessonId = '', exerciseId = '', isCompact = false }:
   // Luồng 3: Nhận Text bôi đen và Bắn thẳng vào hệ thống nhắn tin
   useEffect(() => {
     if (externalQuery) {
-      sendMessage(externalQuery, srcCode);
+      sendMessage(externalQuery);
       setExternalQuery(null); // Bắn xong thì dọn rác ngay lập tức
     }
   }, [externalQuery, sendMessage, srcCode, setExternalQuery]);
@@ -124,7 +124,7 @@ export function AIChatbot({ lessonId = '', exerciseId = '', isCompact = false }:
       {/* 2. KHU VỰC NHẬP TIN NHẮN (Ghim chặt ở đáy) */}
       <div className="pr-2 shrink-0 shadow-[0px_-5px_10px_5px_rgba(255,255,255,1)] z-10">
         <ChatInput
-          onSend={(text) => sendMessage(text, srcCode)}
+          onSend={(text) => sendMessage(text)}
           isLoading={isSending}
           maxHeightClass={inputHeightClass} // MỚI: Truyền xuống cho con
         />
