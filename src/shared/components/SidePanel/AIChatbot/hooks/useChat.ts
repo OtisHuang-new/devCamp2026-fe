@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { chatApi } from '../api/chatApi';
 import type { Get_ConversationRespond } from '../types/chatTypes';
 
+import { useEditorStore } from '../../../../store/useEditorStore';
+
 export function useChat(
   conversation_id: string,
   user_id: string | undefined,
@@ -61,7 +63,7 @@ export function useChat(
   // ==========================================
   // LUỒNG 2: GỬI TIN NHẮN (OPTIMISTIC UI)
   // ==========================================
-  async function sendMessage(question: string, src_code: string = '') {
+  async function sendMessage(question: string) {
     if (!user_id) return;
     if (!question.trim()) return;
 
@@ -87,7 +89,7 @@ export function useChat(
         lesson_id: lesson_id,
         exercise_id: exercise_id,
         question: question,
-        src_code: src_code,
+        src_code: useEditorStore.getState().currentCode,
       });
 
       // BƯỚC D: Nhận kết quả AI trả về, giữ nguyên tin nhắn giả của User, nhét thêm tin nhắn AI vào

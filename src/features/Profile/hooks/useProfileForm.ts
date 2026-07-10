@@ -4,6 +4,7 @@ import type { UpdateProfileRequest } from '../types/apiTypes';
 import { updateProfileApi } from '../api/updateProfileApi';
 import { useAuthContext_v2 } from '../../../shared/context/hooks/useAuthContext_v2';
 import { useToastStore } from '@/shared/store/useToastStore';
+import { clearAIContextCache } from '@/shared/hooks/useAIContext';
 
 export function useProfileForm(initialUser: UserInfo) {
   const [isEditing, setIsEditing] = useState(false);
@@ -61,12 +62,13 @@ export function useProfileForm(initialUser: UserInfo) {
       updateUser(respond);
       setIsEditing(false);
 
-      // 3. SENIOR UX: Bắn thông báo Toast thành công với timeout 3 giây
+      // 3. SENIOR FIX: Profile đổi -> Xóa toàn bộ Cache cũ để AI sinh ra Context mới!
+      clearAIContextCache();
+
+      // Bắn thông báo Toast thành công
       addToast('Updated profile successfully !', 3000, false);
     } catch (error) {
       console.log('thằng useProfileForm.ts lỗi nè bro:', error);
-      // Bạn cũng có thể bắt Toast lỗi ở đây nếu muốn (Optional)
-      // addToast('Failed to update profile. Please try again!', 3000, true);
     } finally {
       setIsSaving(false);
     }

@@ -37,6 +37,10 @@ const LessonDetail = () => {
   const setIsEditorOpen = useEditorStore((state) => state.setIsOpen);
   const toggleEditorOpen = useEditorStore((state) => state.toggleOpen);
 
+  const initialCode = useEditorStore((state) => state.initialCode);
+  const currentCode = useEditorStore((state) => state.currentCode);
+  const hasUnsavedChanges = currentCode !== initialCode;
+
   const {
     submitCode,
     isSubmitting,
@@ -323,7 +327,7 @@ const LessonDetail = () => {
                       onNext={handleNext}
                       isPassed={hasPassed}
                       showHighlight={showHighlight}
-                      className="mt-0"
+                      hasUnsavedChanges={hasUnsavedChanges}
                     />
                   )}
                 </SubmissionResult>
@@ -336,6 +340,7 @@ const LessonDetail = () => {
                   onExit={handleExit}
                   onNext={handleNext}
                   isPassed={hasPassed}
+                  hasUnsavedChanges={hasUnsavedChanges}
                 />
               )
             )}
