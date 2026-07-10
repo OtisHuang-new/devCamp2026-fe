@@ -14,12 +14,12 @@ const TestCaseNav: React.FC<TestCaseNavProps> = ({
   readonly = false,
 }) => {
   return (
-    <div className="flex gap-2 items-center mb-4 overflow-x-auto custom-scrollbar pb-1">
+    <div className="flex gap-2 items-center overflow-x-auto custom-scrollbar pb-1">
       {Array.from({ length: casesCount }).map((_, idx) => (
         <button
           key={idx}
           onClick={() => onSelect(idx)}
-          className={`px-3 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap transition-colors ${
+          className={`px-2 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors ${
             activeIndex === idx
               ? 'bg-[#2A2A2A] text-white'
               : 'text-gray-400 hover:text-white hover:bg-[#2A2A2A]/50'

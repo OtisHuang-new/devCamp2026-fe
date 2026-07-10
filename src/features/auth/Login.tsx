@@ -136,7 +136,7 @@ function LoginForm({ onClose, onSwitchToRegister }: Omit<LoginProps, 'isOpen'>) 
             <div className="animate-fadeIn">
               <h2 className="text-3xl font-extrabold text-[#1E3A8A] mb-1">Login</h2>
               <p className="text-gray-600 text-sm mb-6 font-medium">
-                Haven't had any account yet?{' '}
+                Don't have any account?{' '}
                 <span
                   onClick={onSwitchToRegister}
                   className="text-[#1E3A8A] font-bold underline cursor-pointer hover:opacity-80"
@@ -172,7 +172,7 @@ function LoginForm({ onClose, onSwitchToRegister }: Omit<LoginProps, 'isOpen'>) 
                     onClick={() => setIsForgotMode(true)}
                     className="text-sm font-bold text-[#1E3A8A] underline cursor-pointer hover:opacity-80 ml-auto"
                   >
-                    Forget your password?
+                    Forgot your password?
                   </span>
                 </div>
 

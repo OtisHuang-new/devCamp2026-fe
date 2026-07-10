@@ -16,11 +16,11 @@ const CreateAccountScene: React.FC<CreateAccountSceneProps> = ({
       <img src={mascotSrc} alt="Mascot yay" className="w-[180px] h-[180px] object-contain mb-8" />
 
       <h2 className="text-[28px] font-extrabold text-primary mb-3">
-        Yayyy, It's time to create your own profile !
+        Yayyy, it's time to create your own profile !
       </h2>
 
       <p className="text-gray-500 text-[16px] mb-10">
-        create a profile to save your progress and help you to get personalize guidance
+        Create a profile to save your progress and help you get personalized guidance
       </p>
 
       <div className="flex flex-col gap-4 w-full max-w-md">
@@ -28,7 +28,7 @@ const CreateAccountScene: React.FC<CreateAccountSceneProps> = ({
           onClick={onCreateProfile}
           className="w-full bg-primary hover:bg-primary/90 text-white font-bold text-[16px] py-3.5 rounded-full shadow-md transition-colors"
         >
-          Creat a profile
+          Create a profile
         </button>
 
         <button

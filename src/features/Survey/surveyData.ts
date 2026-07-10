@@ -19,7 +19,7 @@ export const surveyQuestions: QuestionData[] = [
   {
     id: 'q1_job',
     progress: 0.2, // 20%
-    botText: 'Okey before starting, first question! What is your Job?',
+    botText: 'Okay, before we start! First question: What is your job?',
     layout: 'grid-nx2',
     options: [
       { id: 'job_1', text: 'Finance / Accountant' },
@@ -46,7 +46,7 @@ export const surveyQuestions: QuestionData[] = [
   {
     id: 'q3_time',
     progress: 0.8, // 80%
-    botText: 'Almost done! How much free time can you spend to learning code each week?',
+    botText: 'Almost done! How much free time can you spend to learn code each week?',
     layout: 'grid-nx1',
     options: [
       { id: 'time_1', text: 'Less than 2 hours/week' },

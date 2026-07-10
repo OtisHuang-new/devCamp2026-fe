@@ -30,7 +30,7 @@ export function ResetPassword() {
       <div className="relative w-full max-w-4xl h-[620px] rounded-[8px] shadow-2xl overflow-hidden flex flex-row bg-white">
         {/* Khối Form (60%) */}
         <div className="w-3/5 h-full flex flex-col justify-center px-16">
-          <h2 className="text-3xl font-extrabold text-[#1E3A8A] mb-8">Creat new password</h2>
+          <h2 className="text-3xl font-extrabold text-[#1E3A8A] mb-8">Create new password</h2>
 
           <form onSubmit={onSubmit} className="flex flex-col gap-4">
             {/* 2. SENIOR FIX: Thay thế field New Password */}

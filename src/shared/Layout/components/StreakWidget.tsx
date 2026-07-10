@@ -22,9 +22,9 @@ export function StreakWidget({ currentStreak, lastActiveAt }: StreakWidgetProps)
       {/* PHẦN TRÊN: Thông tin Text và Icon */}
       <div className="flex justify-between items-start">
         <div className="flex flex-col gap-2 max-w-[75%] mt-1">
-          <h3 className="text-3xl font-extrabold text-[#F58C14]">{currentStreak} Days streak</h3>
+          <h3 className="text-3xl font-extrabold text-[#F58C14]">{currentStreak} Days Streak</h3>
           <p className="text-[#F58C14] font-bold text-[15px] leading-snug">
-            you are having the longest streak since then !
+            You are having the longest streak ever!
           </p>
         </div>
 

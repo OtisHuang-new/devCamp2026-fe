@@ -3,6 +3,7 @@ import close_icon from './close_icon.svg';
 
 interface CloseButtonProps {
   onClick: () => void;
+  className?: string;
 }
 
 const CloseButton: React.FC<CloseButtonProps> = ({ onClick }) => {

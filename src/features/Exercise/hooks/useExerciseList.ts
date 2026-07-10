@@ -29,14 +29,23 @@ export function useExerciseList(topic: string, title: string, user_id: string | 
         if (response && response.exerciseList) {
           setExercises(response.exerciseList);
           setTopics(response.topics || []);
+
+          // 1. CẬP NHẬT: Lưu mảng bài tập vào Session Storage để làm mốc chuyển bài
+          sessionStorage.setItem('exercise_list_cache', JSON.stringify(response.exerciseList));
         } else {
           setExercises([]);
           setTopics([]);
+
+          // 2. CẬP NHẬT: Dọn dẹp cache an toàn khi mảng rỗng
+          sessionStorage.removeItem('exercise_list_cache');
         }
       } catch (error) {
         console.log('Lỗi fetch ExerciseList: ', error);
         setExercises([]);
         setTopics([]);
+
+        // 3. CẬP NHẬT: Dọn dẹp cache an toàn khi API gặp lỗi
+        sessionStorage.removeItem('exercise_list_cache');
       } finally {
         setIsLoading(false);
       }

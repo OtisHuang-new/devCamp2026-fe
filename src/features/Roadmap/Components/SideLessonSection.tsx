@@ -25,7 +25,7 @@ const SideLessonSection: React.FC<SideLessonSectionProps> = ({
         />
       )}
 
-      <h3 className="font-extrabold text-2xl text-primary uppercase tracking-wide">Side Lesson</h3>
+      <h3 className="font-extrabold text-2xl text-primary uppercase tracking-wide">Setup Python</h3>
       <div className="flex flex-col gap-3">
         {chapterData.lessons.map((lesson, index) => (
           <SideLessonItem

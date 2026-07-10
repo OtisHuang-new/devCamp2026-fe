@@ -15,7 +15,7 @@ const LEVEL_OPTIONS = [
 
 // 2. SENIOR UX: Khai báo mảng JOB_OPTIONS với thủ thuật chèn icon bằng Text trực tiếp
 const JOB_OPTIONS = [
-  { value: 'Accountant', label: 'Finance/Accountant (✨ AI Customized)' },
+  { value: 'Finance/Accountant', label: 'Finance/Accountant (✨ AI Customized)' },
   { value: 'Software Engineer', label: 'Software Engineer' },
   { value: 'Data Analyst', label: 'Data Analyst' },
   { value: 'Marketing', label: 'Marketing' },
@@ -58,7 +58,7 @@ function ProfileContent({ user, logoutState }: ProfileContentProps) {
             onChange={(val) => handleInputChange('name', val)}
           />
           <p className="text-[#1A2E72] font-medium mt-1">{user.email}</p>
-          <p className="text-gray-800 mt-1">Joined since {formatDateTime(user.createdAt)}</p>
+          <p className="text-gray-800 mt-1">Joined on: {formatDateTime(user.createdAt)}</p>
         </div>
 
         <div className="flex flex-col items-end">
@@ -86,7 +86,7 @@ function ProfileContent({ user, logoutState }: ProfileContentProps) {
                 d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
               ></path>
             </svg>
-            {isEditing ? (isChanged ? 'Save' : 'Cancle') : 'Edit'}
+            {isEditing ? (isChanged ? 'Save' : 'Cancel') : 'Edit'}
           </button>
 
           <div className="text-right mt-3 text-gray-400">
@@ -100,7 +100,7 @@ function ProfileContent({ user, logoutState }: ProfileContentProps) {
       <div className="border-[3px] border-[#0B1A4D] rounded-2xl p-4 relative mb-6 shadow-sm">
         {/* Box Header */}
         <div className="flex items-center gap-2 mb-6">
-          <h2 className="text-xl font-bold text-[#0B1A4D]">Detail infomation</h2>
+          <h2 className="text-xl font-bold text-[#0B1A4D]">Detailed information</h2>
           <div className="bg-[#1A2E72] text-white text-[11px] font-semibold px-2.5 py-1 rounded-md flex items-center gap-1.5">
             <svg
               className="w-3.5 h-3.5"
@@ -114,7 +114,7 @@ function ProfileContent({ user, logoutState }: ProfileContentProps) {
                 clipRule="evenodd"
               ></path>
             </svg>
-            AI Personalize
+            AI Personalized
           </div>
         </div>
 
@@ -122,7 +122,7 @@ function ProfileContent({ user, logoutState }: ProfileContentProps) {
         <div className="space-y-3">
           <div className="border border-gray-200 rounded-xl p-4">
             <EditableField
-              label="Currently Job"
+              label="Current Job"
               // 3. SENIOR UX: Chuyển Job thành Select Box
               type="select"
               options={JOB_OPTIONS}
