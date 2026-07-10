@@ -8,6 +8,21 @@ export type ContextType = 'lesson' | 'exercise' | 'project';
 const pendingRequests = new Map<string, Promise<string | null>>();
 const CACHE_PREFIX = 'ai_context_';
 
+export function clearAIContextCache() {
+  const keysToRemove: string[] = [];
+
+  // Duyệt qua toàn bộ Session Storage để tìm các key của AI Context
+  for (let i = 0; i < sessionStorage.length; i++) {
+    const key = sessionStorage.key(i);
+    if (key && key.startsWith(CACHE_PREFIX)) {
+      keysToRemove.push(key);
+    }
+  }
+
+  // Xóa toàn bộ các key đã gom được (Tránh lỗi nhảy index nếu xóa trực tiếp trong vòng lặp)
+  keysToRemove.forEach((key) => sessionStorage.removeItem(key));
+}
+
 function getCache(key: string): string | null {
   return sessionStorage.getItem(`${CACHE_PREFIX}${key}`);
 }
