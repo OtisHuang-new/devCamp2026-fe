@@ -7,6 +7,7 @@ import PageLanding from './features/LandingPage/index';
 import SurveyPage from './features/Survey';
 import Roadmap from './features/Roadmap';
 import LessonDetail from './features/LessonDetail';
+import MobileBlocker from './shared/components/Responsive/MobileBlocker';
 import { Profile } from './features/Profile';
 import { Layout } from './shared/Layout';
 import { ExerciseList } from './features/Exercise';
@@ -14,10 +15,13 @@ import { ExerciseDetail } from './features/ExerciseDetail';
 import { GlobalAudioPlayer } from './shared/components/GlobalAudioPlayer';
 import { ToastContainer } from './shared/components/Toast';
 import { ResetPassword } from './features/auth/ResetPassword';
+import { useIsMobile } from './shared/hooks/useIsMobile';
 
 function App() {
+  const isMobile = useIsMobile();
   return (
     <BrowserRouter>
+      <MobileBlocker isOpen={isMobile} />
       <GlobalAudioPlayer />
       <Routes>
         <Route element={<PublicRoute />}>

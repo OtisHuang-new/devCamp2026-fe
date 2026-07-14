@@ -15,7 +15,7 @@ import type { TestResultProps } from './components/TestResultView';
 import { useToastStore } from '../../store/useToastStore';
 
 import { ResetButton } from './components/Buttons/ResetButton';
-import { ShowAnswerButton } from './components/Buttons/ShowAnswerButton';
+import { ShowHintButton } from './components/Buttons/ShowHintButton';
 import { RunButton } from './components/Buttons/RunButton';
 import { SubmitButton } from './components/Buttons/SubmitButton';
 
@@ -38,6 +38,8 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }
 
   const [code, setCode] = useState(initialCode);
 
+  const [showHint, setShowHint] = useState(false); //Trạng thái xem hint thêm bởi tbao
+
   useEffect(() => {
     setCurrentCode(code);
   }, [code, setCurrentCode]);
@@ -47,10 +49,17 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }
     addToast('Reset initial code successfully!', 1300, false, 'top-center');
   };
 
+  /*
   const handleShowAnswer = () => {
     if (keyCode) {
       setCode(keyCode);
       addToast('Loaded solution successfully!', 1300, false, 'top-center');
+    }
+  };*/
+
+  const handlePressHint = () => {
+    if (keyCode) {
+      setShowHint((prev) => !prev); // Toggle trạng thái hiển thị hint
     }
   };
 
@@ -186,7 +195,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }
 
         <div className="flex-1 flex gap-4 overflow-hidden">
           <div className="w-[55%] bg-[#1E1E1E] rounded-xl border border-gray-800 flex flex-col p-4">
-            <div className="flex-1 overflow-auto rounded-md custom-scrollbar">
+            <div className="flex-1 overflow-auto rounded-md custom-scrollbar relative">
               <CodeMirror
                 value={code}
                 height="100%"
@@ -196,13 +205,36 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ exerciseId, onClose, onSubmit }
                 className="h-full text-sm font-mono [&_.cm-editor]:!bg-[#1E1E1E] [&_.cm-gutters]:!bg-[#1E1E1E] [&_.cm-gutters]:!border-r-[#333333]"
                 style={{ textAlign: 'left' }}
               />
+
+              {showHint && keyCode && (
+                <div className="absolute inset-0 bg-[#121212]/95 z-[100] flex flex-col p-4 rounded-md animate-fadeIn pointer-events-auto">
+                  <div className="flex justify-between items-center mb-2.5 border-b border-gray-800 pb-2">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-yellow-500 text-sm">💡</span>
+                      <h4 className="text-gray-200 font-bold text-xs tracking-wide uppercase">
+                        Hint
+                      </h4>
+                    </div>
+
+                    <span className="text-[10px] text-gray-500 italic">
+                      Click the button again to close.
+                    </span>
+                  </div>
+
+                  <div className="flex-1 overflow-y-auto rounded bg-[#181818] border border-gray-800 p-3.5 custom-scrollbar text-left">
+                    <p className="text-gray-300 text-xs leading-relaxed whitespace-pre-wrap font-sans antialiased">
+                      {keyCode}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="flex justify-between items-center w-full mt-2">
               {/* CỤM BÊN TRÁI */}
               <div className="flex gap-3 items-center">
                 <ResetButton onClick={handleResetCode} />
-                {keyCode && <ShowAnswerButton onClick={handleShowAnswer} />}
+                {keyCode && <ShowHintButton onClick={handlePressHint} isShowing={showHint} />}
               </div>
 
               {/* CỤM BÊN PHẢI */}

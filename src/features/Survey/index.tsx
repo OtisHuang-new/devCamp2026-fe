@@ -52,8 +52,8 @@ function SurveyPage() {
         job_1: 'Accountant',
         job_2: 'Marketing',
         job_3: 'Software Engineer',
-        job_4: 'Designer',
-        job_5: 'Teacher',
+        job_4: 'Data Analyst',
+        job_5: 'Student',
         job_6: 'Other',
       };
       const levelMap: Record<string, number> = {
@@ -167,23 +167,19 @@ function SurveyPage() {
       </div>
 
       {/* PHẦN FOOTER */}
-      <div className="w-full border-t border-gray-200 bg-white">
-        <div className="max-w-4xl mx-auto px-8 py-6 flex justify-end">
-          <button
-            onClick={handleContinue}
-            disabled={!isOptionSelected}
-            className={`text-white font-semibold text-[18px] px-9 py-[12px] rounded-[15px] transition-colors duration-200
-                            ${
-                              !isOptionSelected
-                                ? 'bg-[#9DA9C9] cursor-not-allowed'
-                                : 'bg-[#1E3A8A] hover:bg-[#112255] cursor-pointer'
-                            }
-                        `}
-          >
-            {currentStep === surveyQuestions.length - 1 ? 'Finish' : 'Continue'}
-          </button>
-        </div>
-      </div>
+      <button
+        onClick={handleContinue}
+        disabled={!isOptionSelected}
+        className={`fixed bottom-10 right-10 text-white font-semibold text-[18px] px-9 py-[12px] rounded-[15px] transition-colors duration-200
+                        ${
+                          !isOptionSelected
+                            ? 'bg-[#9DA9C9] cursor-not-allowed'
+                            : 'bg-[#1E3A8A] hover:bg-[#112255] cursor-pointer'
+                        }
+                    `}
+      >
+        {currentStep === surveyQuestions.length - 1 ? 'Finish' : 'Continue'}
+      </button>
     </div>
   );
 }

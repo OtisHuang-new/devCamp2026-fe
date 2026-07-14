@@ -33,7 +33,7 @@ export default function Sidebar() {
     <aside className="w-[260px] h-screen bg-white border-r border-gray-100 flex flex-col pb-10 shadow-xl shrink-0">
       <NameBrandPrime
         logoSrc={logo_dark}
-        brandName="Cận Code Team"
+        brandName="Cận Dev"
         className="mb-20 px-6"
         onClick={handleBrandClick} // 2. SENIOR FIX: Truyền hàm click vào đây
       />
