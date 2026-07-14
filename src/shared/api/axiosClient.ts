@@ -12,7 +12,6 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('access_token');
-    console.log('Token hiện tại trong LocalStorage:', token);
     if (token) {
       config.headers = config.headers || {};
 

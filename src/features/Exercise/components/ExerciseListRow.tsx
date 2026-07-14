@@ -34,11 +34,6 @@ export function ExerciseListRow({ data }: ExerciseListRowProps) {
           <span className="text-[#1A2E72] font-medium text-[18px] w-8 shrink-0">{data.index}.</span>
 
           <span className="text-[#1A2E72] font-medium text-[18px]">{data.title}</span>
-
-          {/* Badge Topic hiển thị bên phải, bo tròn, màu nền phân biệt */}
-          <span className="ml-3 mt-[3px] border border-gray-500 bg-[#eceef8] text-[#1A2E72] text-[11px] font-medium px-2.5 rounded-full uppercase tracking-wider opacity-80">
-            {data.topic}
-          </span>
         </div>
       </div>
 
