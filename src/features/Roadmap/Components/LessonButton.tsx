@@ -43,10 +43,10 @@ const LessonButton: React.FC<LessonButtonProps> = ({
       title={title}
     >
       {status === 'current' && (
-        <div className="absolute top-1/2 right-[100%] mr-5 -translate-y-[17px] bg-white border-2 border-primary text-primary font-extrabold text-[20px] px-3 py-1.5 rounded-xl shadow-md whitespace-nowrap z-10 flex items-center justify-center animate-fadeIn">
+        <div className="absolute -top-14 mr-5 -translate-x-[70px] bg-white border-2 border-primary text-primary font-extrabold text-[20px] px-3 py-1.5 rounded-xl shadow-md whitespace-nowrap z-10 flex items-center justify-center animate-fadeIn">
           Your current Lesson
-          <div className="absolute top-1/2 -right-[7px] -translate-y-1/2 w-0 h-0 border-y-[6px] border-y-transparent border-l-[6px] border-l-primary"></div>
-          <div className="absolute top-1/2 -right-[4px] -translate-y-1/2 w-0 h-0 border-y-[4px] border-y-transparent border-l-[4px] border-l-white"></div>
+          <div className="absolute left-1/2 -bottom-[7px] -translate-x-1/2 w-0 h-0 border-x-[6px] border-x-transparent border-t-[6px] border-t-primary"></div>
+          <div className="absolute left-1/2 -bottom-[4px] -translate-x-1/2 w-0 h-0 border-x-[4px] border-x-transparent border-t-[4px] border-t-white"></div>
         </div>
       )}
 
