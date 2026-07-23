@@ -40,6 +40,7 @@ export function Layout() {
   const startTour = useOnboardingStore((state) => state.startTour);
 
   const handleStartRoadmapTour = () => {
+    navigate('/roadmap');
     localStorage.removeItem('has_seen_roadmap_tour');
     localStorage.removeItem('has_seen_lesson_top_tour');
     localStorage.removeItem('has_seen_exercise_widget_tour');
